@@ -1,7 +1,7 @@
-import { AdminTitle } from '@/admin/components/AdminTitle';
-import { CustomFullScreenLoading } from '@/components/custom/CustomFullScreenLoading';
-import { CustomPagination } from '@/components/custom/CustomPagination';
-import { Button } from '@/components/ui/button';
+import { AdminTitle } from "@/admin/components/AdminTitle";
+import { CustomFullScreenLoading } from "@/components/custom/CustomFullScreenLoading";
+import { CustomPagination } from "@/components/custom/CustomPagination";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableHeader,
@@ -9,11 +9,11 @@ import {
   TableHead,
   TableBody,
   TableCell,
-} from '@/components/ui/table';
-import { currencyFormatter } from '@/lib/currency-formatter';
-import { useProducts } from '@/shop/hooks/useProducts';
-import { PencilIcon, PlusIcon } from 'lucide-react';
-import { Link } from 'react-router';
+} from "@/components/ui/table";
+import { currencyFormatter } from "@/lib/currency-formatter";
+import { useProducts } from "@/shop/hooks/useProducts";
+import { PencilIcon, PlusIcon } from "lucide-react";
+import { Link } from "react-router";
 
 export const AdminProductsPage = () => {
   const { data, isLoading } = useProducts();
@@ -73,9 +73,9 @@ export const AdminProductsPage = () => {
               <TableCell>{currencyFormatter(product.price)}</TableCell>
               <TableCell>{product.gender}</TableCell>
               <TableCell>{product.stock} stock</TableCell>
-              <TableCell>{product.sizes.join(', ')}</TableCell>
+              <TableCell>{product.sizes.join(", ")}</TableCell>
               <TableCell className="text-right">
-                {/* <Link to={`t-shirt-teslo`}>Editar</Link> */}
+                {/* <Link to={`t-shirt-gym`}>Editar</Link> */}
                 <Link to={`/admin/products/${product.id}`}>
                   <PencilIcon className="w-4 h-4 text-blue-500" />
                 </Link>

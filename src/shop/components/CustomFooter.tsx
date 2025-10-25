@@ -1,4 +1,4 @@
-import { CustomLogo } from '@/components/custom/CustomLogo';
+import { CustomLogo } from "@/components/custom/CustomLogo";
 
 export const CustomFooter = () => {
   return (
@@ -94,8 +94,8 @@ export const CustomFooter = () => {
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
           <p>
-            &copy; {new Date().getFullYear()} Teslo Style. Todos los derechos
-            reservados.
+            &copy; {new Date().getFullYear()} Gymnastic Style. Todos los
+            derechos reservados.
           </p>
         </div>
       </div>

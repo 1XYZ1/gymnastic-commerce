@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 
-import { AdminTitle } from '@/admin/components/AdminTitle';
+import { AdminTitle } from "@/admin/components/AdminTitle";
 
-import { Button } from '@/components/ui/button';
-import type { Product, Size } from '@/interfaces/product.interface';
-import { X, SaveAll, Tag, Plus, Upload } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Button } from "@/components/ui/button";
+import type { Product, Size } from "@/interfaces/product.interface";
+import { X, SaveAll, Tag, Plus, Upload } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
   title: string;
@@ -22,7 +22,7 @@ interface Props {
   ) => Promise<void>;
 }
 
-const availableSizes: Size[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const availableSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
 interface FormInputs extends Product {
   files?: File[];
@@ -54,43 +54,43 @@ export const ProductForm = ({
     setFiles([]);
   }, [product]);
 
-  const selectedSizes = watch('sizes');
-  const selectedTags = watch('tags');
-  const currentStock = watch('stock');
+  const selectedSizes = watch("sizes");
+  const selectedTags = watch("tags");
+  const currentStock = watch("stock");
 
   const addTag = () => {
     const newTag = labelInputRef.current!.value;
-    if (newTag === '') return;
+    if (newTag === "") return;
 
-    const newTagSet = new Set(getValues('tags'));
+    const newTagSet = new Set(getValues("tags"));
     newTagSet.add(newTag);
-    setValue('tags', Array.from(newTagSet));
+    setValue("tags", Array.from(newTagSet));
   };
 
   const removeTag = (tag: string) => {
-    const newTagSet = new Set(getValues('tags'));
+    const newTagSet = new Set(getValues("tags"));
     newTagSet.delete(tag);
-    setValue('tags', Array.from(newTagSet));
+    setValue("tags", Array.from(newTagSet));
   };
 
   const addSize = (size: Size) => {
-    const sizeSet = new Set(getValues('sizes'));
+    const sizeSet = new Set(getValues("sizes"));
     sizeSet.add(size);
-    setValue('sizes', Array.from(sizeSet));
+    setValue("sizes", Array.from(sizeSet));
   };
 
   const removeSize = (size: Size) => {
-    const sizeSet = new Set(getValues('sizes'));
+    const sizeSet = new Set(getValues("sizes"));
     sizeSet.delete(size);
-    setValue('sizes', Array.from(sizeSet));
+    setValue("sizes", Array.from(sizeSet));
   };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
@@ -105,8 +105,8 @@ export const ProductForm = ({
 
     setFiles((prev) => [...prev, ...Array.from(files)]);
 
-    const currentFiles = getValues('files') || [];
-    setValue('files', [...currentFiles, ...Array.from(files)]);
+    const currentFiles = getValues("files") || [];
+    setValue("files", [...currentFiles, ...Array.from(files)]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,8 +114,8 @@ export const ProductForm = ({
     if (!files) return;
 
     setFiles((prev) => [...prev, ...Array.from(files)]);
-    const currentFiles = getValues('files') || [];
-    setValue('files', [...currentFiles, ...Array.from(files)]);
+    const currentFiles = getValues("files") || [];
+    setValue("files", [...currentFiles, ...Array.from(files)]);
   };
 
   return (
@@ -154,13 +154,13 @@ export const ProductForm = ({
                   </label>
                   <input
                     type="text"
-                    {...register('title', {
+                    {...register("title", {
                       required: true,
                     })}
                     className={cn(
-                      'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                      "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200",
                       {
-                        'border-red-500': errors.title,
+                        "border-red-500": errors.title,
                       }
                     )}
                     placeholder="Título del producto"
@@ -175,18 +175,18 @@ export const ProductForm = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Precio ($)
+                      Precio (CLP$)
                     </label>
                     <input
                       type="number"
-                      {...register('price', {
+                      {...register("price", {
                         required: true,
                         min: 1,
                       })}
                       className={cn(
-                        'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                        "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200",
                         {
-                          'border-red-500': errors.price,
+                          "border-red-500": errors.price,
                         }
                       )}
                       placeholder="Precio del producto"
@@ -204,14 +204,14 @@ export const ProductForm = ({
                     </label>
                     <input
                       type="number"
-                      {...register('stock', {
+                      {...register("stock", {
                         required: true,
                         min: 1,
                       })}
                       className={cn(
-                        'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                        "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200",
                         {
-                          'border-red-500': errors.stock,
+                          "border-red-500": errors.stock,
                         }
                       )}
                       placeholder="Stock del producto"
@@ -230,23 +230,23 @@ export const ProductForm = ({
                   </label>
                   <input
                     type="text"
-                    {...register('slug', {
+                    {...register("slug", {
                       required: true,
                       validate: (value) =>
                         !/\s/.test(value) ||
-                        'El slug no puede contener espacios en blanco',
+                        "El slug no puede contener espacios en blanco",
                     })}
                     className={cn(
-                      'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                      "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200",
                       {
-                        'border-red-500': errors.slug,
+                        "border-red-500": errors.slug,
                       }
                     )}
                     placeholder="Slug del producto"
                   />
                   {errors.slug && (
                     <p className="text-red-500 text-sm">
-                      {errors.slug.message || 'El slug es requerido.'}
+                      {errors.slug.message || "El slug es requerido."}
                     </p>
                   )}
                 </div>
@@ -256,7 +256,7 @@ export const ProductForm = ({
                     Género del producto
                   </label>
                   <select
-                    {...register('gender')}
+                    {...register("gender")}
                     // value={product.gender}
                     // onChange={(e) =>
                     //   handleInputChange('gender', e.target.value)
@@ -275,19 +275,19 @@ export const ProductForm = ({
                     Descripción del producto
                   </label>
                   <textarea
-                    {...register('description', { required: true })}
+                    {...register("description", { required: true })}
                     rows={5}
                     className={cn(
-                      'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                      "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200",
                       {
-                        'border-red-500': errors.description,
+                        "border-red-500": errors.description,
                       }
                     )}
                     placeholder="Descripción del producto"
                   />
                   {errors.description && (
                     <p className="text-red-500 text-sm">
-                      {'La descripción es requerida.'}
+                      {"La descripción es requerida."}
                     </p>
                   )}
                 </div>
@@ -306,7 +306,7 @@ export const ProductForm = ({
                     <span
                       key={size}
                       className={cn(
-                        'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200',
+                        "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200",
                         {
                           hidden: !selectedSizes.includes(size),
                         }
@@ -332,11 +332,11 @@ export const ProductForm = ({
                       type="button"
                       key={size}
                       onClick={() => addSize(size)}
-                      disabled={getValues('sizes').includes(size)}
+                      disabled={getValues("sizes").includes(size)}
                       className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ${
                         selectedSizes.includes(size)
-                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                          : 'bg-slate-200 text-slate-700 hover:bg-slate-300 cursor-pointer'
+                          ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                          : "bg-slate-200 text-slate-700 hover:bg-slate-300 cursor-pointer"
                       }`}
                     >
                       {size}
@@ -376,10 +376,10 @@ export const ProductForm = ({
                     ref={labelInputRef}
                     type="text"
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ' || e.key === ',') {
+                      if (e.key === "Enter" || e.key === " " || e.key === ",") {
                         e.preventDefault();
                         addTag();
-                        labelInputRef.current!.value = '';
+                        labelInputRef.current!.value = "";
                       }
                     }}
                     placeholder="Añadir nueva etiqueta..."
@@ -405,8 +405,8 @@ export const ProductForm = ({
               <div
                 className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
                   dragActive
-                    ? 'border-blue-400 bg-blue-50'
-                    : 'border-slate-300 hover:border-slate-400'
+                    ? "border-blue-400 bg-blue-50"
+                    : "border-slate-300 hover:border-slate-400"
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -464,7 +464,7 @@ export const ProductForm = ({
 
               {/* Imágenes por cargar */}
               <div
-                className={cn('mt-6 space-y-3', {
+                className={cn("mt-6 space-y-3", {
                   hidden: files.length === 0,
                 })}
               >
@@ -507,17 +507,17 @@ export const ProductForm = ({
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded-full ${
                       currentStock > 5
-                        ? 'bg-green-100 text-green-800'
+                        ? "bg-green-100 text-green-800"
                         : currentStock > 0
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800'
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-red-100 text-red-800"
                     }`}
                   >
                     {currentStock > 5
-                      ? 'En stock'
+                      ? "En stock"
                       : currentStock > 0
-                      ? 'Bajo stock'
-                      : 'Sin stock'}
+                      ? "Bajo stock"
+                      : "Sin stock"}
                   </span>
                 </div>
 

@@ -1,11 +1,11 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { TesloShopApp } from './TesloShopApp';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { GymShopApp } from "./GymShopApp";
 
-import './index.css';
+import "./index.css";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TesloShopApp />
+    <GymShopApp />
   </StrictMode>
 );

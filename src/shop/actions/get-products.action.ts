@@ -1,5 +1,5 @@
-import { tesloApi } from '@/api/tesloApi';
-import type { ProductsResponse } from '@/interfaces/products.response';
+import { gymApi } from "@/api/gymApi";
+import type { ProductsResponse } from "@/interfaces/products.response";
 
 interface Options {
   limit?: number | string;
@@ -16,7 +16,7 @@ export const getProductsAction = async (
 ): Promise<ProductsResponse> => {
   const { limit, offset, gender, sizes, minPrice, maxPrice, query } = options;
 
-  const { data } = await tesloApi.get<ProductsResponse>('/products', {
+  const { data } = await gymApi.get<ProductsResponse>("/products", {
     params: {
       limit,
       offset,

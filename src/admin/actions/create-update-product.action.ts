@@ -1,6 +1,6 @@
-import { tesloApi } from '@/api/tesloApi';
-import type { Product } from '@/interfaces/product.interface';
-import { sleep } from '@/lib/sleep';
+import { gymApi } from "@/api/gymApi";
+import type { Product } from "@/interfaces/product.interface";
+import { sleep } from "@/lib/sleep";
 
 export const createUpdateProductAction = async (
   productLike: Partial<Product> & { files?: File[] }
@@ -10,7 +10,7 @@ export const createUpdateProductAction = async (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, user, images = [], files = [], ...rest } = productLike;
 
-  const isCreating = id === 'new';
+  const isCreating = id === "new";
 
   rest.stock = Number(rest.stock || 0);
   rest.price = Number(rest.price || 0);
@@ -22,13 +22,13 @@ export const createUpdateProductAction = async (
   }
 
   const imagesToSave = images.map((image) => {
-    if (image.includes('http')) return image.split('/').pop() || '';
+    if (image.includes("http")) return image.split("/").pop() || "";
     return image;
   });
 
-  const { data } = await tesloApi<Product>({
-    url: isCreating ? '/products' : `/products/${id}`,
-    method: isCreating ? 'POST' : 'PATCH',
+  const { data } = await gymApi<Product>({
+    url: isCreating ? "/products" : `/products/${id}`,
+    method: isCreating ? "POST" : "PATCH",
     data: {
       ...rest,
       images: imagesToSave,
@@ -38,7 +38,7 @@ export const createUpdateProductAction = async (
   return {
     ...data,
     images: data.images.map((image) => {
-      if (image.includes('http')) return image;
+      if (image.includes("http")) return image;
       return `${import.meta.env.VITE_API_URL}/files/product/${image}`;
     }),
   };
@@ -52,11 +52,11 @@ export interface FileUploadResponse {
 const uploadFiles = async (files: File[]) => {
   const uploadPromises = files.map(async (file) => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    const { data } = await tesloApi<FileUploadResponse>({
-      url: '/files/product',
-      method: 'POST',
+    const { data } = await gymApi<FileUploadResponse>({
+      url: "/files/product",
+      method: "POST",
       data: formData,
     });
 

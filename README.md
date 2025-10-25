@@ -1,4 +1,4 @@
-# TesloShop
+# GymShop
 
 1. Clonar el repositorio
 2. Clonar el archivo .env.template y renombrarlo a .env
