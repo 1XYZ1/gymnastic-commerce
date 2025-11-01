@@ -11,7 +11,7 @@
 import type { IAuthRepository } from '../repositories/IAuthRepository';
 import { TokenStorageService } from './TokenStorageService';
 import { AuthErrorService } from './AuthErrorService';
-import type { User } from '@/interfaces/user.interface';
+import type { User } from '@/shared/types';
 
 export interface AuthResult {
   success: boolean;

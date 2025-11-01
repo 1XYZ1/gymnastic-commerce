@@ -5,8 +5,8 @@
  * agregando URLs completas a las imágenes
  */
 
-import type { Product } from '@/interfaces/product.interface';
-import type { ProductsResponse } from '@/interfaces/products.response';
+import type { Product } from '@/shared/types';
+import type { ProductsResponse } from '@/shared/types';
 
 export class ProductMapper {
   private readonly baseUrl: string;

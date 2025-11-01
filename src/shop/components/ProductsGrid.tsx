@@ -4,7 +4,7 @@ import { ProductCard } from './ProductCard';
 import { FilterSidebar } from './FilterSidebar';
 import { useSearchParams } from 'react-router';
 import { useState } from 'react';
-import type { Product } from '@/interfaces/product.interface';
+import type { Product } from '@/shared/types';
 
 interface Props {
   products: Product[];

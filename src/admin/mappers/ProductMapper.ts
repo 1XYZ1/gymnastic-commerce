@@ -6,7 +6,7 @@
  * - toApi: Dominio → API (extrae solo nombres de archivo)
  */
 
-import type { Product } from '@/interfaces/product.interface';
+import type { Product } from '@/shared/types';
 import { ImageTransformService } from '../services';
 
 export class ProductMapper {

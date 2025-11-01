@@ -5,7 +5,7 @@
  * con el formulario de creación/edición de productos
  */
 
-import type { Size, Gender } from '@/interfaces/product.interface';
+import type { Size, Gender } from '@/shared/types';
 
 /**
  * Tallas disponibles para productos

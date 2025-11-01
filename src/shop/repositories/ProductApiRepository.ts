@@ -8,7 +8,7 @@
 import type { AxiosInstance } from 'axios';
 import type { IProductRepository } from './IProductRepository';
 import type { ProductFilter } from '../types/product-filter.types';
-import type { ProductsResponse } from '@/interfaces/products.response';
+import type { ProductsResponse } from '@/shared/types';
 import { ProductMapper } from '../mappers/ProductMapper';
 
 export class ProductApiRepository implements IProductRepository {

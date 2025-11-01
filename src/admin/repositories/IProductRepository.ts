@@ -6,8 +6,8 @@
  * Los hooks dependen de esta interfaz, no de la implementación concreta
  */
 
-import type { Product } from '@/interfaces/product.interface';
-import type { ProductsResponse } from '@/interfaces/products.response';
+import type { Product } from '@/shared/types';
+import type { ProductsResponse } from '@/shared/types';
 import type { ProductAdminFilter, ProductPayload } from '../types';
 
 export interface IProductRepository {

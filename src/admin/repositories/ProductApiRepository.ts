@@ -6,8 +6,8 @@
  */
 
 import { gymApi } from '@/api/gymApi';
-import type { Product } from '@/interfaces/product.interface';
-import type { ProductsResponse } from '@/interfaces/products.response';
+import type { Product } from '@/shared/types';
+import type { ProductsResponse } from '@/shared/types';
 import type { ProductAdminFilter, ProductPayload } from '../types';
 import type { IProductRepository } from './IProductRepository';
 import {

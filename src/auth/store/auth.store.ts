@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import type { User } from '@/interfaces/user.interface';
+import type { User } from '@/shared/types';
 import type { AuthStatus } from '../types/auth.types';
 import { authService } from '../repositories';
 

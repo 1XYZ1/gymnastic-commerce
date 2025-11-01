@@ -1,4 +1,4 @@
-import type { Product } from './product.interface';
+import type { Product } from './product.types';
 
 export interface ProductsResponse {
   count: number;

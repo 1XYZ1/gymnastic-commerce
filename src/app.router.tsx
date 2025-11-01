@@ -16,7 +16,7 @@ import { AdminProductsPage } from './admin/pages/products/AdminProductsPage';
 import {
   AdminRoute,
   NotAuthenticatedRoute,
-} from './components/routes/ProtectedRoutes';
+} from '@/auth/components';
 
 const AuthLayout = lazy(() => import('./auth/layouts/AuthLayout'));
 const AdminLayout = lazy(() => import('./admin/layouts/AdminLayout'));

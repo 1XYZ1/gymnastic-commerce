@@ -5,7 +5,7 @@
  * relacionados con la gestión de productos
  */
 
-import type { Size, Gender, Product } from '@/interfaces/product.interface';
+import type { Size, Gender, Product } from '@/shared/types';
 
 /**
  * Datos del formulario de producto

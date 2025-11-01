@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useProduct } from '@/admin/hooks/useProduct';
 import { CustomFullScreenLoading } from '@/components/custom/CustomFullScreenLoading';
 import { ProductForm } from './ui/ProductForm';
-import type { Product } from '@/interfaces/product.interface';
+import type { Product } from '@/shared/types';
 
 export const AdminProductPage = () => {
   const { id } = useParams();

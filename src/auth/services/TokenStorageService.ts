@@ -40,3 +40,9 @@ export class TokenStorageService {
     return this.get() !== null;
   }
 }
+
+/**
+ * Instancia singleton para uso compartido fuera del módulo auth
+ * Permite que gymApi y otros servicios accedan al token sin duplicar código
+ */
+export const tokenStorage = new TokenStorageService();

@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form';
 
 import { AdminTitle } from '@/admin/components/AdminTitle';
 import { Button } from '@/components/ui/button';
-import type { Product } from '@/interfaces/product.interface';
+import type { Product } from '@/shared/types';
 import { X, SaveAll, Tag, Plus, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

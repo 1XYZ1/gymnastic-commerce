@@ -7,7 +7,7 @@
  */
 
 import type { ProductFilter } from '../types/product-filter.types';
-import type { ProductsResponse } from '@/interfaces/products.response';
+import type { ProductsResponse } from '@/shared/types';
 
 export interface IProductRepository {
   /**

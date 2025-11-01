@@ -6,7 +6,7 @@
  */
 
 import { useCallback } from 'react';
-import type { Size } from '@/interfaces/product.interface';
+import type { Size } from '@/shared/types';
 
 export interface UseSizeManagerReturn {
   addSize: (size: Size) => void;

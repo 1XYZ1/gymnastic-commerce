@@ -2,7 +2,7 @@
  * Tipos de dominio para el módulo de autenticación
  */
 
-import type { User } from '@/interfaces/user.interface';
+import type { User } from '@/shared/types';
 
 /**
  * Respuesta de login y check-status desde la API

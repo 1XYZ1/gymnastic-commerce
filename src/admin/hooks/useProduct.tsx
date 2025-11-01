@@ -6,7 +6,7 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Product } from '@/interfaces/product.interface';
+import type { Product } from '@/shared/types';
 import { productRepository } from '../repositories';
 import type { ProductFormInputs } from '../types';
 import { ProductFormService } from '../services';

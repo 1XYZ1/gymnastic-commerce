@@ -5,7 +5,7 @@
  * Lógica pura sin dependencias de React
  */
 
-import type { Product } from '@/interfaces/product.interface';
+import type { Product } from '@/shared/types';
 import type { ProductFormInputs, ProductPayload } from '../types';
 
 export class ProductFormService {
