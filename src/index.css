@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -117,8 +117,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  a {
+    @apply select-none cursor-pointer;
+  }
 }
 
 @theme {
-  --font-montserrat: 'Montserrat Alternates', sans-serif;
+  --font-montserrat: "Montserrat Alternates", sans-serif;
 }
