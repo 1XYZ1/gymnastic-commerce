@@ -1,6 +1,7 @@
+import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import type { Size } from '@/interfaces/product.interface';
+import type { Size } from '@/shared/types';
 
 interface ProductCardProps {
   id: string;
@@ -12,14 +13,30 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({
+  id,
   name,
   price,
   image,
   category,
   sizes,
 }: ProductCardProps) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/product/${id}`);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // TODO: Implementar lógica de carrito
+    console.log(`Agregar producto ${id} al carrito`);
+  };
+
   return (
-    <Card className="group border-0 shadow-none product-card-hover cursor-pointer">
+    <Card
+      className="group border-0 shadow-none product-card-hover cursor-pointer"
+      onClick={handleCardClick}
+    >
       <CardContent className="p-0">
         <div className="relative aspect-square overflow-hidden bg-muted rounded-lg">
           <img
@@ -44,6 +61,7 @@ export const ProductCard = ({
               size="sm"
               variant="outline"
               className="opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-primary hover:text-primary-foreground border-primary/20 text-xs px-4 py-2 h-8"
+              onClick={handleAddToCart}
             >
               Agregar al carrito
             </Button>

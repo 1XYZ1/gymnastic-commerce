@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { CustomLogo } from '@/components/custom/CustomLogo';
 
 import { useAuthStore } from '@/auth/store/auth.store';
+import { NAVIGATION_LINKS } from '@/shop/config/navigation.config';
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -41,42 +42,19 @@ export const CustomHeader = () => {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/"
-              className={cn(
-                `text-sm font-medium transition-colors hover:text-primary`,
-                !gender ? 'underline underline-offset-4' : ''
-              )}
-            >
-              Todos
-            </Link>
-            <Link
-              to="/gender/men"
-              className={cn(
-                `text-sm font-medium transition-colors hover:text-primary`,
-                gender === 'men' ? 'underline underline-offset-4' : ''
-              )}
-            >
-              Hombres
-            </Link>
-            <Link
-              to="/gender/women"
-              className={cn(
-                `text-sm font-medium transition-colors hover:text-primary`,
-                gender === 'women' ? 'underline underline-offset-4' : ''
-              )}
-            >
-              Mujeres
-            </Link>
-            <Link
-              to="/gender/kid"
-              className={cn(
-                `text-sm font-medium transition-colors hover:text-primary`,
-                gender === 'kid' ? 'underline underline-offset-4' : ''
-              )}
-            >
-              Niños
-            </Link>
+            {NAVIGATION_LINKS.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={cn(
+                  'text-sm font-medium transition-colors hover:text-primary',
+                  (link.gender === gender || (!gender && !link.gender)) &&
+                    'underline underline-offset-4'
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Search and Cart */}
