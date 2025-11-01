@@ -21,6 +21,29 @@ export class ProductApiRepository implements IProductRepository {
   private readonly baseUrl = import.meta.env.VITE_API_URL;
 
   /**
+   * Método privado para preparar imágenes con archivos nuevos
+   * Elimina duplicación entre createProduct y updateProduct
+   *
+   * @param existingImages - Imágenes existentes del producto
+   * @param files - Archivos nuevos a subir (opcional)
+   * @returns Array de nombres de imágenes (existentes + nuevas)
+   */
+  private async prepareProductImages(
+    existingImages: string[],
+    files?: File[]
+  ): Promise<string[]> {
+    if (!files || files.length === 0) {
+      return existingImages;
+    }
+
+    const uploadedNames = await FileUploadService.uploadFiles(files);
+    return ImageTransformService.prepareImagesForUpload(
+      existingImages,
+      uploadedNames
+    );
+  }
+
+  /**
    * Obtiene lista de productos con filtros administrativos
    */
   async getProducts(
@@ -65,16 +88,8 @@ export class ProductApiRepository implements IProductRepository {
     product: ProductPayload,
     files?: File[]
   ): Promise<Product> {
-    // Preparar imágenes: subir archivos nuevos si existen
-    let finalImages = product.images;
-
-    if (files && files.length > 0) {
-      const uploadedNames = await FileUploadService.uploadFiles(files);
-      finalImages = ImageTransformService.prepareImagesForUpload(
-        product.images,
-        uploadedNames
-      );
-    }
+    // Preparar imágenes con archivos nuevos
+    const finalImages = await this.prepareProductImages(product.images, files);
 
     // Mapear para enviar al API (solo nombres de archivo)
     const payload = ProductMapper.toApi({
@@ -96,16 +111,8 @@ export class ProductApiRepository implements IProductRepository {
     product: ProductPayload,
     files?: File[]
   ): Promise<Product> {
-    // Preparar imágenes: subir archivos nuevos si existen
-    let finalImages = product.images;
-
-    if (files && files.length > 0) {
-      const uploadedNames = await FileUploadService.uploadFiles(files);
-      finalImages = ImageTransformService.prepareImagesForUpload(
-        product.images,
-        uploadedNames
-      );
-    }
+    // Preparar imágenes con archivos nuevos
+    const finalImages = await this.prepareProductImages(product.images, files);
 
     // Mapear para enviar al API (solo nombres de archivo)
     const payload = ProductMapper.toApi({

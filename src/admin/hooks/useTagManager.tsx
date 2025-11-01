@@ -2,10 +2,10 @@
  * Hook personalizado para manejar etiquetas de productos
  *
  * Responsabilidad: Coordinar la lógica de añadir/eliminar tags
- * Extrae la lógica de tags del componente ProductForm
+ * Usa el hook genérico useSetManager
  */
 
-import { useCallback } from 'react';
+import { useSetManager } from './useSetManager';
 
 export interface UseTagManagerReturn {
   addTag: (tag: string) => void;
@@ -23,44 +23,16 @@ export const useTagManager = (
   currentTags: string[],
   onTagsChange: (tags: string[]) => void
 ): UseTagManagerReturn => {
-  /**
-   * Añade una nueva etiqueta si no existe
-   * Usa Set para evitar duplicados
-   */
-  const addTag = useCallback(
-    (tag: string) => {
-      const trimmedTag = tag.trim();
-
-      // No agregar tags vacíos
-      if (trimmedTag === '') return;
-
-      // Usar Set para evitar duplicados
-      const tagSet = new Set(currentTags);
-      tagSet.add(trimmedTag);
-
-      // Actualizar solo si cambió
-      const newTags = Array.from(tagSet);
-      if (newTags.length !== currentTags.length) {
-        onTagsChange(newTags);
-      }
+  const { add, remove } = useSetManager<string>(currentTags, onTagsChange, {
+    // Normalizador: trim y validar que no esté vacío
+    normalizer: (tag) => {
+      const trimmed = tag.trim();
+      return trimmed === '' ? null : trimmed;
     },
-    [currentTags, onTagsChange]
-  );
-
-  /**
-   * Elimina una etiqueta existente
-   */
-  const removeTag = useCallback(
-    (tag: string) => {
-      const tagSet = new Set(currentTags);
-      tagSet.delete(tag);
-      onTagsChange(Array.from(tagSet));
-    },
-    [currentTags, onTagsChange]
-  );
+  });
 
   return {
-    addTag,
-    removeTag,
+    addTag: add,
+    removeTag: remove,
   };
 };

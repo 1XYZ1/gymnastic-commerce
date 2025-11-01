@@ -8,6 +8,7 @@ import { CustomLogo } from '@/components/custom/CustomLogo';
 
 import { useAuthStore } from '@/auth/store/auth.store';
 import { NAVIGATION_LINKS } from '@/shop/config/navigation.config';
+import { MobileNav } from './MobileNav';
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,52 +35,76 @@ export const CustomHeader = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b backdrop-blur bg-slate-50">
+    <header className="sticky top-0 z-50 w-full border-b backdrop-blur bg-slate-50/95 supports-[backdrop-filter]:bg-slate-50/80">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <CustomLogo />
+        <div className="flex h-16 items-center justify-between gap-4">
+          {/* Mobile Navigation - Solo visible en móvil */}
+          <div className="md:hidden">
+            <MobileNav />
+          </div>
 
-          {/* Navigation - Desktop */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* Logo - Centrado en móvil, izquierda en desktop */}
+          <div className="flex-shrink-0 md:mr-8">
+            <CustomLogo />
+          </div>
+
+          {/* Navigation - Desktop Only */}
+          <nav
+            className="hidden md:flex items-center space-x-6 lg:space-x-8"
+            aria-label="Navegación principal"
+          >
             {NAVIGATION_LINKS.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={cn(
                   'text-sm font-medium transition-colors hover:text-primary',
+                  'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-sm px-1 py-1',
                   (link.gender === gender || (!gender && !link.gender)) &&
-                    'underline underline-offset-4'
+                    'text-primary underline underline-offset-4 decoration-2'
                 )}
+                aria-current={
+                  link.gender === gender || (!gender && !link.gender)
+                    ? 'page'
+                    : undefined
+                }
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Search and Cart */}
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  ref={inputRef}
-                  placeholder="Buscar productos..."
-                  className="pl-9 w-64 h-9 bg-white"
-                  onKeyDown={handleSearch}
-                  defaultValue={query}
-                />
-              </div>
+          {/* Search and Actions - Desktop */}
+          <div className="hidden md:flex items-center gap-3 ml-auto">
+            {/* Search Bar - Desktop */}
+            <div className="relative">
+              <label htmlFor="desktop-search" className="sr-only">
+                Buscar productos
+              </label>
+              <Search
+                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                aria-hidden="true"
+              />
+              <Input
+                id="desktop-search"
+                ref={inputRef}
+                placeholder="Buscar productos..."
+                className="pl-9 w-48 lg:w-64 h-9 bg-white focus:ring-2 focus:ring-primary"
+                onKeyDown={handleSearch}
+                defaultValue={query}
+                aria-label="Campo de búsqueda de productos"
+              />
             </div>
 
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Search className="h-5 w-5" />
-            </Button>
-
+            {/* Auth Buttons - Desktop */}
             {authStatus === 'not-authenticated' ? (
               <Link to="/auth/login">
-                <Button variant="default" size="sm" className="ml-2">
-                  Login
+                <Button
+                  variant="default"
+                  size="sm"
+                  aria-label="Iniciar sesión"
+                >
+                  Iniciar Sesión
                 </Button>
               </Link>
             ) : (
@@ -87,25 +112,29 @@ export const CustomHeader = () => {
                 onClick={logout}
                 variant="outline"
                 size="sm"
-                className="ml-2"
+                aria-label="Cerrar sesión"
               >
-                Cerrar sesión
+                Cerrar Sesión
               </Button>
             )}
 
+            {/* Admin Button - Desktop */}
             {isAdmin() && (
               <Link to="/admin">
                 <Button
                   variant="destructive"
                   size="sm"
-                  className="ml-2"
                   type="button"
+                  aria-label="Ir al panel de administración"
                 >
                   Admin
                 </Button>
               </Link>
             )}
           </div>
+
+          {/* Spacer para mantener el logo centrado en móvil */}
+          <div className="w-10 md:hidden" aria-hidden="true" />
         </div>
       </div>
     </header>

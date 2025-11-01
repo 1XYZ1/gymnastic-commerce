@@ -2,11 +2,11 @@
  * Hook personalizado para manejar tallas de productos
  *
  * Responsabilidad: Coordinar la lógica de añadir/eliminar tallas
- * Extrae la lógica de sizes del componente ProductForm
+ * Usa el hook genérico useSetManager
  */
 
-import { useCallback } from 'react';
 import type { Size } from '@/shared/types';
+import { useSetManager } from './useSetManager';
 
 export interface UseSizeManagerReturn {
   addSize: (size: Size) => void;
@@ -25,47 +25,11 @@ export const useSizeManager = (
   currentSizes: Size[],
   onSizesChange: (sizes: Size[]) => void
 ): UseSizeManagerReturn => {
-  /**
-   * Añade una nueva talla si no existe
-   */
-  const addSize = useCallback(
-    (size: Size) => {
-      const sizeSet = new Set(currentSizes);
-
-      // Solo agregar si no existe
-      if (!sizeSet.has(size)) {
-        sizeSet.add(size);
-        onSizesChange(Array.from(sizeSet));
-      }
-    },
-    [currentSizes, onSizesChange]
-  );
-
-  /**
-   * Elimina una talla existente
-   */
-  const removeSize = useCallback(
-    (size: Size) => {
-      const sizeSet = new Set(currentSizes);
-      sizeSet.delete(size);
-      onSizesChange(Array.from(sizeSet));
-    },
-    [currentSizes, onSizesChange]
-  );
-
-  /**
-   * Verifica si una talla existe en la lista
-   */
-  const hasSize = useCallback(
-    (size: Size) => {
-      return currentSizes.includes(size);
-    },
-    [currentSizes]
-  );
+  const { add, remove, has } = useSetManager<Size>(currentSizes, onSizesChange);
 
   return {
-    addSize,
-    removeSize,
-    hasSize,
+    addSize: add,
+    removeSize: remove,
+    hasSize: has,
   };
 };

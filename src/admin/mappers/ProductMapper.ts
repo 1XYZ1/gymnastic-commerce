@@ -45,15 +45,4 @@ export class ProductMapper {
       images: ImageTransformService.extractImageNames(domainProduct.images),
     };
   }
-
-  /**
-   * Transforma una lista de productos de la API al formato de dominio
-   *
-   * @param apiProducts - Lista de productos desde la API
-   * @param baseUrl - URL base del servidor
-   * @returns Lista de productos con URLs completas
-   */
-  static toDomainList(apiProducts: Product[], baseUrl: string): Product[] {
-    return apiProducts.map((product) => this.toDomain(product, baseUrl));
-  }
 }
