@@ -1,20 +1,29 @@
-interface Props {
+import { CONTENT } from "@/config/content.config";
+
+interface CustomJumbotronProps {
   title: string;
   subTitle?: string;
+  headingLevel?: 'h1' | 'h2' | 'h3';
 }
 
-export const CustomJumbotron = ({ title, subTitle }: Props) => {
-  const defaultSubTitle =
-    'Ropa minimalista y elegante inspirada en el diseño futurista de Tesla. Calidad premium para un estilo atemporal.';
+export const CustomJumbotron = ({
+  title,
+  subTitle = CONTENT.jumbotron.defaultSubtitle,
+  headingLevel = 'h1',
+}: CustomJumbotronProps) => {
+  const Heading = headingLevel;
 
   return (
-    <section className="py-10 px-4 lg:px-8 bg-muted/30">
+    <section
+      className="py-10 px-4 lg:px-8 bg-muted/30"
+      aria-label="Sección principal"
+    >
       <div className="container mx-auto text-center">
-        <h1 className=" font-montserrat text-2xl lg:text-5xl tracking-tight mb-6">
+        <Heading className="font-montserrat text-2xl lg:text-5xl tracking-tight mb-6">
           {title}
-        </h1>
+        </Heading>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          {subTitle || defaultSubTitle}
+          {subTitle}
         </p>
       </div>
     </section>
