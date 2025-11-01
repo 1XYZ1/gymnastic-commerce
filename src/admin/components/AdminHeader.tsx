@@ -29,8 +29,8 @@ export const AdminHeader: React.FC = () => {
         {/* Mobile Navigation - Solo visible en móvil */}
         <AdminMobileNav />
 
-        {/* Search - Oculto en móvil pequeño, visible desde sm, centrado y espaciado */}
-        <div className="hidden sm:flex flex-1 max-w-lg mx-4 lg:mx-8">
+        {/* Search - Oculto en móvil pequeño, visible desde sm */}
+        <div className="hidden sm:flex max-w-md">
           <div className="relative w-full">
             <label htmlFor="admin-search" className="sr-only">
               Buscar en administración
@@ -52,8 +52,8 @@ export const AdminHeader: React.FC = () => {
           </div>
         </div>
 
-        {/* Actions - Iconos con espaciado mejorado */}
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
+        {/* Actions - Iconos pegados a la derecha */}
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 ml-auto">
           <button
             type="button"
             className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
