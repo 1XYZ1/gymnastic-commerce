@@ -15,7 +15,14 @@ const queryClient = new QueryClient();
 export const GymShopApp = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
+      <Toaster
+        position="top-right"
+        closeButton
+        richColors
+        toastOptions={{
+          ariaLive: 'polite',
+        }}
+      />
 
       {/* Custom Provider */}
       <CheckAuthProvider>

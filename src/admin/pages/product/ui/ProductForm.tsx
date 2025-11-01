@@ -123,10 +123,11 @@ export const ProductForm = ({
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="product-title" className="block text-sm font-medium text-slate-700 mb-2">
                     Título del producto
                   </label>
                   <input
+                    id="product-title"
                     type="text"
                     {...register('title', { required: true })}
                     className={cn(
@@ -134,9 +135,11 @@ export const ProductForm = ({
                       { 'border-red-500': errors.title }
                     )}
                     placeholder="Título del producto"
+                    aria-invalid={errors.title ? 'true' : 'false'}
+                    aria-describedby={errors.title ? 'product-title-error' : undefined}
                   />
                   {errors.title && (
-                    <p className="text-red-500 text-sm">
+                    <p id="product-title-error" className="text-red-500 text-sm" role="alert">
                       El título es requerido
                     </p>
                   )}
@@ -144,10 +147,11 @@ export const ProductForm = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label htmlFor="product-price" className="block text-sm font-medium text-slate-700 mb-2">
                       Precio (CLP$)
                     </label>
                     <input
+                      id="product-price"
                       type="number"
                       {...register('price', { required: true, min: 1 })}
                       className={cn(
@@ -155,19 +159,22 @@ export const ProductForm = ({
                         { 'border-red-500': errors.price }
                       )}
                       placeholder="Precio del producto"
+                      aria-invalid={errors.price ? 'true' : 'false'}
+                      aria-describedby={errors.price ? 'product-price-error' : undefined}
                     />
                     {errors.price && (
-                      <p className="text-red-500 text-sm">
+                      <p id="product-price-error" className="text-red-500 text-sm" role="alert">
                         El precio debe de ser mayor a 0
                       </p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label htmlFor="product-stock" className="block text-sm font-medium text-slate-700 mb-2">
                       Stock del producto
                     </label>
                     <input
+                      id="product-stock"
                       type="number"
                       {...register('stock', { required: true, min: 1 })}
                       className={cn(
@@ -175,9 +182,11 @@ export const ProductForm = ({
                         { 'border-red-500': errors.stock }
                       )}
                       placeholder="Stock del producto"
+                      aria-invalid={errors.stock ? 'true' : 'false'}
+                      aria-describedby={errors.stock ? 'product-stock-error' : undefined}
                     />
                     {errors.stock && (
-                      <p className="text-red-500 text-sm">
+                      <p id="product-stock-error" className="text-red-500 text-sm" role="alert">
                         El inventario debe de ser mayor a 0
                       </p>
                     )}
@@ -185,10 +194,11 @@ export const ProductForm = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="product-slug" className="block text-sm font-medium text-slate-700 mb-2">
                     Slug del producto
                   </label>
                   <input
+                    id="product-slug"
                     type="text"
                     {...register('slug', {
                       required: true,
@@ -201,19 +211,22 @@ export const ProductForm = ({
                       { 'border-red-500': errors.slug }
                     )}
                     placeholder="Slug del producto"
+                    aria-invalid={errors.slug ? 'true' : 'false'}
+                    aria-describedby={errors.slug ? 'product-slug-error' : undefined}
                   />
                   {errors.slug && (
-                    <p className="text-red-500 text-sm">
+                    <p id="product-slug-error" className="text-red-500 text-sm" role="alert">
                       {errors.slug.message || 'El slug es requerido.'}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="product-gender" className="block text-sm font-medium text-slate-700 mb-2">
                     Género del producto
                   </label>
                   <select
+                    id="product-gender"
                     {...register('gender')}
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   >
@@ -226,10 +239,11 @@ export const ProductForm = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label htmlFor="product-description" className="block text-sm font-medium text-slate-700 mb-2">
                     Descripción del producto
                   </label>
                   <textarea
+                    id="product-description"
                     {...register('description', { required: true })}
                     rows={5}
                     className={cn(
@@ -237,9 +251,11 @@ export const ProductForm = ({
                       { 'border-red-500': errors.description }
                     )}
                     placeholder="Descripción del producto"
+                    aria-invalid={errors.description ? 'true' : 'false'}
+                    aria-describedby={errors.description ? 'product-description-error' : undefined}
                   />
                   {errors.description && (
-                    <p className="text-red-500 text-sm">
+                    <p id="product-description-error" className="text-red-500 text-sm" role="alert">
                       La descripción es requerida.
                     </p>
                   )}
@@ -325,7 +341,11 @@ export const ProductForm = ({
                 </div>
 
                 <div className="flex gap-2">
+                  <label htmlFor="product-tag-input" className="sr-only">
+                    Añadir nueva etiqueta
+                  </label>
                   <input
+                    id="product-tag-input"
                     ref={labelInputRef}
                     type="text"
                     onKeyDown={(e) => {
@@ -340,13 +360,15 @@ export const ProductForm = ({
                     }}
                     placeholder="Añadir nueva etiqueta..."
                     className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    aria-label="Añadir nueva etiqueta al producto"
                   />
                   <Button
                     type="button"
                     onClick={handleAddTag}
                     className="px-4 py-2rounded-lg "
+                    aria-label="Agregar etiqueta"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 </div>
               </div>

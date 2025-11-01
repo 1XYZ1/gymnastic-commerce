@@ -40,16 +40,16 @@ export const AdminProductsPage = () => {
         </div>
       </div>
 
-      <Table className="bg-white p-10 shadow-xs border border-gray-200 mb-10">
+      <Table className="bg-white p-10 shadow-xs border border-gray-200 mb-10" aria-label="Tabla de productos">
         <TableHeader>
           <TableRow>
-            <TableHead>Imagen</TableHead>
-            <TableHead>Nombre</TableHead>
-            <TableHead>Precio</TableHead>
-            <TableHead>Categoría</TableHead>
-            <TableHead>Inventario</TableHead>
-            <TableHead>Tallas</TableHead>
-            <TableHead className="text-right">Acciones</TableHead>
+            <TableHead scope="col">Imagen</TableHead>
+            <TableHead scope="col">Nombre</TableHead>
+            <TableHead scope="col">Precio</TableHead>
+            <TableHead scope="col">Categoría</TableHead>
+            <TableHead scope="col">Inventario</TableHead>
+            <TableHead scope="col">Tallas</TableHead>
+            <TableHead scope="col" className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -58,7 +58,7 @@ export const AdminProductsPage = () => {
               <TableCell>
                 <img
                   src={product.images[0]}
-                  alt={product.title}
+                  alt={`Imagen del producto ${product.title}`}
                   className="w-20 h-20 object-cover rounded-md"
                 />
               </TableCell>
@@ -66,18 +66,25 @@ export const AdminProductsPage = () => {
                 <Link
                   to={`/admin/products/${product.id}`}
                   className="hover:text-blue-500 underline"
+                  aria-label={`Editar producto ${product.title}`}
                 >
                   {product.title}
                 </Link>
               </TableCell>
               <TableCell>{currencyFormatter(product.price)}</TableCell>
               <TableCell>{product.gender}</TableCell>
-              <TableCell>{product.stock} stock</TableCell>
+              <TableCell>
+                <span aria-label={`${product.stock} unidades en stock`}>
+                  {product.stock} stock
+                </span>
+              </TableCell>
               <TableCell>{product.sizes.join(", ")}</TableCell>
               <TableCell className="text-right">
-                {/* <Link to={`t-shirt-gym`}>Editar</Link> */}
-                <Link to={`/admin/products/${product.id}`}>
-                  <PencilIcon className="w-4 h-4 text-blue-500" />
+                <Link
+                  to={`/admin/products/${product.id}`}
+                  aria-label={`Editar producto ${product.title}`}
+                >
+                  <PencilIcon className="w-4 h-4 text-blue-500" aria-hidden="true" />
                 </Link>
               </TableCell>
             </TableRow>

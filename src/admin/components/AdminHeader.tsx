@@ -32,16 +32,22 @@ export const AdminHeader: React.FC = () => {
         {/* Search - Oculto en móvil pequeño, visible desde sm */}
         <div className="hidden sm:flex flex-1 max-w-md">
           <div className="relative w-full">
+            <label htmlFor="admin-search" className="sr-only">
+              Buscar en administración
+            </label>
             <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
               size={20}
+              aria-hidden="true"
             />
             <input
+              id="admin-search"
               ref={inputRef}
               onKeyDown={handleSearch}
               type="text"
               placeholder="Search..."
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              aria-label="Campo de búsqueda en administración"
             />
           </div>
         </div>
@@ -49,35 +55,38 @@ export const AdminHeader: React.FC = () => {
         {/* Actions - Iconos reducidos en móvil */}
         <div className="flex items-center space-x-2 sm:space-x-4">
           <button
+            type="button"
             className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Notificaciones"
           >
-            <Bell size={20} />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+            <Bell size={20} aria-hidden="true" />
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" aria-label="Tienes notificaciones sin leer"></span>
           </button>
 
           <button
+            type="button"
             className="hidden sm:block p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Mensajes"
           >
-            <MessageSquare size={20} />
+            <MessageSquare size={20} aria-hidden="true" />
           </button>
 
           <button
+            type="button"
             className="hidden sm:block p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Configuración"
           >
-            <Settings size={20} />
+            <Settings size={20} aria-hidden="true" />
           </button>
 
           {/* Avatar del usuario */}
-          <div
-            className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm cursor-pointer hover:shadow-lg transition-shadow"
-            title={user?.fullName || 'Usuario'}
+          <button
+            type="button"
+            className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm hover:shadow-lg transition-shadow"
             aria-label={`Perfil de ${user?.fullName || 'usuario'}`}
           >
             {user?.fullName.substring(0, 2).toUpperCase() || 'JD'}
-          </div>
+          </button>
         </div>
       </div>
     </header>

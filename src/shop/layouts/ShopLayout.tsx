@@ -7,7 +7,9 @@ export const ShopLayout = () => {
     <div className="min-h-screen bg-background">
       <CustomHeader />
 
-      <Outlet />
+      <main id="main-content">
+        <Outlet />
+      </main>
 
       <CustomFooter />
     </div>
