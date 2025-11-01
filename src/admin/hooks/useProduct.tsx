@@ -1,36 +1,79 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getProductByIdAction } from '../actions/get-product-by-id.action';
-import type { Product } from '@/interfaces/product.interface';
-import { createUpdateProductAction } from '../actions/create-update-product.action';
+/**
+ * Hook para gestionar un producto individual
+ *
+ * Responsabilidad: Coordinar la obtención y mutación de un producto
+ * Refactorizado para usar el repository en lugar de actions
+ */
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { Product } from '@/interfaces/product.interface';
+import { productRepository } from '../repositories';
+import type { ProductFormInputs } from '../types';
+import { ProductFormService } from '../services';
+import { PRODUCT_QUERY_CONFIG } from '../config';
+
+/**
+ * Hook para gestionar un producto (crear, obtener, actualizar)
+ *
+ * @param id - ID del producto a gestionar
+ * @returns Query y mutation para el producto
+ */
 export const useProduct = (id: string) => {
   const queryClient = useQueryClient();
 
+  // Query para obtener el producto
   const query = useQuery({
     queryKey: ['product', { id }],
-    queryFn: () => getProductByIdAction(id),
+    queryFn: () => productRepository.getProductById(id),
     retry: false,
-    staleTime: 1000 * 60 * 5, // 5 minutos
-    // enabled: !!id
+    staleTime: PRODUCT_QUERY_CONFIG.staleTime,
   });
 
+  // Mutation para crear o actualizar
   const mutation = useMutation({
-    mutationFn: createUpdateProductAction,
+    mutationFn: async (productLike: Partial<Product> & { files?: File[] }) => {
+      const { files, ...productData } = productLike;
+
+      // Preparar datos del producto
+      const preparedData = ProductFormService.prepareProductData(
+        productData as ProductFormInputs
+      );
+
+      const isCreating = id === 'new';
+
+      // Crear o actualizar según corresponda
+      if (isCreating) {
+        return await productRepository.createProduct(
+          {
+            ...preparedData,
+            images: productData.images || [],
+          },
+          files
+        );
+      } else {
+        return await productRepository.updateProduct(
+          id,
+          {
+            ...preparedData,
+            images: productData.images || [],
+          },
+          files
+        );
+      }
+    },
     onSuccess: (product: Product) => {
-      // Invalidar caché
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      // Invalidar caché de listado de productos
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+
+      // Invalidar caché del producto específico
       queryClient.invalidateQueries({
         queryKey: ['product', { id: product.id }],
       });
 
-      // Actualizar queryData
-      queryClient.setQueryData(['products', { id: product.id }], product);
+      // Actualizar queryData directamente
+      queryClient.setQueryData(['product', { id: product.id }], product);
     },
   });
-
-  // const handleSubmitForm = async (productLike: Partial<Product>) => {
-  //   console.log({ productLike });
-  // };
 
   return {
     ...query,
