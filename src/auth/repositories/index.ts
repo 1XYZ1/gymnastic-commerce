@@ -5,11 +5,8 @@
 import { gymApi } from '@/api/gymApi';
 import { AuthApiRepository } from './AuthApiRepository';
 import { AuthService } from '../services/AuthService';
-import { TokenStorageService } from '../services/TokenStorageService';
+import { tokenStorage } from '../services/TokenStorageService';
 import type { IAuthRepository } from './IAuthRepository';
-
-// Instanciar servicios
-const tokenStorage = new TokenStorageService();
 
 // Instanciar repository
 export const authRepository: IAuthRepository = new AuthApiRepository(gymApi);
