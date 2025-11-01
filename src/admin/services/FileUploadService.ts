@@ -47,25 +47,4 @@ export class FileUploadService {
     return data.fileName;
   }
 
-  /**
-   * Valida que un archivo sea una imagen válida
-   *
-   * @param file - Archivo a validar
-   * @param maxSizeMB - Tamaño máximo permitido en MB
-   * @returns true si es válido, false si no
-   */
-  static validateImageFile(file: File, maxSizeMB: number = 10): boolean {
-    // Validar tipo MIME
-    if (!file.type.startsWith('image/')) {
-      return false;
-    }
-
-    // Validar tamaño
-    const maxSizeBytes = maxSizeMB * 1024 * 1024;
-    if (file.size > maxSizeBytes) {
-      return false;
-    }
-
-    return true;
-  }
 }

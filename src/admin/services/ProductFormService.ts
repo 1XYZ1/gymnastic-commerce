@@ -53,40 +53,6 @@ export class ProductFormService {
   }
 
   /**
-   * Genera un slug válido a partir de un título
-   * Convierte "Mi Producto 123" en "mi-producto-123"
-   *
-   * @param title - Título del producto
-   * @returns Slug válido para URL
-   */
-  static generateSlugFromTitle(title: string): string {
-    return title
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '') // Eliminar caracteres especiales
-      .replace(/\s+/g, '-') // Reemplazar espacios con guiones
-      .replace(/-+/g, '-'); // Eliminar guiones duplicados
-  }
-
-  /**
-   * Valida que el slug no contenga espacios ni caracteres inválidos
-   *
-   * @param slug - Slug a validar
-   * @returns true si es válido, mensaje de error si no
-   */
-  static validateSlug(slug: string): true | string {
-    if (/\s/.test(slug)) {
-      return 'El slug no puede contener espacios en blanco';
-    }
-
-    if (!/^[a-z0-9-]+$/.test(slug)) {
-      return 'El slug solo puede contener letras minúsculas, números y guiones';
-    }
-
-    return true;
-  }
-
-  /**
    * Crea un objeto Product vacío para nuevos productos
    *
    * @returns Product con valores por defecto
