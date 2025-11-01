@@ -1,21 +1,24 @@
-import { gymApi } from "@/api/gymApi";
-import type { AuthResponse } from "../interfaces/auth.response";
+/**
+ * Action de login - Simplificada
+ *
+ * Ahora solo orquesta y delega al servicio
+ */
+
+import { authService } from '../repositories';
+import type { AuthResponse } from '../types/auth.types';
 
 export const loginAction = async (
   email: string,
   password: string
 ): Promise<AuthResponse> => {
-  try {
-    const { data } = await gymApi.post<AuthResponse>("/auth/login", {
-      email,
-      password,
-    });
+  const result = await authService.login(email, password);
 
-    // console.log(data);
-
-    return data;
-  } catch (error) {
-    console.log(error);
-    throw error;
+  if (!result.success) {
+    throw new Error(result.error || 'Login failed');
   }
+
+  return {
+    user: result.user!,
+    token: result.token!,
+  };
 };

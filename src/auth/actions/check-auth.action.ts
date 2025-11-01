@@ -1,19 +1,21 @@
-import { gymApi } from "@/api/gymApi";
-import type { AuthResponse } from "../interfaces/auth.response";
+/**
+ * Action de verificación de auth - Simplificada
+ *
+ * Ahora solo orquesta y delega al servicio
+ */
+
+import { authService } from '../repositories';
+import type { AuthResponse } from '../types/auth.types';
 
 export const checkAuthAction = async (): Promise<AuthResponse> => {
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("No token found");
+  const result = await authService.checkAuthStatus();
 
-  try {
-    const { data } = await gymApi.get<AuthResponse>("/auth/check-status");
-
-    localStorage.setItem("token", data.token);
-
-    return data;
-  } catch (error) {
-    console.log(error);
-    localStorage.removeItem("token");
-    throw new Error("Token expired or not valid");
+  if (!result.success) {
+    throw new Error(result.error || 'Authentication check failed');
   }
+
+  return {
+    user: result.user!,
+    token: result.token!,
+  };
 };

@@ -1,80 +1,84 @@
+/**
+ * Zustand store para estado de autenticación
+ *
+ * IMPORTANTE: Este store SOLO maneja estado.
+ * Toda la lógica de negocio está delegada a AuthService.
+ */
+
 import { create } from 'zustand';
 import type { User } from '@/interfaces/user.interface';
-
-import { loginAction } from '../actions/login.action';
-import { checkAuthAction } from '../actions/check-auth.action';
-
-type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
+import type { AuthStatus } from '../types/auth.types';
+import { authService } from '../repositories';
 
 type AuthState = {
-  // Properties
+  // Estado
   user: User | null;
   token: string | null;
   authStatus: AuthStatus;
 
-  // Getters
+  // Getters (estado derivado)
   isAdmin: () => boolean;
 
-  // Actions
+  // Acciones (solo coordinación + actualización de estado)
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   checkAuthStatus: () => Promise<boolean>;
 };
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
-  // Implementación del Store
+  // Estado inicial
   user: null,
   token: null,
   authStatus: 'checking',
 
   // Getters
   isAdmin: () => {
-    const roles = get().user?.roles || [];
-    return roles.includes('admin');
-    // return !!get().user?.roles.includes('admin')
+    const user = get().user;
+    return authService.isAdmin(user);
   },
 
-  // Actions
+  // Acciones - Simple coordinación entre service y estado
   login: async (email: string, password: string) => {
-    console.log({ email, password });
+    const result = await authService.login(email, password);
 
-    try {
-      const data = await loginAction(email, password);
-      localStorage.setItem('token', data.token);
-
-      set({ user: data.user, token: data.token, authStatus: 'authenticated' });
-
+    if (result.success) {
+      set({
+        user: result.user!,
+        token: result.token!,
+        authStatus: 'authenticated',
+      });
       return true;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      localStorage.removeItem('token');
-      set({ user: null, token: null, authStatus: 'not-authenticated' });
+    } else {
+      set({
+        user: null,
+        token: null,
+        authStatus: 'not-authenticated',
+      });
       return false;
     }
   },
 
   logout: () => {
-    localStorage.removeItem('token');
+    authService.logout();
     set({ user: null, token: null, authStatus: 'not-authenticated' });
   },
 
   checkAuthStatus: async () => {
-    try {
-      const { user, token } = await checkAuthAction();
+    const result = await authService.checkAuthStatus();
+
+    if (result.success) {
       set({
-        user: user,
-        token: token,
+        user: result.user!,
+        token: result.token!,
         authStatus: 'authenticated',
       });
       return true;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } else {
       set({
-        user: undefined,
-        token: undefined,
+        user: null,
+        token: null,
         authStatus: 'not-authenticated',
       });
-
       return false;
     }
   },
