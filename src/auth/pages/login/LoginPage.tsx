@@ -8,10 +8,13 @@ import { Label } from '@/components/ui/label';
 
 import { useAuthStore } from '@/auth/store/auth.store';
 import { AuthFormLayout } from '@/auth/components/AuthFormLayout';
+import { useCartMutations } from '@/cart/hooks/useCartMutations';
+import { GuestCartStorageService } from '@/cart/services/GuestCartStorageService';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuthStore();
+  const { syncCart } = useCartMutations();
   const [isPosting, setIsPosting] = useState(false);
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
@@ -25,6 +28,14 @@ export const LoginPage = () => {
     const isValid = await login(email, password);
 
     if (isValid) {
+      // Check if there are items in guest cart to sync
+      const guestItems = GuestCartStorageService.getItems();
+
+      if (guestItems.length > 0) {
+        // Sync guest cart with backend
+        syncCart.mutate({ items: guestItems });
+      }
+
       navigate('/');
       return;
     }

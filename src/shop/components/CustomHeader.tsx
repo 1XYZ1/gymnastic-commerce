@@ -1,4 +1,4 @@
-import { useRef, type KeyboardEvent } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,15 +9,18 @@ import { CustomLogo } from '@/components/custom/CustomLogo';
 import { useAuthStore } from '@/auth/store/auth.store';
 import { NAVIGATION_LINKS } from '@/shop/config/navigation.config';
 import { MobileNav } from './MobileNav';
+import { CartIcon } from '@/cart/components/CartIcon';
+import { CartDrawer } from '@/cart/components/CartDrawer';
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { authStatus, isAdmin, logout } = useAuthStore();
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const { gender } = useParams();
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const query = searchParams.get('query') || '';
+  const query = searchParams.get('q') || '';
 
   const handleSearch = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') return;
@@ -26,9 +29,9 @@ export const CustomHeader = () => {
     const newSearchParams = new URLSearchParams();
 
     if (!query) {
-      newSearchParams.delete('query');
+      newSearchParams.delete('q');
     } else {
-      newSearchParams.set('query', inputRef.current!.value);
+      newSearchParams.set('q', inputRef.current!.value);
     }
 
     setSearchParams(newSearchParams);
@@ -98,6 +101,8 @@ export const CustomHeader = () => {
 
           {/* Actions - Desktop: Agrupados con espaciado generoso */}
           <div className="hidden md:flex items-center gap-3 lg:gap-4">
+            {/* Cart Icon - Siempre visible */}
+            <CartIcon onOpen={() => setIsCartOpen(true)} />
 
             {/* Auth Buttons */}
             {authStatus === 'not-authenticated' ? (
@@ -140,6 +145,9 @@ export const CustomHeader = () => {
           <div className="w-10 md:hidden" aria-hidden="true" />
         </div>
       </div>
+
+      {/* Cart Drawer */}
+      <CartDrawer open={isCartOpen} onOpenChange={setIsCartOpen} />
     </header>
   );
 };

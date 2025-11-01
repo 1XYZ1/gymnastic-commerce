@@ -1,7 +1,7 @@
 import type { Product } from './product.types';
 
 export interface ProductsResponse {
-  count: number;
+  total: number;
   pages: number;
   products: Product[];
 }

@@ -25,7 +25,7 @@ export const MobileNav = () => {
   const { gender } = useParams();
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const query = searchParams.get('query') || '';
+  const query = searchParams.get('q') || '';
 
   /**
    * Maneja la búsqueda cuando el usuario presiona Enter
@@ -38,7 +38,7 @@ export const MobileNav = () => {
     const newSearchParams = new URLSearchParams();
 
     if (query) {
-      newSearchParams.set('query', query);
+      newSearchParams.set('q', query);
     }
 
     setSearchParams(newSearchParams);
