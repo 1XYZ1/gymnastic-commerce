@@ -74,10 +74,9 @@ export const CustomHeader = () => {
             ))}
           </nav>
 
-          {/* Search and Actions - Desktop */}
-          <div className="hidden md:flex items-center gap-3 ml-auto">
-            {/* Search Bar - Desktop */}
-            <div className="relative">
+          {/* Search - Desktop: Centrado y espaciado */}
+          <div className="hidden md:flex flex-1 justify-center max-w-md mx-6 lg:mx-8">
+            <div className="relative w-full">
               <label htmlFor="desktop-search" className="sr-only">
                 Buscar productos
               </label>
@@ -89,14 +88,18 @@ export const CustomHeader = () => {
                 id="desktop-search"
                 ref={inputRef}
                 placeholder="Buscar productos..."
-                className="pl-9 w-48 lg:w-64 h-9 bg-white focus:ring-2 focus:ring-primary"
+                className="pl-9 w-full h-9 bg-white focus:ring-2 focus:ring-primary"
                 onKeyDown={handleSearch}
                 defaultValue={query}
                 aria-label="Campo de búsqueda de productos"
               />
             </div>
+          </div>
 
-            {/* Auth Buttons - Desktop */}
+          {/* Actions - Desktop: Agrupados con espaciado generoso */}
+          <div className="hidden md:flex items-center gap-3 lg:gap-4">
+
+            {/* Auth Buttons */}
             {authStatus === 'not-authenticated' ? (
               <Link to="/auth/login">
                 <Button
@@ -118,7 +121,7 @@ export const CustomHeader = () => {
               </Button>
             )}
 
-            {/* Admin Button - Desktop */}
+            {/* Admin Button */}
             {isAdmin() && (
               <Link to="/admin">
                 <Button
