@@ -21,12 +21,6 @@ export function AppointmentDetailPage() {
   const { data: appointment, isLoading, isError, error } = useAppointment(id!);
 
   const isAdmin = user?.roles.includes('admin');
-  const isOwner = user?.id === appointment?.customer.id;
-  const canCancel =
-    appointment &&
-    appointment.status !== 'cancelled' &&
-    appointment.status !== 'completed' &&
-    (isOwner || isAdmin);
 
   const handleCancel = () => {
     if (!appointment) return;
@@ -39,12 +33,27 @@ export function AppointmentDetailPage() {
     }
   };
 
-  const handleChangeStatus = (newStatus: 'pending' | 'confirmed' | 'completed') => {
+  const handleConfirm = async (id: string) => {
     if (!appointment) return;
     updateAppointment.mutate(
       {
-        id: appointment.id,
-        dto: { status: newStatus },
+        id,
+        dto: { status: 'confirmed' },
+      },
+      {
+        onSuccess: () => {
+          // La página se actualizará automáticamente por React Query
+        },
+      }
+    );
+  };
+
+  const handleComplete = async (id: string) => {
+    if (!appointment) return;
+    updateAppointment.mutate(
+      {
+        id,
+        dto: { status: 'completed' },
       },
       {
         onSuccess: () => {
@@ -186,66 +195,68 @@ export function AppointmentDetailPage() {
           </Card>
         )}
 
-        {/* Acciones */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Acciones</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {/* Cambiar estado (solo admin) */}
-            {isAdmin && appointment.status !== 'cancelled' && (
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Cambiar estado:</p>
-                <div className="flex flex-wrap gap-2">
-                  {appointment.status !== 'confirmed' && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleChangeStatus('confirmed')}
-                      disabled={updateAppointment.isPending}
-                    >
-                      Confirmar
-                    </Button>
-                  )}
-                  {appointment.status !== 'completed' && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleChangeStatus('completed')}
-                      disabled={updateAppointment.isPending}
-                    >
-                      Completar
-                    </Button>
-                  )}
+        {/* Acciones (solo admin) */}
+        {isAdmin && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Acciones</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* Si está pendiente: mostrar Confirmar y Cancelar */}
+              {appointment.status === 'pending' && (
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => handleConfirm(appointment.id)}
+                    disabled={updateAppointment.isPending}
+                    className="flex-1"
+                  >
+                    {updateAppointment.isPending ? 'Confirmando...' : 'Confirmar cita'}
+                  </Button>
+                  <Button
+                    onClick={handleCancel}
+                    disabled={cancelAppointment.isPending}
+                    variant="destructive"
+                  >
+                    {cancelAppointment.isPending ? 'Cancelando...' : 'Cancelar'}
+                  </Button>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Cancelar cita */}
-            {canCancel && (
-              <Button
-                variant="destructive"
-                className="w-full"
-                onClick={handleCancel}
-                disabled={cancelAppointment.isPending}
-              >
-                {cancelAppointment.isPending ? 'Cancelando...' : 'Cancelar Cita'}
-              </Button>
-            )}
+              {/* Si está confirmada: mostrar Completar y Cancelar */}
+              {appointment.status === 'confirmed' && (
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => handleComplete(appointment.id)}
+                    disabled={updateAppointment.isPending}
+                    className="flex-1"
+                  >
+                    {updateAppointment.isPending ? 'Completando...' : 'Marcar como completada'}
+                  </Button>
+                  <Button
+                    onClick={handleCancel}
+                    disabled={cancelAppointment.isPending}
+                    variant="destructive"
+                  >
+                    {cancelAppointment.isPending ? 'Cancelando...' : 'Cancelar'}
+                  </Button>
+                </div>
+              )}
 
-            {appointment.status === 'cancelled' && (
-              <p className="text-sm text-muted-foreground text-center">
-                Esta cita ha sido cancelada
-              </p>
-            )}
+              {/* Si está completada o cancelada: solo mostrar mensaje informativo */}
+              {appointment.status === 'completed' && (
+                <p className="text-sm text-muted-foreground text-center py-2">
+                  Esta cita ha sido completada
+                </p>
+              )}
 
-            {appointment.status === 'completed' && (
-              <p className="text-sm text-muted-foreground text-center">
-                Esta cita ha sido completada
-              </p>
-            )}
-          </CardContent>
-        </Card>
+              {appointment.status === 'cancelled' && (
+                <p className="text-sm text-muted-foreground text-center py-2">
+                  Esta cita ha sido cancelada
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -1,12 +1,14 @@
 import {
-  Home,
-  Users,
+  // Home,
+  // Users,
   BarChart3,
-  Settings,
-  FileText,
-  ShoppingCart,
-  Bell,
-  HelpCircle,
+  // Settings,
+  // FileText,
+  // ShoppingCart,
+  // Bell,
+  // HelpCircle,
+  Calendar,
+  Briefcase,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -20,14 +22,17 @@ export interface AdminNavigationLink {
 /**
  * Enlaces de navegación principal del panel de administración
  * Estos enlaces se muestran en el sidebar y en el menú móvil
+ *
+ * Nota: Solo se muestran las opciones esenciales. Las demás están comentadas
+ * para ser habilitadas en el futuro según sea necesario.
  */
 export const ADMIN_NAVIGATION_LINKS: AdminNavigationLink[] = [
-  {
-    icon: Home,
-    label: 'Dashboard',
-    to: '/admin',
-    description: 'Vista general y estadísticas',
-  },
+  // {
+  //   icon: Home,
+  //   label: 'Dashboard',
+  //   to: '/admin',
+  //   description: 'Vista general y estadísticas',
+  // },
   {
     icon: BarChart3,
     label: 'Productos',
@@ -35,33 +40,45 @@ export const ADMIN_NAVIGATION_LINKS: AdminNavigationLink[] = [
     description: 'Gestión de productos',
   },
   {
-    icon: Users,
-    label: 'Usuarios',
-    description: 'Administración de usuarios',
+    icon: Briefcase,
+    label: 'Servicios',
+    to: '/admin/services',
+    description: 'Gestión de servicios',
   },
   {
-    icon: ShoppingCart,
-    label: 'Ordenes',
-    description: 'Gestión de pedidos',
+    icon: Calendar,
+    label: 'Agendas de clientes',
+    to: '/admin/appointments',
+    description: 'Gestión de citas de clientes',
   },
-  {
-    icon: FileText,
-    label: 'Reportes',
-    description: 'Informes y análisis',
-  },
-  {
-    icon: Bell,
-    label: 'Notificaciones',
-    description: 'Centro de notificaciones',
-  },
-  {
-    icon: Settings,
-    label: 'Ajustes',
-    description: 'Configuración del sistema',
-  },
-  {
-    icon: HelpCircle,
-    label: 'Ayuda',
-    description: 'Soporte y documentación',
-  },
+  // {
+  //   icon: Users,
+  //   label: 'Usuarios',
+  //   description: 'Administración de usuarios',
+  // },
+  // {
+  //   icon: ShoppingCart,
+  //   label: 'Ordenes',
+  //   description: 'Gestión de pedidos',
+  // },
+  // {
+  //   icon: FileText,
+  //   label: 'Reportes',
+  //   description: 'Informes y análisis',
+  // },
+  // {
+  //   icon: Bell,
+  //   label: 'Notificaciones',
+  //   description: 'Centro de notificaciones',
+  // },
+  // {
+  //   icon: Settings,
+  //   label: 'Ajustes',
+  //   description: 'Configuración del sistema',
+  // },
+  // {
+  //   icon: HelpCircle,
+  //   label: 'Ayuda',
+  //   description: 'Soporte y documentación',
+  // },
 ];

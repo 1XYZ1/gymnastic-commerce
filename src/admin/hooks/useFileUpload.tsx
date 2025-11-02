@@ -5,7 +5,7 @@
  * Extrae la lógica de drag & drop del componente ProductForm
  */
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export interface UseFileUploadReturn {
   files: File[];
@@ -81,13 +81,14 @@ export const useFileUpload = (
 
   /**
    * Limpia todos los archivos seleccionados
+   * Memoizada con useCallback para evitar loops infinitos en useEffect
    */
-  const clearFiles = () => {
+  const clearFiles = useCallback(() => {
     setFiles([]);
     if (onFilesChange) {
       onFilesChange([]);
     }
-  };
+  }, [onFilesChange]);
 
   return {
     files,

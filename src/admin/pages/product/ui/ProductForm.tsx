@@ -97,7 +97,7 @@ export const ProductForm = ({
       <div className="flex justify-between items-center">
         <AdminTitle title={title} subtitle={subTitle} />
         <div className="flex justify-end mb-10 gap-4">
-          <Button variant="outline" type="button">
+          <Button variant="outline" type="button" asChild>
             <Link to="/admin/products" className="flex items-center gap-2">
               <X className="w-4 h-4" />
               Cancelar

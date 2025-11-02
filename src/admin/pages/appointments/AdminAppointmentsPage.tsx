@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
 import { AdminTitle } from '@/admin/components/AdminTitle';
+import { AdminListItem } from '@/admin/components/AdminListItem';
 import { CustomFullScreenLoading } from '@/components/custom/CustomFullScreenLoading';
-import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -19,34 +19,42 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { useAdminAppointments } from '@/admin/hooks/useAdminAppointments';
-import { useAppointmentMutations } from '@/appointments/hooks/useAppointmentMutations';
 import { AppointmentStatusBadge } from '@/appointments/components/AppointmentStatusBadge';
 import { APPOINTMENT_STATUS_CONFIG } from '@/appointments/config/appointment.config';
 import { SERVICE_TYPE_LABELS } from '@/services/config/service.config';
+import { currencyFormatter } from '@/lib/currency-formatter';
 import type { AppointmentStatus } from '@/appointments/types/appointment.types';
-import { Eye, X } from 'lucide-react';
 
 /**
  * Página de administración de citas
  * Solo accesible por administradores para ver y gestionar todas las citas del sistema
+ *
+ * Vista responsive:
+ * - Desktop (>= md): Tabla con filas clickeables
+ * - Móvil (< md): AdminListItem en contenedor con space-y-3
+ *
+ * Lista de solo lectura y navegación - todas las acciones se realizan en el detalle
  */
 export function AdminAppointmentsPage() {
   const [statusFilter, setStatusFilter] = useState<AppointmentStatus | 'all'>('all');
   const { data, isLoading } = useAdminAppointments({
     status: statusFilter === 'all' ? undefined : statusFilter,
   });
-  const { cancelAppointment, updateAppointment } = useAppointmentMutations();
+  const navigate = useNavigate();
 
-  const handleCancelAppointment = (id: string) => {
-    if (confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
-      cancelAppointment.mutate(id);
-    }
+  // Handler para navegar al detalle de la cita
+  const handleAppointmentClick = (appointmentId: string) => {
+    navigate(`/appointments/${appointmentId}`);
   };
 
-  const handleChangeStatus = (id: string, newStatus: 'confirmed' | 'completed') => {
-    updateAppointment.mutate({
-      id,
-      dto: { status: newStatus },
+  /**
+   * Formatea la fecha de la cita en formato legible
+   * Ejemplo: "15/1/25, 10:30"
+   */
+  const formatAppointmentDate = (date: string | Date): string => {
+    return new Date(date).toLocaleString('es-ES', {
+      dateStyle: 'short',
+      timeStyle: 'short',
     });
   };
 
@@ -86,117 +94,98 @@ export function AdminAppointmentsPage() {
         </Select>
       </div>
 
-      {/* Tabla de citas */}
-      <Table
-        className="bg-white p-10 shadow-xs border border-gray-200 mb-10"
-        aria-label="Tabla de citas"
-      >
-        <TableHeader>
-          <TableRow>
-            <TableHead scope="col">Fecha</TableHead>
-            <TableHead scope="col">Cliente</TableHead>
-            <TableHead scope="col">Mascota</TableHead>
-            <TableHead scope="col">Servicio</TableHead>
-            <TableHead scope="col">Estado</TableHead>
-            <TableHead scope="col">Precio</TableHead>
-            <TableHead scope="col" className="text-right">
-              Acciones
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data && data.data.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center text-muted-foreground">
-                No hay citas registradas
-              </TableCell>
-            </TableRow>
-          ) : (
-            data?.data.map((appointment) => (
-              <TableRow key={appointment.id}>
-                <TableCell className="font-medium">
-                  {new Date(appointment.date).toLocaleString('es-ES', {
-                    dateStyle: 'short',
-                    timeStyle: 'short',
-                  })}
-                </TableCell>
-                <TableCell>{appointment.customer.fullName}</TableCell>
-                <TableCell>
-                  {appointment.petName}
-                  {appointment.petBreed && (
-                    <span className="text-muted-foreground text-xs block">
-                      {appointment.petBreed}
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div>
-                    <p className="font-medium">{appointment.service.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {SERVICE_TYPE_LABELS[appointment.service.type]}
-                    </p>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <AppointmentStatusBadge status={appointment.status} />
-                </TableCell>
-                <TableCell className="font-semibold">${appointment.service.price}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    {/* Ver detalle */}
-                    <Link
-                      to={`/appointments/${appointment.id}`}
-                      aria-label={`Ver detalle de cita para ${appointment.petName}`}
-                    >
-                      <Button variant="ghost" size="sm">
-                        <Eye className="w-4 h-4" aria-hidden="true" />
-                      </Button>
-                    </Link>
-
-                    {/* Confirmar (si está pending) */}
-                    {appointment.status === 'pending' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleChangeStatus(appointment.id, 'confirmed')}
-                        disabled={updateAppointment.isPending}
-                      >
-                        Confirmar
-                      </Button>
-                    )}
-
-                    {/* Completar (si está confirmed) */}
-                    {appointment.status === 'confirmed' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleChangeStatus(appointment.id, 'completed')}
-                        disabled={updateAppointment.isPending}
-                      >
-                        Completar
-                      </Button>
-                    )}
-
-                    {/* Cancelar (si no está cancelled o completed) */}
-                    {appointment.status !== 'cancelled' &&
-                      appointment.status !== 'completed' && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleCancelAppointment(appointment.id)}
-                          disabled={cancelAppointment.isPending}
-                          aria-label="Cancelar cita"
-                        >
-                          <X className="w-4 h-4 text-destructive" aria-hidden="true" />
-                        </Button>
-                      )}
-                  </div>
-                </TableCell>
+      {/* Desktop: Tabla con filas clickeables */}
+      <div className="hidden md:block">
+        <div className="overflow-x-auto">
+          <Table
+            className="bg-white p-10 shadow-xs border border-gray-200 mb-10"
+            aria-label="Tabla de citas"
+          >
+            <TableHeader>
+              <TableRow>
+                <TableHead scope="col">Fecha</TableHead>
+                <TableHead scope="col">Cliente</TableHead>
+                <TableHead scope="col">Mascota</TableHead>
+                <TableHead scope="col">Servicio</TableHead>
+                <TableHead scope="col">Estado</TableHead>
+                <TableHead scope="col">Precio</TableHead>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {data && data.data.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    No hay citas registradas
+                  </TableCell>
+                </TableRow>
+              ) : (
+                data?.data.map((appointment) => (
+                  <TableRow
+                    key={appointment.id}
+                    onClick={() => handleAppointmentClick(appointment.id)}
+                    className="cursor-pointer hover:bg-accent transition-colors"
+                    aria-label={`Ver detalles de cita para ${appointment.petName}`}
+                  >
+                    <TableCell className="font-medium">
+                      {formatAppointmentDate(appointment.date)}
+                    </TableCell>
+                    <TableCell>{appointment.customer.fullName}</TableCell>
+                    <TableCell>
+                      {appointment.petName}
+                      {appointment.petBreed && (
+                        <span className="text-muted-foreground text-xs block">
+                          {appointment.petBreed}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium">{appointment.service.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {SERVICE_TYPE_LABELS[appointment.service.type]}
+                        </p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <AppointmentStatusBadge status={appointment.status} />
+                    </TableCell>
+                    <TableCell className="font-semibold">
+                      {currencyFormatter(appointment.service.price)}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Móvil: AdminListItem */}
+      <div className="md:hidden space-y-3 mb-10">
+        {data?.data.map((appointment) => (
+          <AdminListItem
+            key={appointment.id}
+            onClick={() => handleAppointmentClick(appointment.id)}
+            title={appointment.petName}
+            subtitle={`Cliente: ${appointment.customer.fullName}`}
+            badge={<AppointmentStatusBadge status={appointment.status} />}
+            metadata={[
+              {
+                label: 'Fecha',
+                value: formatAppointmentDate(appointment.date),
+              },
+              {
+                label: 'Servicio',
+                value: appointment.service.name,
+              },
+              {
+                label: 'Precio',
+                value: currencyFormatter(appointment.service.price),
+              },
+            ]}
+          />
+        ))}
+      </div>
 
       {/* Información de paginación */}
       {data && data.data.length > 0 && (

@@ -1,8 +1,10 @@
 import { AdminTitle } from "@/admin/components/AdminTitle";
 import { ProductImageCell } from "@/admin/components/ProductImageCell";
+import { AdminListItem } from "@/admin/components";
 import { CustomFullScreenLoading } from "@/components/custom/CustomFullScreenLoading";
 import { CustomPagination } from "@/components/custom/CustomPagination";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableHeader,
@@ -13,11 +15,29 @@ import {
 } from "@/components/ui/table";
 import { currencyFormatter } from "@/lib/currency-formatter";
 import { useAdminProducts } from "@/admin/hooks/useAdminProducts";
-import { PencilIcon, PlusIcon } from "lucide-react";
-import { Link } from "react-router";
+import { PlusIcon } from "lucide-react";
+import { Link, useNavigate } from "react-router";
+
+/**
+ * Determina la variante del badge de stock según la cantidad disponible
+ * - destructive: Menos de 10 unidades (stock crítico)
+ * - warning: Entre 10 y 29 unidades (stock bajo)
+ * - default: 30 o más unidades (stock normal)
+ */
+const getStockBadgeVariant = (stock: number): "destructive" | "warning" | "default" => {
+  if (stock < 10) return "destructive";
+  if (stock < 30) return "warning";
+  return "default";
+};
 
 export const AdminProductsPage = () => {
   const { data, isLoading } = useAdminProducts();
+  const navigate = useNavigate();
+
+  // Handler para navegar al detalle del producto
+  const handleProductClick = (productId: string) => {
+    navigate(`/admin/products/${productId}`);
+  };
 
   if (isLoading) {
     return <CustomFullScreenLoading />;
@@ -41,56 +61,82 @@ export const AdminProductsPage = () => {
         </div>
       </div>
 
-      <Table className="bg-white p-10 shadow-xs border border-gray-200 mb-10" aria-label="Tabla de productos">
-        <TableHeader>
-          <TableRow>
-            <TableHead scope="col">Imagen</TableHead>
-            <TableHead scope="col">Nombre</TableHead>
-            <TableHead scope="col">Precio</TableHead>
-            <TableHead scope="col">Categoría</TableHead>
-            <TableHead scope="col">Inventario</TableHead>
-            <TableHead scope="col">Tallas</TableHead>
-            <TableHead scope="col" className="text-right">Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data!.products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell>
-                <ProductImageCell
-                  src={product.images[0]}
-                  alt={`Imagen del producto ${product.title}`}
-                />
-              </TableCell>
-              <TableCell>
-                <Link
-                  to={`/admin/products/${product.id}`}
-                  className="hover:text-blue-500 underline"
-                  aria-label={`Editar producto ${product.title}`}
+      {/* Desktop: Tabla con filas clickeables */}
+      <div className="hidden md:block">
+        <div className="overflow-x-auto">
+          <Table className="bg-white p-10 shadow-xs border border-gray-200 mb-10" aria-label="Tabla de productos">
+            <TableHeader>
+              <TableRow>
+                <TableHead scope="col">Imagen</TableHead>
+                <TableHead scope="col">Nombre</TableHead>
+                <TableHead scope="col">Precio</TableHead>
+                <TableHead scope="col">Categoría</TableHead>
+                <TableHead scope="col">Inventario</TableHead>
+                <TableHead scope="col">Tallas</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data!.products.map((product) => (
+                <TableRow
+                  key={product.id}
+                  onClick={() => handleProductClick(product.id)}
+                  className="cursor-pointer hover:bg-accent transition-colors"
+                  aria-label={`Ver detalles de ${product.title}`}
                 >
-                  {product.title}
-                </Link>
-              </TableCell>
-              <TableCell>{currencyFormatter(product.price)}</TableCell>
-              <TableCell>{product.category}</TableCell>
-              <TableCell>
-                <span aria-label={`${product.stock} unidades en stock`}>
-                  {product.stock} stock
-                </span>
-              </TableCell>
-              <TableCell>{product.sizes.join(", ")}</TableCell>
-              <TableCell className="text-right">
-                <Link
-                  to={`/admin/products/${product.id}`}
-                  aria-label={`Editar producto ${product.title}`}
-                >
-                  <PencilIcon className="w-4 h-4 text-blue-500" aria-hidden="true" />
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  <TableCell>
+                    <ProductImageCell
+                      src={product.images[0]}
+                      alt={`Imagen del producto ${product.title}`}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {product.title}
+                  </TableCell>
+                  <TableCell>{currencyFormatter(product.price)}</TableCell>
+                  <TableCell>{product.category}</TableCell>
+                  <TableCell>
+                    <Badge variant={getStockBadgeVariant(product.stock)}>
+                      {product.stock} stock
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{product.sizes.join(", ")}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Móvil: AdminListItem */}
+      <div className="md:hidden space-y-3 mb-10">
+        {data!.products.map((product) => (
+          <AdminListItem
+            key={product.id}
+            onClick={() => handleProductClick(product.id)}
+            title={product.title}
+            subtitle={product.category}
+            badge={
+              <Badge variant={getStockBadgeVariant(product.stock)}>
+                {product.stock}
+              </Badge>
+            }
+            metadata={[
+              {
+                label: "Precio",
+                value: currencyFormatter(product.price),
+              },
+              {
+                label: "Tallas",
+                value: product.sizes.join(", "),
+              },
+              {
+                label: "Slug",
+                value: product.slug,
+              },
+            ]}
+          />
+        ))}
+      </div>
 
       <CustomPagination totalPages={data?.pages || 0} />
     </>
