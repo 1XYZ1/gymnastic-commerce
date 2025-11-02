@@ -97,12 +97,12 @@ export const ProductForm = ({
       <div className="flex justify-between items-center">
         <AdminTitle title={title} subtitle={subTitle} />
         <div className="flex justify-end mb-10 gap-4">
-          <Button variant="outline" type="button" asChild>
-            <Link to="/admin/products" className="flex items-center gap-2">
+          <Link to="/admin/products">
+            <Button variant="outline" type="button">
               <X className="w-4 h-4" />
               Cancelar
-            </Link>
-          </Button>
+            </Button>
+          </Link>
 
           <Button type="submit" disabled={isPending}>
             <SaveAll className="w-4 h-4" />
@@ -365,7 +365,7 @@ export const ProductForm = ({
                   <Button
                     type="button"
                     onClick={handleAddTag}
-                    className="px-4 py-2rounded-lg "
+                    className="px-4 py-2 rounded-lg"
                     aria-label="Agregar etiqueta"
                   >
                     <Plus className="h-4 w-4" aria-hidden="true" />

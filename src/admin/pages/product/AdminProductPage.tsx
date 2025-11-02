@@ -22,18 +22,31 @@ export const AdminProductPage = () => {
   const handleSubmit = async (
     productLike: Partial<Product> & { files?: File[] }
   ) => {
-    await mutation.mutateAsync(productLike, {
-      onSuccess: (data) => {
-        toast.success('Producto actualizado correctamente', {
-          position: 'top-right',
-        });
-        navigate(`/admin/products/${data.id}`);
-      },
-      onError: (error) => {
-        console.log(error);
-        toast.error('Error al actualizar el producto');
-      },
-    });
+    try {
+      await mutation.mutateAsync(productLike);
+
+      // Mostrar mensaje de éxito
+      const message = id === 'new'
+        ? 'Producto creado correctamente'
+        : 'Producto actualizado correctamente';
+
+      toast.success(message, {
+        position: 'top-right',
+      });
+
+      // Navegar a la lista de productos
+      navigate('/admin/products');
+    } catch (error) {
+      console.error('Error al guardar el producto:', error);
+
+      const errorMessage = id === 'new'
+        ? 'Error al crear el producto'
+        : 'Error al actualizar el producto';
+
+      toast.error(errorMessage, {
+        position: 'top-right',
+      });
+    }
   };
 
   if (isError) {
