@@ -5,31 +5,33 @@
  * con el formulario de creación/edición de productos
  */
 
-import type { Size, Gender } from '@/shared/types';
+import type { Size, Category } from '@/shared/types';
 
 /**
  * Tallas disponibles para productos
  */
 export const AVAILABLE_SIZES: readonly Size[] = [
-  'XS',
+  '500g',
+  '1kg',
+  '3kg',
+  '7kg',
+  '15kg',
+  '20kg',
   'S',
   'M',
   'L',
   'XL',
-  'XXL',
 ] as const;
 
 /**
- * Opciones de género para el selector
+ * Opciones de categoría para el selector
  */
-export const GENDER_OPTIONS: ReadonlyArray<{
-  value: Gender;
+export const CATEGORY_OPTIONS: ReadonlyArray<{
+  value: Category;
   label: string;
 }> = [
-  { value: 'men', label: 'Hombre' },
-  { value: 'women', label: 'Mujer' },
-  { value: 'unisex', label: 'Unisex' },
-  { value: 'kid', label: 'Niño' },
+  { value: 'dogs', label: 'Para Perros' },
+  { value: 'cats', label: 'Para Gatos' },
 ] as const;
 
 /**

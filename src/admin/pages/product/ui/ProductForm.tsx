@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { useFileUpload } from '@/admin/hooks/useFileUpload';
 import { useTagManager } from '@/admin/hooks/useTagManager';
 import { useSizeManager } from '@/admin/hooks/useSizeManager';
-import { AVAILABLE_SIZES, GENDER_OPTIONS } from '@/admin/config';
+import { AVAILABLE_SIZES, CATEGORY_OPTIONS } from '@/admin/config';
 
 interface Props {
   title: string;
@@ -222,15 +222,15 @@ export const ProductForm = ({
                 </div>
 
                 <div>
-                  <label htmlFor="product-gender" className="block text-sm font-medium text-slate-700 mb-2">
-                    Género del producto
+                  <label htmlFor="product-category" className="block text-sm font-medium text-slate-700 mb-2">
+                    Categoría del producto
                   </label>
                   <select
-                    id="product-gender"
-                    {...register('gender')}
+                    id="product-category"
+                    {...register('category')}
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   >
-                    {GENDER_OPTIONS.map((option) => (
+                    {CATEGORY_OPTIONS.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>

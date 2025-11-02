@@ -8,12 +8,12 @@ export interface Product {
   slug: string;
   stock: number;
   sizes: Size[];
-  gender: Gender;
+  category: Category;
   tags: string[];
   images: string[];
   user: User;
 }
 
-export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL';
+export type Size = '500g' | '1kg' | '3kg' | '7kg' | '15kg' | '20kg' | 'S' | 'M' | 'L' | 'XL';
 
-export type Gender = 'kid' | 'men' | 'women' | 'unisex';
+export type Category = 'cats' | 'dogs';

@@ -131,3 +131,29 @@
 @theme {
   --font-montserrat: "Montserrat Alternates", sans-serif;
 }
+
+/* Custom component styles */
+@layer components {
+  /* Card hover effect for products, services, and appointments */
+  .product-card-hover {
+    @apply transition-all duration-300;
+  }
+
+  .product-card-hover:hover {
+    @apply shadow-lg;
+  }
+
+  .product-card-hover:focus-visible {
+    @apply shadow-lg ring-2 ring-ring ring-offset-2;
+  }
+
+  /* Image overlay effect */
+  .image-overlay {
+    @apply absolute inset-0 bg-black/0 transition-colors duration-300 pointer-events-none;
+  }
+
+  .group:hover .image-overlay {
+    @apply bg-black/5;
+  }
+}
+

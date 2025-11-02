@@ -66,7 +66,7 @@ export class ProductFormService {
       slug: '',
       stock: 0,
       sizes: [],
-      gender: 'men',
+      category: 'dogs',
       tags: [],
       images: [],
     };

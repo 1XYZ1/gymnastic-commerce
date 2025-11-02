@@ -7,14 +7,14 @@
 
 export const CONTENT = {
   logo: {
-    defaultSubtitle: "STORE",
+    defaultSubtitle: "SHOP",
   },
   jumbotron: {
-    defaultSubtitle: "Ropa minimalista y elegante. Calidad premium para un estilo atemporal.",
+    defaultSubtitle: "Ropa y alimentos para tus mascotas",
   },
   footer: {
-    companyName: "Gymnastic Style",
-    description: "Ropa inspirada en el diseño minimalista y la innovación de Ropa deportiva.",
+    companyName: "Milo y sus Amigos",
+    description: "Ropa, accesorios y alimentos para tu mascota.",
     copyrightText: "Todos los derechos reservados",
   },
 } as const;

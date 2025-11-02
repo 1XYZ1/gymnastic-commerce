@@ -17,10 +17,13 @@ export const CustomHeader = () => {
   const { authStatus, isAdmin, logout } = useAuthStore();
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const { gender } = useParams();
+  const { category } = useParams();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const query = searchParams.get('q') || '';
+
+  const isAuthenticated = authStatus === 'authenticated';
+  const visibleLinks = NAVIGATION_LINKS.filter(link => !link.requiresAuth || isAuthenticated);
 
   const handleSearch = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') return;
@@ -56,25 +59,28 @@ export const CustomHeader = () => {
             className="hidden md:flex items-center space-x-6 lg:space-x-8"
             aria-label="Navegación principal"
           >
-            {NAVIGATION_LINKS.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={cn(
-                  'text-sm font-medium transition-colors hover:text-primary',
-                  'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-sm px-1 py-1',
-                  (link.gender === gender || (!gender && !link.gender)) &&
-                    'text-primary underline underline-offset-4 decoration-2'
-                )}
-                aria-current={
-                  link.gender === gender || (!gender && !link.gender)
-                    ? 'page'
-                    : undefined
-                }
-              >
-                {link.label}
-              </Link>
-            ))}
+            {visibleLinks.map((link) => {
+              const isActive = link.path === '/services'
+                ? window.location.pathname.startsWith('/services')
+                : link.path === '/appointments'
+                ? window.location.pathname.startsWith('/appointments')
+                : link.category === category || (!category && !link.category && link.path === '/');
+
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={cn(
+                    'text-sm font-medium transition-colors hover:text-primary',
+                    'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-sm px-1 py-1',
+                    isActive && 'text-primary underline underline-offset-4 decoration-2'
+                  )}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Search - Desktop: Centrado y espaciado */}
@@ -141,8 +147,10 @@ export const CustomHeader = () => {
             )}
           </div>
 
-          {/* Spacer para mantener el logo centrado en móvil */}
-          <div className="w-10 md:hidden" aria-hidden="true" />
+          {/* Cart Icon - Mobile */}
+          <div className="md:hidden">
+            <CartIcon onOpen={() => setIsCartOpen(true)} />
+          </div>
         </div>
       </div>
 

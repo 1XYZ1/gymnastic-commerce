@@ -12,6 +12,9 @@
 import { Plus, Minus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCartMutations } from '../hooks/useCartMutations';
+import { useAuthStore } from '@/auth/store/auth.store';
+import { useGuestCartStore } from '../store/guestCart.store';
+import { useImageAnimation } from '@/shared/hooks';
 import { CartService } from '../services/CartService';
 import { CART_CONFIG } from '../config/cart.config';
 import type { CartItem as CartItemType } from '../types/cart.types';
@@ -48,7 +51,15 @@ interface CartItemProps {
  * ```
  */
 export function CartItem({ item, className }: CartItemProps) {
+  const { ref, isVisible } = useImageAnimation({ threshold: 0.1, triggerOnce: true });
+  const { authStatus } = useAuthStore();
+
+  // Hooks para carrito autenticado
   const { updateItem, removeItem } = useCartMutations();
+
+  // Hooks para carrito guest
+  const updateGuestItem = useGuestCartStore((state) => state.updateItemQuantity);
+  const removeGuestItem = useGuestCartStore((state) => state.removeItem);
 
   // Calcular subtotal del item
   const itemSubtotal = item.priceAtTime * item.quantity;
@@ -59,29 +70,44 @@ export function CartItem({ item, className }: CartItemProps) {
       item.quantity < CART_CONFIG.MAX_QUANTITY_PER_ITEM &&
       item.quantity < item.product.stock
     ) {
-      updateItem.mutate({
-        itemId: item.id,
-        dto: { quantity: item.quantity + 1 },
-      });
+      if (authStatus === 'authenticated') {
+        updateItem.mutate({
+          itemId: item.id,
+          dto: { quantity: item.quantity + 1 },
+        });
+      } else {
+        // Para guest: usar productId y size
+        updateGuestItem(item.productId, item.size, item.quantity + 1);
+      }
     }
   };
 
   const handleDecrement = () => {
     if (item.quantity > CART_CONFIG.MIN_QUANTITY_PER_ITEM) {
-      updateItem.mutate({
-        itemId: item.id,
-        dto: { quantity: item.quantity - 1 },
-      });
+      if (authStatus === 'authenticated') {
+        updateItem.mutate({
+          itemId: item.id,
+          dto: { quantity: item.quantity - 1 },
+        });
+      } else {
+        // Para guest: usar productId y size
+        updateGuestItem(item.productId, item.size, item.quantity - 1);
+      }
     }
   };
 
   const handleRemove = () => {
-    removeItem.mutate(item.id);
+    if (authStatus === 'authenticated') {
+      removeItem.mutate(item.id);
+    } else {
+      // Para guest: usar productId y size
+      removeGuestItem(item.productId, item.size);
+    }
   };
 
-  // Estados de carga
-  const isUpdating = updateItem.isPending && updateItem.variables?.itemId === item.id;
-  const isRemoving = removeItem.isPending && removeItem.variables === item.id;
+  // Estados de carga (solo para usuarios autenticados)
+  const isUpdating = authStatus === 'authenticated' && updateItem.isPending && updateItem.variables?.itemId === item.id;
+  const isRemoving = authStatus === 'authenticated' && removeItem.isPending && removeItem.variables === item.id;
   const isLoading = isUpdating || isRemoving;
 
   // Verificar si el precio cambió
@@ -98,15 +124,28 @@ export function CartItem({ item, className }: CartItemProps) {
       aria-label={`${item.product.title}, talla ${item.size}, cantidad ${item.quantity}`}
     >
       {/* Imagen del producto */}
-      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border">
+      <div ref={ref} className="relative h-20 w-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md border bg-muted">
         {item.product.images && item.product.images.length > 0 ? (
           <img
             src={item.product.images[0]}
             alt={item.product.title}
-            className="h-full w-full object-cover object-center"
+            className={cn('h-full w-full object-cover object-center', isVisible ? 'image-fade-in' : 'image-animate-base')}
+            loading="lazy"
+            onError={(e) => {
+              const target = e.currentTarget;
+              target.style.display = 'none';
+              const parent = target.parentElement;
+              if (parent) {
+                parent.innerHTML = `
+                  <div class="flex h-full w-full items-center justify-center bg-muted text-xs text-muted-foreground">
+                    Sin imagen
+                  </div>
+                `;
+              }
+            }}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted text-xs text-muted-foreground">
+          <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
             Sin imagen
           </div>
         )}

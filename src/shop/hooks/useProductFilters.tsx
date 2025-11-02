@@ -12,7 +12,7 @@ import { PRODUCTS_CONFIG } from '@/config/products.config';
 import type { ProductFilter } from '../types/product-filter.types';
 
 export const useProductFilters = (): ProductFilter => {
-  const { gender } = useParams();
+  const { category } = useParams();
   const [searchParams] = useSearchParams();
 
   return useMemo(() => {
@@ -36,11 +36,11 @@ export const useProductFilters = (): ProductFilter => {
     return {
       offset,
       limit,
-      gender,
+      category,
       sizes: searchParams.get("sizes") || undefined,
       query: searchParams.get("q") || undefined,
       minPrice,
       maxPrice,
     };
-  }, [searchParams, gender]);
+  }, [searchParams, category]);
 };

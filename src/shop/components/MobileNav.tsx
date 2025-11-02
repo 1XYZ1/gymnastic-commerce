@@ -22,10 +22,13 @@ export const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const { authStatus, isAdmin, logout } = useAuthStore();
-  const { gender } = useParams();
+  const { category } = useParams();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const query = searchParams.get('q') || '';
+
+  const isAuthenticated = authStatus === 'authenticated';
+  const visibleLinks = NAVIGATION_LINKS.filter(link => !link.requiresAuth || isAuthenticated);
 
   /**
    * Maneja la búsqueda cuando el usuario presiona Enter
@@ -127,12 +130,15 @@ export const MobileNav = () => {
           {/* Links de navegación principal */}
           <nav aria-label="Navegación principal" className="mb-6">
             <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
-              Categorías
+              Menú
             </h3>
             <ul className="space-y-1" role="list">
-              {NAVIGATION_LINKS.map((link) => {
-                const isActive =
-                  link.gender === gender || (!gender && !link.gender);
+              {visibleLinks.map((link) => {
+                const isActive = link.path === '/services'
+                  ? window.location.pathname.startsWith('/services')
+                  : link.path === '/appointments'
+                  ? window.location.pathname.startsWith('/appointments')
+                  : link.category === category || (!category && !link.category && link.path === '/');
 
                 return (
                   <li key={link.path}>

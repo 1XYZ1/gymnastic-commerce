@@ -1,4 +1,5 @@
 import { AdminTitle } from "@/admin/components/AdminTitle";
+import { ProductImageCell } from "@/admin/components/ProductImageCell";
 import { CustomFullScreenLoading } from "@/components/custom/CustomFullScreenLoading";
 import { CustomPagination } from "@/components/custom/CustomPagination";
 import { Button } from "@/components/ui/button";
@@ -56,10 +57,9 @@ export const AdminProductsPage = () => {
           {data!.products.map((product) => (
             <TableRow key={product.id}>
               <TableCell>
-                <img
+                <ProductImageCell
                   src={product.images[0]}
                   alt={`Imagen del producto ${product.title}`}
-                  className="w-20 h-20 object-cover rounded-md"
                 />
               </TableCell>
               <TableCell>
@@ -72,7 +72,7 @@ export const AdminProductsPage = () => {
                 </Link>
               </TableCell>
               <TableCell>{currencyFormatter(product.price)}</TableCell>
-              <TableCell>{product.gender}</TableCell>
+              <TableCell>{product.category}</TableCell>
               <TableCell>
                 <span aria-label={`${product.stock} unidades en stock`}>
                   {product.stock} stock

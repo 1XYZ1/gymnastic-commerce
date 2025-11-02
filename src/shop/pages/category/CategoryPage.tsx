@@ -3,17 +3,17 @@ import { CustomJumbotron } from '@/shop/components/CustomJumbotron';
 import { ProductsGrid } from '@/shop/components/ProductsGrid';
 import { useProducts } from '@/shop/hooks/useProducts';
 import { useParams } from 'react-router';
-import { getGenderLabel } from '@/shop/config/navigation.config';
+import { getCategoryLabel } from '@/shop/config/navigation.config';
 
-export const GenderPage = () => {
-  const { gender } = useParams();
+export const CategoryPage = () => {
+  const { category } = useParams();
   const { data } = useProducts();
 
-  const genderLabel = getGenderLabel(gender || null);
+  const categoryLabel = getCategoryLabel(category || null);
 
   return (
     <>
-      <CustomJumbotron title={`Productos para ${genderLabel}`} />
+      <CustomJumbotron title={`Productos para ${categoryLabel}`} />
 
       <ProductsGrid products={data?.products || []} />
 

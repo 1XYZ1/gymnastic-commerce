@@ -1,28 +1,30 @@
 /**
  * Configuración de navegación para el módulo shop
  *
- * Define los links de navegación y utilidades para mapear géneros
+ * Define los links de navegación y utilidades para mapear categorías
  */
 
 export interface NavigationLink {
   readonly path: string;
   readonly label: string;
-  readonly gender: string | null;
+  readonly category: string | null;
+  readonly requiresAuth?: boolean;
 }
 
 export const NAVIGATION_LINKS: readonly NavigationLink[] = [
-  { path: '/', label: 'Todos', gender: null },
-  { path: '/gender/men', label: 'Hombres', gender: 'men' },
-  { path: '/gender/women', label: 'Mujeres', gender: 'women' },
-  { path: '/gender/kid', label: 'Niños', gender: 'kid' },
+  { path: '/', label: 'Todos', category: null },
+  { path: '/category/dogs', label: 'Perros', category: 'dogs' },
+  { path: '/category/cats', label: 'Gatos', category: 'cats' },
+  { path: '/services', label: 'Servicios', category: null },
+  { path: '/appointments', label: 'Mis Citas', category: null, requiresAuth: true },
 ] as const;
 
 /**
- * Obtiene la etiqueta de un género
- * @param gender - El género a buscar
- * @returns La etiqueta del género o 'Productos' si no se encuentra
+ * Obtiene la etiqueta de una categoría
+ * @param category - La categoría a buscar
+ * @returns La etiqueta de la categoría o 'Productos' si no se encuentra
  */
-export const getGenderLabel = (gender: string | null): string => {
-  const link = NAVIGATION_LINKS.find((l) => l.gender === gender);
+export const getCategoryLabel = (category: string | null): string => {
+  const link = NAVIGATION_LINKS.find((l) => l.category === category);
   return link?.label || 'Productos';
 };
