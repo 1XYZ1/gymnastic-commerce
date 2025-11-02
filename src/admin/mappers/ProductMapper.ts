@@ -31,18 +31,32 @@ export class ProductMapper {
   /**
    * Transforma un producto de dominio al formato API
    * Extrae solo los nombres de archivo de las imágenes
+   * Solo envía los campos específicos que el backend espera
    *
    * @param domainProduct - Producto en formato de dominio
-   * @returns Producto con solo nombres de archivo en imágenes
+   * @returns Producto con solo los campos necesarios para el API
    */
-  static toApi(domainProduct: Partial<Product>): Partial<Product> {
-    if (!domainProduct.images) {
-      return domainProduct;
+  static toApi(domainProduct: Partial<Product>): Record<string, any> {
+    // Solo incluir los campos que el backend espera en UpdateProductDto
+    const payload: Record<string, any> = {};
+
+    // Campos opcionales - solo incluir si existen
+    if (domainProduct.title !== undefined) payload.title = domainProduct.title;
+    if (domainProduct.description !== undefined) payload.description = domainProduct.description;
+    if (domainProduct.price !== undefined) payload.price = Number(domainProduct.price);
+    if (domainProduct.stock !== undefined) payload.stock = Number(domainProduct.stock);
+    if (domainProduct.slug !== undefined) payload.slug = domainProduct.slug;
+    if (domainProduct.category !== undefined) payload.category = domainProduct.category;
+    if (domainProduct.sizes !== undefined) payload.sizes = domainProduct.sizes;
+    if (domainProduct.tags !== undefined) payload.tags = domainProduct.tags;
+    if (domainProduct.gender !== undefined) payload.gender = domainProduct.gender;
+    if (domainProduct.type !== undefined) payload.type = domainProduct.type;
+
+    // Imágenes - extraer solo nombres de archivo
+    if (domainProduct.images !== undefined) {
+      payload.images = ImageTransformService.extractImageNames(domainProduct.images);
     }
 
-    return {
-      ...domainProduct,
-      images: ImageTransformService.extractImageNames(domainProduct.images),
-    };
+    return payload;
   }
 }

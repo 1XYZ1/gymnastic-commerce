@@ -8,7 +8,7 @@
  * La lógica de negocio está en services, la lógica de estado en hooks
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router';
 import { useForm } from 'react-hook-form';
 
@@ -57,11 +57,17 @@ export const ProductForm = ({
 
   const labelInputRef = useRef<HTMLInputElement>(null);
 
+  // Callback estable para evitar loops infinitos
+  const handleFilesChange = useCallback(
+    (newFiles: File[]) => {
+      setValue('files', newFiles);
+    },
+    [setValue]
+  );
+
   // Hook personalizado para manejo de archivos
   const { files, dragActive, handleDrag, handleDrop, handleFileChange, clearFiles } =
-    useFileUpload((newFiles) => {
-      setValue('files', newFiles);
-    });
+    useFileUpload(handleFilesChange);
 
   // Resetear archivos cuando cambie el producto
   useEffect(() => {
