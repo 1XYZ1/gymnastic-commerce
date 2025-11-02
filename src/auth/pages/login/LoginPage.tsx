@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -13,9 +13,13 @@ import { GuestCartStorageService } from '@/cart/services/GuestCartStorageService
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login } = useAuthStore();
   const { syncCart } = useCartMutations();
   const [isPosting, setIsPosting] = useState(false);
+
+  // Obtener returnUrl de los query params
+  const returnUrl = searchParams.get('returnUrl') || '/';
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,7 +40,8 @@ export const LoginPage = () => {
         syncCart.mutate({ items: guestItems });
       }
 
-      navigate('/');
+      // Redirigir al returnUrl si existe, sino a home
+      navigate(returnUrl);
       return;
     }
 
@@ -87,7 +92,10 @@ export const LoginPage = () => {
         {/* Register link */}
         <div className="text-center text-sm">
           ¿No tienes cuenta?{' '}
-          <Link to="/auth/register" className="underline underline-offset-4">
+          <Link
+            to={returnUrl !== '/' ? `/auth/register?returnUrl=${encodeURIComponent(returnUrl)}` : '/auth/register'}
+            className="underline underline-offset-4"
+          >
             Crea una
           </Link>
         </div>

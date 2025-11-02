@@ -1,8 +1,18 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { CalendarIcon, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -10,6 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { cn } from '@/lib/utils';
 import { useServices } from '@/services/hooks/useServices';
 import { SERVICE_TYPE_LABELS } from '@/services/config/service.config';
 import { AppointmentValidationService } from '../services/AppointmentValidationService';
@@ -21,13 +33,23 @@ interface AppointmentFormProps {
   onSuccess?: () => void;
 }
 
+// Horarios disponibles (9 AM - 6 PM)
+const AVAILABLE_HOURS = [
+  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'
+];
+
 /**
- * Formulario para crear una nueva cita
- * Incluye validaciones de fecha/hora según horario de atención
+ * Formulario mejorado para crear una nueva cita
+ * Incluye selector visual de servicios y calendario shadcn/ui
  */
 export function AppointmentForm({ preselectedServiceId, onSuccess }: AppointmentFormProps) {
   const { data: servicesResponse, isLoading: isLoadingServices } = useServices({ limit: 100 });
   const { createAppointment } = useAppointmentMutations();
+
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState<string>('');
 
   const {
     register,
@@ -48,25 +70,43 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
   const selectedServiceId = watch('serviceId');
 
   const onSubmit = (data: CreateAppointmentDTO) => {
+    // Combinar fecha y hora seleccionadas
+    if (!selectedDate || !selectedTime) {
+      alert('Por favor selecciona una fecha y hora');
+      return;
+    }
+
+    const [hours, minutes] = selectedTime.split(':');
+    const dateTime = new Date(selectedDate);
+    dateTime.setHours(parseInt(hours), parseInt(minutes));
+
+    const isoDateTime = dateTime.toISOString().slice(0, 16);
+
     // Validar fecha antes de enviar
-    const validation = AppointmentValidationService.validateAppointmentDate(data.date);
+    const validation = AppointmentValidationService.validateAppointmentDate(isoDateTime);
     if (!validation.valid) {
       alert(validation.error);
       return;
     }
 
-    createAppointment.mutate(data, {
-      onSuccess: () => {
-        onSuccess?.();
-      },
-    });
+    createAppointment.mutate(
+      { ...data, date: isoDateTime },
+      {
+        onSuccess: () => {
+          onSuccess?.();
+        },
+      }
+    );
   };
 
-  // Obtener fecha mínima (ahora + 1 hora)
-  const getMinDateTime = () => {
-    const now = new Date();
-    now.setHours(now.getHours() + 1);
-    return now.toISOString().slice(0, 16);
+  // Fecha mínima: mañana
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 1);
+  minDate.setHours(0, 0, 0, 0);
+
+  // Deshabilitar domingos
+  const disabledDays = (date: Date) => {
+    return date.getDay() === 0; // 0 = Domingo
   };
 
   if (isLoadingServices) {
@@ -87,7 +127,7 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
           className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-3xl mb-4"
           aria-hidden="true"
         >
-          ℹ️
+          <AlertCircle className="h-8 w-8 text-muted-foreground" />
         </div>
         <h3 className="text-lg font-semibold mb-2">No hay servicios disponibles</h3>
         <p className="text-sm text-muted-foreground max-w-md">
@@ -98,26 +138,11 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {/* Información de horarios */}
-      <div className="rounded-lg border bg-muted/30 p-4 mb-6">
+      <div className="rounded-lg border bg-primary/5 p-4">
         <div className="flex gap-3">
-          <div className="flex-shrink-0">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-5 h-5 text-muted-foreground mt-0.5"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-          </div>
+          <Clock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" aria-hidden="true" />
           <div className="flex-1 space-y-1">
             <p className="text-sm font-medium">Horario de atención</p>
             <p className="text-xs text-muted-foreground">
@@ -127,186 +152,203 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
         </div>
       </div>
 
-      {/* Selector de servicio */}
-      <div className="space-y-2">
-        <Label htmlFor="service" className="text-sm font-medium">
-          Servicio <span className="text-destructive" aria-label="requerido">*</span>
+      {/* Selector de servicio con Radio Group */}
+      <div className="space-y-4">
+        <Label className="text-base font-semibold">
+          Selecciona un servicio <span className="text-destructive">*</span>
         </Label>
-        <Select
+
+        <RadioGroup
           value={selectedServiceId}
           onValueChange={(value) => setValue('serviceId', value)}
-          required
+          className="grid gap-3 sm:grid-cols-2"
         >
-          <SelectTrigger
-            id="service"
-            className={errors.serviceId ? 'border-destructive focus-visible:ring-destructive' : ''}
-            aria-label="Seleccionar servicio"
-            aria-invalid={errors.serviceId ? 'true' : 'false'}
-            aria-describedby={errors.serviceId ? 'service-error' : 'service-helper'}
-          >
-            <SelectValue placeholder="Selecciona un servicio" />
-          </SelectTrigger>
-          <SelectContent>
-            {services.map((service) => (
-              <SelectItem key={service.id} value={service.id}>
-                <div className="flex items-center justify-between gap-4 w-full">
-                  <span>{service.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {SERVICE_TYPE_LABELS[service.type]} - ${service.price}
-                  </span>
+          {services.map((service) => (
+            <div key={service.id}>
+              <RadioGroupItem
+                value={service.id}
+                id={service.id}
+                className="peer sr-only"
+              />
+              <Label
+                htmlFor={service.id}
+                className={cn(
+                  "flex flex-col gap-3 rounded-lg border-2 p-4 cursor-pointer transition-all",
+                  "hover:bg-accent hover:border-primary/50",
+                  "peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5",
+                  "peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2"
+                )}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm leading-tight">{service.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                      {service.description}
+                    </p>
+                  </div>
+                  {service.image && (
+                    <img
+                      src={service.image}
+                      alt=""
+                      className="w-12 h-12 rounded-md object-cover flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                  )}
                 </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="px-2 py-1 rounded-md bg-muted font-medium">
+                    {SERVICE_TYPE_LABELS[service.type]}
+                  </span>
+                  <span className="font-bold text-sm">${service.price}</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" aria-hidden="true" />
+                  <span>{service.durationMinutes} min</span>
+                </div>
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+
         {errors.serviceId && (
-          <p className="text-sm text-destructive flex items-center gap-1" id="service-error" role="alert">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-4 h-4"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
+          <p className="text-sm text-destructive flex items-center gap-1" role="alert">
+            <AlertCircle className="w-4 h-4" aria-hidden="true" />
             {errors.serviceId.message}
           </p>
         )}
       </div>
 
-      {/* Fecha y hora */}
-      <div className="space-y-2">
-        <Label htmlFor="date" className="text-sm font-medium">
-          Fecha y hora <span className="text-destructive" aria-label="requerido">*</span>
+      {/* Fecha y hora con Calendar de shadcn */}
+      <div className="space-y-4">
+        <Label className="text-base font-semibold">
+          Fecha y hora <span className="text-destructive">*</span>
         </Label>
-        <Input
-          id="date"
-          type="datetime-local"
-          min={getMinDateTime()}
-          className={errors.date ? 'border-destructive focus-visible:ring-destructive' : ''}
-          {...register('date', {
-            required: 'La fecha es requerida',
-            validate: (value) => {
-              const validation = AppointmentValidationService.validateAppointmentDate(value);
-              return validation.valid || validation.error;
-            },
-          })}
-          aria-invalid={errors.date ? 'true' : 'false'}
-          aria-describedby={errors.date ? 'date-error' : 'date-helper'}
-        />
-        {errors.date && (
-          <p className="text-sm text-destructive flex items-center gap-1" id="date-error" role="alert">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-4 h-4"
-              aria-hidden="true"
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Selector de fecha */}
+          <div className="space-y-2">
+            <Label htmlFor="date-picker" className="text-sm">Fecha</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date-picker"
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal h-11",
+                    !selectedDate && "text-muted-foreground"
+                  )}
+                  type="button"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {selectedDate ? (
+                    format(selectedDate, "PPP", { locale: es })
+                  ) : (
+                    <span>Selecciona una fecha</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={disabledDays}
+                  fromDate={minDate}
+                  locale={es}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          {/* Selector de hora */}
+          <div className="space-y-2">
+            <Label htmlFor="time-select" className="text-sm">Hora</Label>
+            <Select
+              value={selectedTime}
+              onValueChange={setSelectedTime}
+              disabled={!selectedDate}
             >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-            {errors.date.message}
-          </p>
-        )}
-        {!errors.date && (
-          <p id="date-helper" className="text-xs text-muted-foreground">
-            Selecciona una fecha dentro del horario de atención
+              <SelectTrigger
+                id="time-select"
+                className="h-11"
+                aria-label="Seleccionar hora"
+              >
+                <SelectValue placeholder="Selecciona una hora" />
+              </SelectTrigger>
+              <SelectContent>
+                {AVAILABLE_HOURS.map((hour) => (
+                  <SelectItem key={hour} value={hour}>
+                    {hour}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {selectedDate && selectedTime && (
+          <p className="text-sm text-muted-foreground flex items-center gap-2 p-3 bg-muted/50 rounded-md">
+            <CalendarIcon className="h-4 w-4" aria-hidden="true" />
+            Cita agendada para: {format(selectedDate, "PPP", { locale: es })} a las {selectedTime}
           </p>
         )}
       </div>
 
       {/* Información de la mascota */}
-      <div className="space-y-4 rounded-lg border p-4">
-        <h3 className="text-sm font-semibold flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-4 h-4"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="4" r="2" />
-            <circle cx="18" cy="8" r="2" />
-            <circle cx="20" cy="16" r="2" />
-            <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" />
-          </svg>
+      <div className="space-y-4 rounded-lg border-2 border-dashed p-6 bg-muted/30">
+        <h3 className="text-base font-semibold flex items-center gap-2">
+          <span className="text-2xl" aria-hidden="true">🐾</span>
           Información de tu mascota
         </h3>
 
-        {/* Nombre de la mascota */}
-        <div className="space-y-2">
-          <Label htmlFor="petName" className="text-sm font-medium">
-            Nombre <span className="text-destructive" aria-label="requerido">*</span>
-          </Label>
-          <Input
-            id="petName"
-            type="text"
-            placeholder="Ej: Max"
-            className={errors.petName ? 'border-destructive focus-visible:ring-destructive' : ''}
-            {...register('petName', {
-              required: 'El nombre de la mascota es requerido',
-              minLength: {
-                value: 2,
-                message: 'El nombre debe tener al menos 2 caracteres',
-              },
-            })}
-            aria-invalid={errors.petName ? 'true' : 'false'}
-            aria-describedby={errors.petName ? 'petName-error' : undefined}
-          />
-          {errors.petName && (
-            <p className="text-sm text-destructive flex items-center gap-1" id="petName-error" role="alert">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-4 h-4"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              {errors.petName.message}
-            </p>
-          )}
-        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Nombre de la mascota */}
+          <div className="space-y-2">
+            <Label htmlFor="petName" className="text-sm font-medium">
+              Nombre <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="petName"
+              type="text"
+              placeholder="Ej: Max, Luna, Rocky"
+              className={cn(
+                "h-11",
+                errors.petName && "border-destructive focus-visible:ring-destructive"
+              )}
+              {...register('petName', {
+                required: 'El nombre de la mascota es requerido',
+                minLength: {
+                  value: 2,
+                  message: 'El nombre debe tener al menos 2 caracteres',
+                },
+              })}
+              aria-invalid={errors.petName ? 'true' : 'false'}
+            />
+            {errors.petName && (
+              <p className="text-sm text-destructive flex items-center gap-1" role="alert">
+                <AlertCircle className="w-4 h-4" aria-hidden="true" />
+                {errors.petName.message}
+              </p>
+            )}
+          </div>
 
-        {/* Raza (opcional) */}
-        <div className="space-y-2">
-          <Label htmlFor="petBreed" className="text-sm font-medium">
-            Raza <span className="text-xs text-muted-foreground font-normal">(opcional)</span>
-          </Label>
-          <Input
-            id="petBreed"
-            type="text"
-            placeholder="Ej: Golden Retriever"
-            {...register('petBreed')}
-            aria-describedby="petBreed-helper"
-          />
-          <p id="petBreed-helper" className="text-xs text-muted-foreground">
-            Ayuda a brindar un mejor servicio personalizado
-          </p>
+          {/* Raza (opcional) */}
+          <div className="space-y-2">
+            <Label htmlFor="petBreed" className="text-sm font-medium">
+              Raza <span className="text-xs text-muted-foreground font-normal">(opcional)</span>
+            </Label>
+            <Input
+              id="petBreed"
+              type="text"
+              placeholder="Ej: Golden Retriever"
+              className="h-11"
+              {...register('petBreed')}
+            />
+            <p className="text-xs text-muted-foreground">
+              Ayuda a brindar un mejor servicio
+            </p>
+          </div>
         </div>
       </div>
 
@@ -317,14 +359,13 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
         </Label>
         <Textarea
           id="notes"
-          placeholder="Información adicional sobre tu mascota, condiciones especiales, alergias, comportamiento, etc."
+          placeholder="Información sobre alergias, comportamiento, condiciones especiales, etc."
           rows={4}
           className="resize-none"
           {...register('notes')}
-          aria-describedby="notes-helper"
         />
-        <p id="notes-helper" className="text-xs text-muted-foreground">
-          Comparte cualquier información que consideres relevante
+        <p className="text-xs text-muted-foreground">
+          Comparte cualquier información que consideres relevante para el servicio
         </p>
       </div>
 
@@ -332,56 +373,26 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
       <div className="pt-4">
         <Button
           type="submit"
-          className="w-full h-12 text-base font-medium"
-          disabled={createAppointment.isPending}
+          className="w-full h-12 text-base font-semibold"
+          disabled={createAppointment.isPending || !selectedServiceId || !selectedDate || !selectedTime}
         >
           {createAppointment.isPending ? (
             <>
-              <svg
-                className="animate-spin -ml-1 mr-3 h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
               Agendando cita...
             </>
           ) : (
             <>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="mr-2 h-5 w-5"
-                aria-hidden="true"
-              >
-                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                <line x1="16" x2="16" y1="2" y2="6" />
-                <line x1="8" x2="8" y1="2" y2="6" />
-                <line x1="3" x2="21" y1="10" y2="10" />
-              </svg>
-              Agendar cita
+              <CalendarIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+              Confirmar y agendar cita
             </>
           )}
         </Button>
+        {(!selectedServiceId || !selectedDate || !selectedTime) && (
+          <p className="text-xs text-muted-foreground text-center mt-2">
+            Completa todos los campos requeridos para continuar
+          </p>
+        )}
       </div>
     </form>
   );

@@ -1,24 +1,20 @@
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { PRODUCTS_CONFIG } from '@/config/products.config';
 import { useSearchParamsUpdate } from '@/shop/hooks/useSearchParamsUpdate';
+import { useProductTypes } from '@/shop/hooks/useProductTypes';
 
 export const FilterSidebar = () => {
   const { updateMultipleParams, searchParams } = useSearchParamsUpdate();
+  const { data: types, isLoading } = useProductTypes();
 
-  const currentSizes = searchParams.get('sizes')?.split(',') || []; // xs,l,xl
+  const currentType = searchParams.get('type') || '';
   const currentPrice = searchParams.get('price') || 'any';
 
-  const handleSizeChanged = (size: string) => {
-    const newSizes = currentSizes.includes(size)
-      ? currentSizes.filter((s) => s !== size)
-      : [...currentSizes, size];
-
+  const handleTypeChange = (type: string) => {
     updateMultipleParams({
       page: '1',
-      sizes: newSizes.length > 0 ? newSizes.join(',') : null,
+      type: type === currentType ? null : type,
     });
   };
 
@@ -30,35 +26,46 @@ export const FilterSidebar = () => {
   };
 
   return (
-    <div className="w-64 space-y-6">
-      <div>
-        <h3 className="font-semibold text-lg mb-4">Filtros</h3>
+    <div className="w-64 space-y-8">
+      {/* Type Filter */}
+      <div className="space-y-3">
+        <h4 className="text-sm font-medium text-muted-foreground">Tipo</h4>
+        {isLoading ? (
+          <div className="text-sm text-muted-foreground">Cargando...</div>
+        ) : (
+          <RadioGroup value={currentType} className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value=""
+                id="type-all"
+                checked={currentType === ''}
+                onClick={() => handleTypeChange('')}
+              />
+              <Label htmlFor="type-all" className="text-sm cursor-pointer font-normal">
+                Todos
+              </Label>
+            </div>
+            {types?.map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value={type}
+                  id={`type-${type}`}
+                  checked={currentType === type}
+                  onClick={() => handleTypeChange(type)}
+                />
+                <Label htmlFor={`type-${type}`} className="text-sm cursor-pointer font-normal">
+                  {type}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        )}
       </div>
-
-      {/* Sizes */}
-      <div className="space-y-4">
-        <h4 className="font-medium">Tallas</h4>
-        <div className="grid grid-cols-3 gap-2">
-          {PRODUCTS_CONFIG.sizes.map((size) => (
-            <Button
-              key={size.id}
-              variant={currentSizes.includes(size.id) ? 'default' : 'outline'}
-              size="sm"
-              className="h-8"
-              onClick={() => handleSizeChanged(size.id)}
-            >
-              {size.label}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      <Separator />
 
       {/* Price Range */}
-      <div className="space-y-4">
-        <h4 className="font-medium">Precio</h4>
-        <RadioGroup value={currentPrice} className="space-y-3">
+      <div className="space-y-3">
+        <h4 className="text-sm font-medium text-muted-foreground">Precio</h4>
+        <RadioGroup value={currentPrice} className="space-y-2">
           {Object.entries(PRODUCTS_CONFIG.priceRanges).map(([key, range]) => (
             <div key={key} className="flex items-center space-x-2">
               <RadioGroupItem
@@ -67,7 +74,7 @@ export const FilterSidebar = () => {
                 checked={currentPrice === key}
                 onClick={() => handlePriceChange(key)}
               />
-              <Label htmlFor={`price-${key}`} className="text-sm cursor-pointer">
+              <Label htmlFor={`price-${key}`} className="text-sm cursor-pointer font-normal">
                 {range.label}
               </Label>
             </div>

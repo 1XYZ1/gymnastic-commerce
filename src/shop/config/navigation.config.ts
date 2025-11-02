@@ -16,7 +16,6 @@ export const NAVIGATION_LINKS: readonly NavigationLink[] = [
   { path: '/category/dogs', label: 'Perros', category: 'dogs' },
   { path: '/category/cats', label: 'Gatos', category: 'cats' },
   { path: '/services', label: 'Servicios', category: null },
-  { path: '/appointments', label: 'Mis Citas', category: null, requiresAuth: true },
 ] as const;
 
 /**

@@ -1,5 +1,5 @@
 import { useRef, useState, type KeyboardEvent } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link, useParams, useSearchParams } from 'react-router';
@@ -23,7 +23,7 @@ export const CustomHeader = () => {
   const query = searchParams.get('q') || '';
 
   const isAuthenticated = authStatus === 'authenticated';
-  const visibleLinks = NAVIGATION_LINKS.filter(link => !link.requiresAuth || isAuthenticated);
+  const visibleLinks = NAVIGATION_LINKS;
 
   const handleSearch = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') return;
@@ -62,8 +62,6 @@ export const CustomHeader = () => {
             {visibleLinks.map((link) => {
               const isActive = link.path === '/services'
                 ? window.location.pathname.startsWith('/services')
-                : link.path === '/appointments'
-                ? window.location.pathname.startsWith('/appointments')
                 : link.category === category || (!category && !link.category && link.path === '/');
 
               return (
@@ -107,6 +105,21 @@ export const CustomHeader = () => {
 
           {/* Actions - Desktop: Agrupados con espaciado generoso */}
           <div className="hidden md:flex items-center gap-3 lg:gap-4">
+            {/* Mis Citas - Solo visible para usuarios autenticados que no son admin */}
+            {isAuthenticated && !isAdmin() && (
+              <Link to="/appointments">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2"
+                  aria-label="Ver mis citas"
+                >
+                  <Calendar className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden lg:inline">Mis Citas</span>
+                </Button>
+              </Link>
+            )}
+
             {/* Cart Icon - Siempre visible */}
             <CartIcon onOpen={() => setIsCartOpen(true)} />
 

@@ -1,5 +1,5 @@
 import { type FormEvent } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,10 +8,16 @@ import { Label } from '@/components/ui/label';
 import { AuthFormLayout } from '@/auth/components/AuthFormLayout';
 
 export const RegisterPage = () => {
+  const [searchParams] = useSearchParams();
+
+  // Obtener returnUrl de los query params
+  const returnUrl = searchParams.get('returnUrl') || '/';
+
   const handleRegister = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO: Implementar lógica de registro
     console.log('Registro pendiente de implementación');
+    console.log('ReturnUrl:', returnUrl);
   };
 
   return (
@@ -61,7 +67,10 @@ export const RegisterPage = () => {
         {/* Login link */}
         <div className="text-center text-sm">
           ¿Ya tienes cuenta?{' '}
-          <Link to="/auth/login" className="underline underline-offset-4">
+          <Link
+            to={returnUrl !== '/' ? `/auth/login?returnUrl=${encodeURIComponent(returnUrl)}` : '/auth/login'}
+            className="underline underline-offset-4"
+          >
             Ingresa ahora
           </Link>
         </div>

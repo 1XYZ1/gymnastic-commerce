@@ -1,6 +1,6 @@
 import { useState, useRef, type KeyboardEvent } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
-import { Menu, Search, LogIn, LogOut, ShieldCheck, Home, User } from 'lucide-react';
+import { Menu, Search, LogIn, LogOut, ShieldCheck, Home, User, Calendar } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +28,7 @@ export const MobileNav = () => {
   const query = searchParams.get('q') || '';
 
   const isAuthenticated = authStatus === 'authenticated';
-  const visibleLinks = NAVIGATION_LINKS.filter(link => !link.requiresAuth || isAuthenticated);
+  const visibleLinks = NAVIGATION_LINKS;
 
   /**
    * Maneja la búsqueda cuando el usuario presiona Enter
@@ -136,8 +136,6 @@ export const MobileNav = () => {
               {visibleLinks.map((link) => {
                 const isActive = link.path === '/services'
                   ? window.location.pathname.startsWith('/services')
-                  : link.path === '/appointments'
-                  ? window.location.pathname.startsWith('/appointments')
                   : link.category === category || (!category && !link.category && link.path === '/');
 
                 return (
@@ -189,6 +187,22 @@ export const MobileNav = () => {
                     >
                       <ShieldCheck className="h-5 w-5" aria-hidden="true" />
                       <span className="text-base">Panel Admin</span>
+                    </Button>
+                  </Link>
+                </SheetClose>
+              )}
+
+              {/* Botón Mis Citas - Solo visible para usuarios autenticados que no son admin */}
+              {isAuthenticated && !isAdmin() && (
+                <SheetClose asChild>
+                  <Link to="/appointments" onClick={handleLinkClick}>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-3 h-12"
+                      aria-label="Ver mis citas"
+                    >
+                      <Calendar className="h-5 w-5" aria-hidden="true" />
+                      <span className="text-base">Mis Citas</span>
                     </Button>
                   </Link>
                 </SheetClose>

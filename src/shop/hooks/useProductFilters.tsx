@@ -37,7 +37,7 @@ export const useProductFilters = (): ProductFilter => {
       offset,
       limit,
       category,
-      sizes: searchParams.get("sizes") || undefined,
+      type: searchParams.get("type") || undefined,
       query: searchParams.get("q") || undefined,
       minPrice,
       maxPrice,

@@ -21,7 +21,7 @@ export interface ProductFilter {
   readonly limit: number;
   readonly offset: number;
   readonly query?: string;
-  readonly sizes?: string;
+  readonly type?: string;
   readonly category?: string;
   readonly minPrice?: number;
   readonly maxPrice?: number;
