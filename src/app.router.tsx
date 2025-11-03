@@ -13,6 +13,21 @@ import { AppointmentsPage } from './appointments/pages/appointments/Appointments
 import { AppointmentDetailPage } from './appointments/pages/appointment/AppointmentDetailPage';
 import { NewAppointmentPage } from './appointments/pages/new/NewAppointmentPage';
 
+import { PetsPage, NewPetPage, EditPetPage, PetProfilePage, CompletePetProfilePage } from './pets/pages';
+
+import {
+  MedicalHistoryPage,
+  MedicalRecordPage,
+  NewMedicalRecordPage,
+  NewVaccinationPage,
+} from './medical/pages';
+
+import {
+  GroomingHistoryPage,
+  GroomingRecordPage,
+  NewGroomingRecordPage,
+} from './grooming/pages';
+
 import { LoginPage } from './auth/pages/login/LoginPage';
 import { RegisterPage } from './auth/pages/register/RegisterPage';
 
@@ -22,6 +37,7 @@ import { AdminProductsPage } from './admin/pages/products/AdminProductsPage';
 import { AdminServicesPage } from './admin/pages/services/AdminServicesPage';
 import { AdminServicePage } from './admin/pages/service/AdminServicePage';
 import { AdminAppointmentsPage } from './admin/pages/appointments/AdminAppointmentsPage';
+import { AdminPetsPage } from './admin/pages/pets';
 
 import {
   AdminRoute,
@@ -108,6 +124,91 @@ export const appRouter = createBrowserRouter([
       },
     ],
   },
+
+  // Pets Routes (requiere autenticación)
+  {
+    path: '/pets',
+    element: (
+      <AuthenticatedRoute>
+        <ShopLayout />
+      </AuthenticatedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <PetsPage />,
+      },
+      {
+        path: 'new',
+        element: <NewPetPage />,
+      },
+      {
+        path: ':id/edit',
+        element: <EditPetPage />,
+      },
+      {
+        path: ':id/profile',
+        element: <CompletePetProfilePage />,
+      },
+      {
+        path: ':petId/medical',
+        element: <MedicalHistoryPage />,
+      },
+      {
+        path: ':petId/medical/new',
+        element: <NewMedicalRecordPage />,
+      },
+      {
+        path: ':petId/medical/vaccinations/new',
+        element: <NewVaccinationPage />,
+      },
+      {
+        path: ':petId/grooming',
+        element: <GroomingHistoryPage />,
+      },
+      {
+        path: ':petId/grooming/new',
+        element: <NewGroomingRecordPage />,
+      },
+      {
+        path: ':id',
+        element: <PetProfilePage />,
+      },
+    ],
+  },
+
+  // Medical Records Routes (requiere autenticación)
+  {
+    path: '/medical-records',
+    element: (
+      <AuthenticatedRoute>
+        <ShopLayout />
+      </AuthenticatedRoute>
+    ),
+    children: [
+      {
+        path: ':id',
+        element: <MedicalRecordPage />,
+      },
+    ],
+  },
+
+  // Grooming Records Routes (requiere autenticación)
+  {
+    path: '/grooming-records',
+    element: (
+      <AuthenticatedRoute>
+        <ShopLayout />
+      </AuthenticatedRoute>
+    ),
+    children: [
+      {
+        path: ':id',
+        element: <GroomingRecordPage />,
+      },
+    ],
+  },
+
   // Admin Routes
   {
     path: '/admin',
@@ -140,6 +241,10 @@ export const appRouter = createBrowserRouter([
       {
         path: 'appointments',
         element: <AdminAppointmentsPage />,
+      },
+      {
+        path: 'pets',
+        element: <AdminPetsPage />,
       },
     ],
   },
