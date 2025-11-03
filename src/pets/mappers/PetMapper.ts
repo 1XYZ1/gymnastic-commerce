@@ -26,6 +26,9 @@ export class PetMapper {
     return {
       ...apiPet,
       birthDate: apiPet.birthDate ? new Date(apiPet.birthDate) : apiPet.birthDate,
+      weight: apiPet.weight ?? undefined, // Convertir null a undefined
+      microchipNumber: apiPet.microchipNumber ?? undefined, // Convertir null a undefined
+      profilePhoto: apiPet.profilePhoto ?? undefined, // Convertir null a undefined
       createdAt: new Date(apiPet.createdAt),
       updatedAt: new Date(apiPet.updatedAt),
       behaviorNotes: apiPet.behaviorNotes || [],
@@ -151,7 +154,9 @@ export class PetMapper {
         totalAppointments: apiProfile.appointments?.totalAppointments || 0,
       },
       summary: {
-        ...apiProfile.summary,
+        age: apiProfile.summary?.age || 0,
+        totalSpentMedical: apiProfile.summary?.totalSpentMedical || 0,
+        totalSpentGrooming: apiProfile.summary?.totalSpentGrooming || 0,
         lastVisitDate: this.toSafeDate(apiProfile.summary?.lastVisitDate),
         nextVaccinationDue: this.toSafeDate(apiProfile.summary?.nextVaccinationDue),
       },

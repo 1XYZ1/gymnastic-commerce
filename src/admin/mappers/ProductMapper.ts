@@ -49,7 +49,6 @@ export class ProductMapper {
     if (domainProduct.category !== undefined) payload.category = domainProduct.category;
     if (domainProduct.sizes !== undefined) payload.sizes = domainProduct.sizes;
     if (domainProduct.tags !== undefined) payload.tags = domainProduct.tags;
-    if (domainProduct.gender !== undefined) payload.gender = domainProduct.gender;
     if (domainProduct.type !== undefined) payload.type = domainProduct.type;
 
     // Imágenes - extraer solo nombres de archivo
