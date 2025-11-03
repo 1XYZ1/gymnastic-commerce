@@ -5,7 +5,7 @@
  * con el formulario de creación/edición de productos
  */
 
-import type { Size, Category } from '@/shared/types';
+import type { Size, ProductSpecies, ProductType } from '@/shared/types';
 
 /**
  * Tallas disponibles para productos
@@ -24,15 +24,34 @@ export const AVAILABLE_SIZES: readonly Size[] = [
 ] as const;
 
 /**
- * Opciones de categoría para el selector
+ * Opciones de especie para el selector
  */
-export const CATEGORY_OPTIONS: ReadonlyArray<{
-  value: Category;
+export const SPECIES_OPTIONS: ReadonlyArray<{
+  value: ProductSpecies | 'none';
   label: string;
 }> = [
   { value: 'dogs', label: 'Para Perros' },
   { value: 'cats', label: 'Para Gatos' },
+  { value: 'none', label: 'Universal (sin especie)' },
 ] as const;
+
+/**
+ * Opciones de tipo de producto para el selector
+ */
+export const PRODUCT_TYPE_OPTIONS: ReadonlyArray<{
+  value: ProductType;
+  label: string;
+}> = [
+  { value: 'alimento-seco', label: 'Alimento Seco' },
+  { value: 'alimento-humedo', label: 'Alimento Húmedo' },
+  { value: 'snacks', label: 'Snacks y Premios' },
+  { value: 'accesorios', label: 'Accesorios' },
+  { value: 'juguetes', label: 'Juguetes' },
+  { value: 'higiene', label: 'Higiene y Cuidado' },
+] as const;
+
+// Deprecated: usar SPECIES_OPTIONS en su lugar
+export const CATEGORY_OPTIONS = SPECIES_OPTIONS;
 
 /**
  * Configuración de subida de archivos

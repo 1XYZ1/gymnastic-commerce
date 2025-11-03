@@ -8,8 +8,8 @@ export interface Product {
   slug: string;
   stock: number;
   sizes: Size[];
-  type: string;
-  category: Category;
+  type: ProductType;
+  species?: ProductSpecies | null;
   tags: string[];
   images: string[];
   user: User;
@@ -17,4 +17,15 @@ export interface Product {
 
 export type Size = '500g' | '1kg' | '3kg' | '7kg' | '15kg' | '20kg' | 'S' | 'M' | 'L' | 'XL';
 
-export type Category = 'cats' | 'dogs';
+export type ProductType =
+  | 'alimento-seco'
+  | 'alimento-humedo'
+  | 'snacks'
+  | 'accesorios'
+  | 'juguetes'
+  | 'higiene';
+
+export type ProductSpecies = 'cats' | 'dogs';
+
+// Mantener Category por compatibilidad (deprecated)
+export type Category = ProductSpecies;

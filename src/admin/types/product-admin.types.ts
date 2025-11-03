@@ -5,7 +5,7 @@
  * relacionados con la gestión de productos
  */
 
-import type { Size, Category, Product } from '@/shared/types';
+import type { Size, Product, ProductType, ProductSpecies } from '@/shared/types';
 
 /**
  * Datos del formulario de producto
@@ -18,7 +18,8 @@ export interface ProductFormInputs {
   price: number;
   stock: number;
   slug: string;
-  category: Category;
+  type: ProductType;
+  species?: ProductSpecies | 'none' | null;
   sizes: Size[];
   tags: string[];
   images: string[];

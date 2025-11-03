@@ -46,7 +46,7 @@ export class ProductMapper {
     if (domainProduct.price !== undefined) payload.price = Number(domainProduct.price);
     if (domainProduct.stock !== undefined) payload.stock = Number(domainProduct.stock);
     if (domainProduct.slug !== undefined) payload.slug = domainProduct.slug;
-    if (domainProduct.category !== undefined) payload.category = domainProduct.category;
+    if (domainProduct.species !== undefined) payload.species = domainProduct.species === 'none' ? null : domainProduct.species;
     if (domainProduct.sizes !== undefined) payload.sizes = domainProduct.sizes;
     if (domainProduct.tags !== undefined) payload.tags = domainProduct.tags;
     if (domainProduct.type !== undefined) payload.type = domainProduct.type;

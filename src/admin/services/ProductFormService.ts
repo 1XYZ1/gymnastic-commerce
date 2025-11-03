@@ -66,7 +66,8 @@ export class ProductFormService {
       slug: '',
       stock: 0,
       sizes: [],
-      category: 'dogs',
+      type: 'accesorios',
+      species: 'dogs',
       tags: [],
       images: [],
     };

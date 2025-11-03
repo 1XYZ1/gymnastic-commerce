@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { useFileUpload } from '@/admin/hooks/useFileUpload';
 import { useTagManager } from '@/admin/hooks/useTagManager';
 import { useSizeManager } from '@/admin/hooks/useSizeManager';
-import { AVAILABLE_SIZES, CATEGORY_OPTIONS } from '@/admin/config';
+import { AVAILABLE_SIZES, SPECIES_OPTIONS, PRODUCT_TYPE_OPTIONS } from '@/admin/config';
 
 interface Props {
   title: string;
@@ -227,21 +227,50 @@ export const ProductForm = ({
                   )}
                 </div>
 
-                <div>
-                  <label htmlFor="product-category" className="block text-sm font-medium text-slate-700 mb-2">
-                    Categoría del producto
-                  </label>
-                  <select
-                    id="product-category"
-                    {...register('category')}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  >
-                    {CATEGORY_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="product-type" className="block text-sm font-medium text-slate-700 mb-2">
+                      Tipo de producto
+                    </label>
+                    <select
+                      id="product-type"
+                      {...register('type', { required: true })}
+                      className={cn(
+                        'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                        { 'border-red-500': errors.type }
+                      )}
+                      aria-invalid={errors.type ? 'true' : 'false'}
+                      aria-describedby={errors.type ? 'product-type-error' : undefined}
+                    >
+                      {PRODUCT_TYPE_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.type && (
+                      <p id="product-type-error" className="text-red-500 text-sm mt-1" role="alert">
+                        El tipo de producto es requerido
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label htmlFor="product-species" className="block text-sm font-medium text-slate-700 mb-2">
+                      Especie
+                    </label>
+                    <select
+                      id="product-species"
+                      {...register('species')}
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    >
+                      {SPECIES_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
