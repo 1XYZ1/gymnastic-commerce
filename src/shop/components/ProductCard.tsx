@@ -10,7 +10,7 @@ interface ProductCardProps {
   name: string;
   price: number;
   image: string;
-  category: string;
+  type: string;
   sizes: Size[];
   /**
    * Objeto Product completo para el carrito
@@ -23,7 +23,7 @@ export const ProductCard = ({
   name,
   price,
   image,
-  category,
+  type,
   sizes,
   product,
 }: ProductCardProps) => {
@@ -54,13 +54,13 @@ export const ProductCard = ({
         onKeyDown={handleKeyDown}
         tabIndex={0}
         role="article"
-        aria-label={`${name}, ${category}, precio $${price}`}
+        aria-label={`${name}, ${type}, precio $${price}`}
       >
         <CardContent className="p-0">
           <div className="relative aspect-square overflow-hidden bg-muted rounded-lg">
             <img
               src={image}
-              alt={`${name} - ${category}`}
+              alt={`${name} - ${type}`}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
             />
@@ -71,7 +71,7 @@ export const ProductCard = ({
             <div className="space-y-1">
               <h3 className="font-medium text-sm tracking-tight">{name}</h3>
               <p className="text-xs text-muted-foreground uppercase">
-                {category} - <span className="font-bold">{sizes.join(', ')}</span>
+                {type} - <span className="font-bold">{sizes.join(', ')}</span>
               </p>
             </div>
 

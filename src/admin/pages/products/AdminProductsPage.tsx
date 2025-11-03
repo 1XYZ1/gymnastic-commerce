@@ -93,7 +93,7 @@ export const AdminProductsPage = () => {
                     {product.title}
                   </TableCell>
                   <TableCell>{currencyFormatter(product.price)}</TableCell>
-                  <TableCell>{product.category}</TableCell>
+                  <TableCell>{product.type}</TableCell>
                   <TableCell>
                     <Badge variant={getStockBadgeVariant(product.stock)}>
                       {product.stock} stock
@@ -114,7 +114,7 @@ export const AdminProductsPage = () => {
             key={product.id}
             onClick={() => handleProductClick(product.id)}
             title={product.title}
-            subtitle={product.category}
+            subtitle={product.type}
             badge={
               <Badge variant={getStockBadgeVariant(product.stock)}>
                 {product.stock}
