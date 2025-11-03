@@ -9,3 +9,8 @@ export { AdminSidebar } from "./AdminSidebar";
 export { AdminMobileNav } from "./AdminMobileNav";
 export { AdminHeader } from "./AdminHeader";
 export { ProductImageCell } from "./ProductImageCell";
+
+// Pet Components
+export { PetSearchBar } from "./PetSearchBar";
+export { PetStatsWidget } from "./PetStatsWidget";
+export { RecentPetsWidget } from "./RecentPetsWidget";
