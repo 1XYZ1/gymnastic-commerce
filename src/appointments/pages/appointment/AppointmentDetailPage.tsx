@@ -119,8 +119,8 @@ export function AppointmentDetailPage() {
             <div>
               <p className="text-sm text-muted-foreground">Mascota</p>
               <p className="font-medium">
-                {appointment.petName}
-                {appointment.petBreed && ` - ${appointment.petBreed}`}
+                {appointment.pet.name}
+                {appointment.pet.breed && ` - ${appointment.pet.breed}`}
               </p>
             </div>
             {appointment.notes && (

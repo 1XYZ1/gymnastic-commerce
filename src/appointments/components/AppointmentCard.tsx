@@ -64,7 +64,7 @@ export const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="article"
-      aria-label={`Cita para ${appointment.petName}, servicio ${appointment.service.name}, ${formattedDate}`}
+      aria-label={`Cita para ${appointment.pet.name}, servicio ${appointment.service.name}, ${formattedDate}`}
     >
       <CardContent className="p-0 h-full flex flex-col">
         {/* Imagen del servicio */}
@@ -115,10 +115,10 @@ export const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
 
             {/* Información de la mascota */}
             <h3 className="font-semibold text-base tracking-tight leading-tight">
-              {appointment.petName}
-              {appointment.petBreed && (
+              {appointment.pet.name}
+              {appointment.pet.breed && (
                 <span className="block text-sm font-normal text-muted-foreground mt-0.5">
-                  {appointment.petBreed}
+                  {appointment.pet.breed}
                 </span>
               )}
             </h3>

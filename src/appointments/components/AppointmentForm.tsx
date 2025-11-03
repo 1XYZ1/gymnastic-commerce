@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { CalendarIcon, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
@@ -26,6 +25,7 @@ import { useServices } from '@/services/hooks/useServices';
 import { SERVICE_TYPE_LABELS } from '@/services/config/service.config';
 import { AppointmentValidationService } from '../services/AppointmentValidationService';
 import { useAppointmentMutations } from '../hooks/useAppointmentMutations';
+import { AppointmentPetSelector } from './AppointmentPetSelector';
 import type { CreateAppointmentDTO } from '../types/appointment.types';
 
 interface AppointmentFormProps {
@@ -56,18 +56,19 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<CreateAppointmentDTO>({
     defaultValues: {
       serviceId: preselectedServiceId || '',
       date: '',
-      petName: '',
-      petBreed: '',
+      petId: '',
       notes: '',
     },
   });
 
   const selectedServiceId = watch('serviceId');
+  const selectedPetId = watch('petId');
 
   const onSubmit = (data: CreateAppointmentDTO) => {
     // Combinar fecha y hora seleccionadas
@@ -295,62 +296,19 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
         )}
       </div>
 
-      {/* Información de la mascota */}
-      <div className="space-y-4 rounded-lg border-2 border-dashed p-6 bg-muted/30">
-        <h3 className="text-base font-semibold flex items-center gap-2">
-          <span className="text-2xl" aria-hidden="true">🐾</span>
-          Información de tu mascota
-        </h3>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          {/* Nombre de la mascota */}
-          <div className="space-y-2">
-            <Label htmlFor="petName" className="text-sm font-medium">
-              Nombre <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="petName"
-              type="text"
-              placeholder="Ej: Max, Luna, Rocky"
-              className={cn(
-                "h-11",
-                errors.petName && "border-destructive focus-visible:ring-destructive"
-              )}
-              {...register('petName', {
-                required: 'El nombre de la mascota es requerido',
-                minLength: {
-                  value: 2,
-                  message: 'El nombre debe tener al menos 2 caracteres',
-                },
-              })}
-              aria-invalid={errors.petName ? 'true' : 'false'}
-            />
-            {errors.petName && (
-              <p className="text-sm text-destructive flex items-center gap-1" role="alert">
-                <AlertCircle className="w-4 h-4" aria-hidden="true" />
-                {errors.petName.message}
-              </p>
-            )}
-          </div>
-
-          {/* Raza (opcional) */}
-          <div className="space-y-2">
-            <Label htmlFor="petBreed" className="text-sm font-medium">
-              Raza <span className="text-xs text-muted-foreground font-normal">(opcional)</span>
-            </Label>
-            <Input
-              id="petBreed"
-              type="text"
-              placeholder="Ej: Golden Retriever"
-              className="h-11"
-              {...register('petBreed')}
-            />
-            <p className="text-xs text-muted-foreground">
-              Ayuda a brindar un mejor servicio
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Selector de mascota */}
+      <Controller
+        name="petId"
+        control={control}
+        rules={{ required: 'Debes seleccionar una mascota' }}
+        render={({ field, fieldState }) => (
+          <AppointmentPetSelector
+            value={field.value}
+            onChange={field.onChange}
+            error={fieldState.error?.message}
+          />
+        )}
+      />
 
       {/* Notas adicionales (opcional) */}
       <div className="space-y-2">
@@ -374,7 +332,7 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
         <Button
           type="submit"
           className="w-full h-12 text-base font-semibold"
-          disabled={createAppointment.isPending || !selectedServiceId || !selectedDate || !selectedTime}
+          disabled={createAppointment.isPending || !selectedServiceId || !selectedPetId || !selectedDate || !selectedTime}
         >
           {createAppointment.isPending ? (
             <>
@@ -388,7 +346,7 @@ export function AppointmentForm({ preselectedServiceId, onSuccess }: Appointment
             </>
           )}
         </Button>
-        {(!selectedServiceId || !selectedDate || !selectedTime) && (
+        {(!selectedServiceId || !selectedPetId || !selectedDate || !selectedTime) && (
           <p className="text-xs text-muted-foreground text-center mt-2">
             Completa todos los campos requeridos para continuar
           </p>

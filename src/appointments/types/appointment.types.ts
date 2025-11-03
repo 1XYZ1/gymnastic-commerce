@@ -1,13 +1,13 @@
 import type { User } from '@/shared/types';
 import type { Service } from '@/services/types/service.types';
+import type { Pet } from '@/pets/types/pet.types';
 
 export interface Appointment {
   id: string;
   date: string;
   status: AppointmentStatus;
   notes?: string;
-  petName: string;
-  petBreed?: string;
+  pet: Pet;
   service: Service;
   customer: User;
   createdAt: string;
@@ -39,15 +39,13 @@ export interface AppointmentsResponse {
 export interface CreateAppointmentDTO {
   date: string;
   serviceId: string;
-  petName: string;
-  petBreed?: string;
+  petId: string;
   notes?: string;
 }
 
 export interface UpdateAppointmentDTO {
   date?: string;
-  petName?: string;
-  petBreed?: string;
+  petId?: string;
   notes?: string;
   status?: AppointmentStatus;
 }
