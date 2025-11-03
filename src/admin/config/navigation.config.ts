@@ -9,6 +9,7 @@ import {
   // HelpCircle,
   Calendar,
   Briefcase,
+  PawPrint,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -50,6 +51,12 @@ export const ADMIN_NAVIGATION_LINKS: AdminNavigationLink[] = [
     label: 'Agendas de clientes',
     to: '/admin/appointments',
     description: 'Gestión de citas de clientes',
+  },
+  {
+    icon: PawPrint,
+    label: 'Mascotas',
+    to: '/admin/pets',
+    description: 'Gestión de mascotas de clientes',
   },
   // {
   //   icon: Users,

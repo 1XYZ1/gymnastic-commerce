@@ -13,7 +13,7 @@ import { AppointmentsPage } from './appointments/pages/appointments/Appointments
 import { AppointmentDetailPage } from './appointments/pages/appointment/AppointmentDetailPage';
 import { NewAppointmentPage } from './appointments/pages/new/NewAppointmentPage';
 
-import { PetsPage, NewPetPage, EditPetPage, PetProfilePage, CompletePetProfilePage } from './pets/pages';
+import { PetsPage, NewPetPage, EditPetPage, CompletePetProfilePage } from './pets/pages';
 
 import {
   MedicalHistoryPage,
@@ -169,10 +169,6 @@ export const appRouter = createBrowserRouter([
       {
         path: ':petId/grooming/new',
         element: <NewGroomingRecordPage />,
-      },
-      {
-        path: ':id',
-        element: <PetProfilePage />,
       },
     ],
   },

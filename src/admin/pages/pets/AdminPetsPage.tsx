@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PetAvatar } from "@/pets/components/PetAvatar";
 import { usePetsSearch } from "@/pets/hooks";
 import type { PetSpecies } from "@/shared/types/enums";
 
@@ -64,7 +65,7 @@ export default function AdminPetsPage() {
   const { pets, allPets, isLoading, searchQuery, setSearchQuery, summary } = usePetsSearch();
 
   const handlePetClick = (petId: string) => {
-    navigate(`/pets/${petId}`);
+    navigate(`/pets/${petId}/profile`);
   };
 
   // Format date to Spanish locale
@@ -199,23 +200,7 @@ export default function AdminPetsPage() {
                         {/* Photo Column */}
                         <TableCell>
                           <div className="flex items-center justify-center">
-                            {pet.profilePhoto ? (
-                              <img
-                                src={pet.profilePhoto}
-                                alt={`Foto de ${pet.name}`}
-                                className="w-12 h-12 rounded-full object-cover border-2 border-border"
-                              />
-                            ) : (
-                              <div
-                                className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-border"
-                                aria-label="Sin foto"
-                              >
-                                <PawPrint
-                                  className="h-6 w-6 text-muted-foreground"
-                                  aria-hidden="true"
-                                />
-                              </div>
-                            )}
+                            <PetAvatar pet={pet} size="sm" />
                           </div>
                         </TableCell>
 
@@ -255,27 +240,7 @@ export default function AdminPetsPage() {
                 onClick={() => handlePetClick(pet.id)}
                 title={pet.name}
                 subtitle={pet.owner?.fullName || "Sin dueño"}
-                badge={
-                  <div className="flex items-center justify-center">
-                    {pet.profilePhoto ? (
-                      <img
-                        src={pet.profilePhoto}
-                        alt={`Foto de ${pet.name}`}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-border"
-                      />
-                    ) : (
-                      <div
-                        className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-border"
-                        aria-label="Sin foto"
-                      >
-                        <PawPrint
-                          className="h-6 w-6 text-muted-foreground"
-                          aria-hidden="true"
-                        />
-                      </div>
-                    )}
-                  </div>
-                }
+                badge={<PetAvatar pet={pet} size="sm" />}
                 metadata={[
                   {
                     label: "Especie",

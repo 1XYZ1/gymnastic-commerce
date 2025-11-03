@@ -1,5 +1,5 @@
 import { useRef, useState, type KeyboardEvent } from 'react';
-import { Search, Calendar } from 'lucide-react';
+import { Search, PawPrint } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link, useParams, useSearchParams } from 'react-router';
@@ -105,17 +105,17 @@ export const CustomHeader = () => {
 
           {/* Actions - Desktop: Agrupados con espaciado generoso */}
           <div className="hidden md:flex items-center gap-3 lg:gap-4">
-            {/* Mis Citas - Solo visible para usuarios autenticados que no son admin */}
+            {/* Mis Mascotas - Solo visible para usuarios autenticados que no son admin */}
             {isAuthenticated && !isAdmin() && (
-              <Link to="/appointments">
+              <Link to="/pets">
                 <Button
                   variant="ghost"
                   size="sm"
                   className="gap-2"
-                  aria-label="Ver mis citas"
+                  aria-label="Ver mis mascotas"
                 >
-                  <Calendar className="h-4 w-4" aria-hidden="true" />
-                  <span className="hidden lg:inline">Mis Citas</span>
+                  <PawPrint className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden lg:inline">Mis Mascotas</span>
                 </Button>
               </Link>
             )}

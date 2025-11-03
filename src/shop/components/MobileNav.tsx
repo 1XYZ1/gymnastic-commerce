@@ -1,6 +1,6 @@
 import { useState, useRef, type KeyboardEvent } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
-import { Menu, Search, LogIn, LogOut, ShieldCheck, Home, User, Calendar } from 'lucide-react';
+import { Menu, Search, LogIn, LogOut, ShieldCheck, Home, User, PawPrint } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -192,17 +192,17 @@ export const MobileNav = () => {
                 </SheetClose>
               )}
 
-              {/* Botón Mis Citas - Solo visible para usuarios autenticados que no son admin */}
+              {/* Botón Mis Mascotas - Solo visible para usuarios autenticados que no son admin */}
               {isAuthenticated && !isAdmin() && (
                 <SheetClose asChild>
-                  <Link to="/appointments" onClick={handleLinkClick}>
+                  <Link to="/pets" onClick={handleLinkClick}>
                     <Button
                       variant="outline"
                       className="w-full justify-start gap-3 h-12"
-                      aria-label="Ver mis citas"
+                      aria-label="Ver mis mascotas"
                     >
-                      <Calendar className="h-5 w-5" aria-hidden="true" />
-                      <span className="text-base">Mis Citas</span>
+                      <PawPrint className="h-5 w-5" aria-hidden="true" />
+                      <span className="text-base">Mis Mascotas</span>
                     </Button>
                   </Link>
                 </SheetClose>

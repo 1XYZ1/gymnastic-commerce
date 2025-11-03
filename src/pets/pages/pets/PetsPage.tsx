@@ -60,7 +60,7 @@ export function PetsPage() {
             <PetCard
               key={pet.id}
               pet={pet}
-              onClick={() => navigate(`/pets/${pet.id}`)}
+              onClick={() => navigate(`/pets/${pet.id}/profile`)}
               onViewProfile={() => navigate(`/pets/${pet.id}/profile`)}
             />
           ))}
