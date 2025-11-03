@@ -124,17 +124,17 @@ export function AdminAppointmentsPage() {
                     key={appointment.id}
                     onClick={() => handleAppointmentClick(appointment.id)}
                     className="cursor-pointer hover:bg-accent transition-colors"
-                    aria-label={`Ver detalles de cita para ${appointment.petName}`}
+                    aria-label={`Ver detalles de cita para ${appointment.pet.name}`}
                   >
                     <TableCell className="font-medium">
                       {formatAppointmentDate(appointment.date)}
                     </TableCell>
                     <TableCell>{appointment.customer.fullName}</TableCell>
                     <TableCell>
-                      {appointment.petName}
-                      {appointment.petBreed && (
+                      {appointment.pet.name}
+                      {appointment.pet.breed && (
                         <span className="text-muted-foreground text-xs block">
-                          {appointment.petBreed}
+                          {appointment.pet.breed}
                         </span>
                       )}
                     </TableCell>
@@ -166,7 +166,7 @@ export function AdminAppointmentsPage() {
           <AdminListItem
             key={appointment.id}
             onClick={() => handleAppointmentClick(appointment.id)}
-            title={appointment.petName}
+            title={appointment.pet.name}
             subtitle={`Cliente: ${appointment.customer.fullName}`}
             badge={<AppointmentStatusBadge status={appointment.status} />}
             metadata={[
