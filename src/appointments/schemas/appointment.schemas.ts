@@ -1,5 +1,6 @@
 /**
  * Zod Schemas para validación runtime de respuestas del API de Appointments
+ * SINCRONIZADO CON BACKEND: pet-shop-back/src/common/enums/
  *
  * Estos schemas validan datos del backend y generan tipos TypeScript automáticamente
  * usando z.infer<>
@@ -7,7 +8,8 @@
 import { z } from 'zod';
 
 /**
- * Schema para el status de cita
+ * Schema para el status de cita (4 valores)
+ * Backend: AppointmentStatus enum
  */
 export const AppointmentStatusSchema = z.enum([
   'pending',
@@ -22,7 +24,7 @@ export const AppointmentStatusSchema = z.enum([
 export const ServiceNestedSchema = z.object({
   id: z.string(),
   name: z.string(),
-  type: z.enum(['medical', 'grooming', 'veterinary']),
+  type: z.enum(['grooming', 'veterinary']),
   description: z.string(),
   price: z.number(),
   durationMinutes: z.number(),
@@ -44,21 +46,52 @@ export const UserNestedSchema = z.object({
 });
 
 /**
+ * Schema para especies de mascota (6 valores)
+ * Backend: PetSpecies enum
+ */
+export const PetSpeciesSchema = z.enum([
+  'dog',
+  'cat',
+  'bird',
+  'rabbit',
+  'hamster',
+  'other',
+]);
+
+/**
+ * Schema para género de mascota (3 valores)
+ * Backend: PetGender enum
+ */
+export const PetGenderSchema = z.enum(['male', 'female', 'unknown']);
+
+/**
+ * Schema para temperamento de mascota (5 valores)
+ * Backend: PetTemperament enum
+ */
+export const PetTemperamentSchema = z.enum([
+  'calm',
+  'nervous',
+  'aggressive',
+  'friendly',
+  'unknown',
+]);
+
+/**
  * Schema para pet (nested en appointment)
  * Backend puede devolver el objeto Pet completo con todos sus campos
  */
 export const PetNestedSchema = z.object({
   id: z.string(),
   name: z.string(),
-  species: z.enum(['dog', 'cat', 'bird', 'rabbit', 'hamster', 'fish', 'reptile', 'other']),
+  species: PetSpeciesSchema,
   breed: z.string().optional().nullable(),
   birthDate: z.string().nullable().optional(),
-  gender: z.enum(['male', 'female', 'unknown']).optional(),
+  gender: PetGenderSchema.optional(),
   color: z.string().optional().nullable(),
   weight: z.union([z.number(), z.string().transform(Number)]).nullable().optional(),
   microchipNumber: z.string().nullable().optional(),
   profilePhoto: z.string().nullable().optional(),
-  temperament: z.enum(['friendly', 'aggressive', 'shy', 'playful', 'calm', 'energetic', 'nervous', 'unknown']).optional(),
+  temperament: PetTemperamentSchema.optional(),
   behaviorNotes: z.array(z.string()).optional(),
   generalNotes: z.string().optional().nullable(),
   isActive: z.boolean().optional(),

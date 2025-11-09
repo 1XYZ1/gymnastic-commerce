@@ -9,7 +9,7 @@ export const petFormSchema = yup.object({
   species: yup
     .string()
     .required('La especie es obligatoria')
-    .oneOf(['dog', 'cat', 'bird', 'rabbit', 'hamster', 'fish', 'reptile', 'other'], 'Especie inválida'),
+    .oneOf(['dog', 'cat', 'bird', 'rabbit', 'hamster', 'other'], 'Especie inválida'),
 
   breed: yup
     .string()

@@ -1,4 +1,4 @@
-import { Dog, Cat, Bird, Rabbit, Rat, Fish, Turtle, PawPrint, Calendar } from 'lucide-react';
+import { Dog, Cat, Bird, Rabbit, Rat, PawPrint, Calendar } from 'lucide-react';
 import { Link } from 'react-router';
 import type { Pet } from '@/pets/types';
 import { PetStatsService } from '@/pets/services/PetStatsService';
@@ -11,6 +11,7 @@ interface RecentPetsWidgetProps {
 
 /**
  * Mapeo de especies a iconos de lucide-react
+ * SINCRONIZADO CON BACKEND: solo 6 especies válidas
  */
 const speciesIcons: Record<PetSpecies, typeof Dog> = {
   dog: Dog,
@@ -18,13 +19,12 @@ const speciesIcons: Record<PetSpecies, typeof Dog> = {
   bird: Bird,
   rabbit: Rabbit,
   hamster: Rat,
-  fish: Fish,
-  reptile: Turtle,
   other: PawPrint,
 };
 
 /**
  * Mapeo de especies a nombres en español (singular)
+ * SINCRONIZADO CON BACKEND: solo 6 especies válidas
  */
 const speciesLabels: Record<PetSpecies, string> = {
   dog: 'Perro',
@@ -32,8 +32,6 @@ const speciesLabels: Record<PetSpecies, string> = {
   bird: 'Ave',
   rabbit: 'Conejo',
   hamster: 'Hamster',
-  fish: 'Pez',
-  reptile: 'Reptil',
   other: 'Otra especie',
 };
 
@@ -48,8 +46,8 @@ const formatDate = (date: Date | string): string => {
 
   if (diffInDays === 0) return 'Hoy';
   if (diffInDays === 1) return 'Ayer';
-  if (diffInDays < 7) return `Hace ${diffInDays} días`;
-  if (diffInDays < 30) return `Hace ${Math.floor(diffInDays / 7)} semanas`;
+  if (diffInDays < 7) return 'Hace ' + diffInDays + ' días';
+  if (diffInDays < 30) return 'Hace ' + Math.floor(diffInDays / 7) + ' semanas';
 
   return d.toLocaleDateString('es-ES', {
     day: 'numeric',

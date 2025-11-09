@@ -34,8 +34,6 @@ const SPECIES_LABELS: Record<PetSpecies, string> = {
   bird: "Ave",
   rabbit: "Conejo",
   hamster: "Hamster",
-  fish: "Pez",
-  reptile: "Reptil",
   other: "Otro",
 };
 

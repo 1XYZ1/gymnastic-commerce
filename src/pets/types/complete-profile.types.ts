@@ -2,6 +2,7 @@ import type { Pet } from './pet.types';
 import type { MedicalRecord, Vaccination } from '@/medical/types/medical.types';
 import type { GroomingRecord } from '@/grooming/types/grooming.types';
 import type { Appointment } from '@/appointments/types/appointment.types';
+import type { WeightSource } from '@/shared/types/enums';
 
 // Usa el tipo Appointment completo de appointments module
 type AppointmentPet = Appointment;
@@ -9,7 +10,7 @@ type AppointmentPet = Appointment;
 export interface WeightHistory {
   date: Date | string;
   weight: number;
-  source: 'medical' | 'grooming' | 'manual';
+  source: WeightSource;
 }
 
 export interface CompleteProfile {
