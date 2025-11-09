@@ -6,8 +6,18 @@ import { gymApi } from '@/api/gymApi';
 import { CartApiRepository } from './CartApiRepository';
 import type { ICartRepository } from './ICartRepository';
 
+// Lazy initialization para evitar dependencias circulares
+let _cartRepository: ICartRepository | undefined;
+
+const getCartRepository = (): ICartRepository => {
+  if (!_cartRepository) {
+    _cartRepository = new CartApiRepository(gymApi);
+  }
+  return _cartRepository;
+};
+
 // Instanciar repository (singleton)
-export const cartRepository: ICartRepository = new CartApiRepository(gymApi);
+export const cartRepository: ICartRepository = getCartRepository();
 
 // Exportar tipos
 export type { ICartRepository } from './ICartRepository';

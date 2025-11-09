@@ -5,5 +5,15 @@ import { ServiceMapper } from '../mappers/ServiceMapper';
 /**
  * Instancia singleton del repositorio de servicios
  * Inyecta las dependencias necesarias (API client y Mapper)
+ * Lazy initialization para evitar dependencias circulares
  */
-export const serviceRepository = new ServiceApiRepository(gymApi, ServiceMapper);
+let _serviceRepository: ServiceApiRepository | undefined;
+
+const getServiceRepository = (): ServiceApiRepository => {
+  if (!_serviceRepository) {
+    _serviceRepository = new ServiceApiRepository(gymApi, ServiceMapper);
+  }
+  return _serviceRepository;
+};
+
+export const serviceRepository = getServiceRepository();

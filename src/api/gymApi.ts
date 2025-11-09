@@ -1,5 +1,6 @@
 import axios from "axios";
-import { tokenStorage } from "@/auth/services";
+// IMPORTANTE: Import directo, NO desde barrel export para evitar dependencia circular
+import { tokenStorage } from "@/auth/services/TokenStorageService";
 
 const gymApi = axios.create({
   baseURL: import.meta.env.VITE_API_URL,

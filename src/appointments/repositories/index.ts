@@ -5,5 +5,15 @@ import { AppointmentMapper } from '../mappers/AppointmentMapper';
 /**
  * Instancia singleton del repositorio de citas
  * Inyecta dependencias (API client y mapper)
+ * Lazy initialization para evitar dependencias circulares
  */
-export const appointmentRepository = new AppointmentApiRepository(gymApi, AppointmentMapper);
+let _appointmentRepository: AppointmentApiRepository | undefined;
+
+const getAppointmentRepository = (): AppointmentApiRepository => {
+  if (!_appointmentRepository) {
+    _appointmentRepository = new AppointmentApiRepository(gymApi, AppointmentMapper);
+  }
+  return _appointmentRepository;
+};
+
+export const appointmentRepository = getAppointmentRepository();

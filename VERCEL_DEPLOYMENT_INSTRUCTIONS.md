@@ -28,6 +28,12 @@ Tu aplicación no se mostraba porque estaba intentando conectarse a `localhost:3
 - Configuración completa de build y rewrites
 - Soporte para variables de entorno
 
+### 6. Dependencias Circulares Eliminadas ✅ **CRÍTICO**
+- Import directo en `gymApi.ts` para evitar barrel exports problemáticos
+- Lazy initialization en todos los repositorios
+- Esto soluciona el error `Cannot access 'W' before initialization` en producción
+- Ver `CIRCULAR_DEPENDENCY_FIX.md` para detalles técnicos
+
 ## PASOS PARA CONFIGURAR EN VERCEL
 
 ### PASO 1: Configurar Variables de Entorno en Vercel
