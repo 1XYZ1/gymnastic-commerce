@@ -7,12 +7,10 @@ export { MedicalApiRepository };
 // Esto evita problemas de dependencias circulares en producción
 let _medicalRepository: MedicalApiRepository | undefined;
 
-const getMedicalRepository = (): MedicalApiRepository => {
+// Exportar función getter para lazy initialization
+export const getMedicalRepository = (): MedicalApiRepository => {
   if (!_medicalRepository) {
     _medicalRepository = new MedicalApiRepository();
   }
   return _medicalRepository;
 };
-
-// Instancia singleton para usar en hooks
-export const medicalRepository = getMedicalRepository();

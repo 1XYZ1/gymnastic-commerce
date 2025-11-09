@@ -7,7 +7,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Product } from '@/shared/types';
-import { productRepository } from '../repositories';
+import { getProductRepository } from '../repositories';
 import type { ProductFormInputs } from '../types';
 import { ProductFormService } from '../services';
 import { PRODUCT_QUERY_CONFIG } from '../config';
@@ -24,7 +24,7 @@ export const useProduct = (id: string) => {
   // Query para obtener el producto
   const query = useQuery({
     queryKey: ['product', { id }],
-    queryFn: () => productRepository.getProductById(id),
+    queryFn: () => getProductRepository().getProductById(id),
     retry: false,
     staleTime: PRODUCT_QUERY_CONFIG.staleTime,
   });
@@ -43,7 +43,7 @@ export const useProduct = (id: string) => {
 
       // Crear o actualizar según corresponda
       if (isCreating) {
-        return await productRepository.createProduct(
+        return await getProductRepository().createProduct(
           {
             ...preparedData,
             images: productData.images || [],
@@ -51,7 +51,7 @@ export const useProduct = (id: string) => {
           files
         );
       } else {
-        return await productRepository.updateProduct(
+        return await getProductRepository().updateProduct(
           id,
           {
             ...preparedData,

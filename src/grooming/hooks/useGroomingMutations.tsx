@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { groomingRepository } from '../repositories';
+import { getGroomingRepository } from '../repositories';
 import type { CreateGroomingRecordDto, GroomingRecord } from '../types/grooming.types';
 import { GroomingValidationService } from '../services';
 
@@ -19,7 +19,7 @@ export const useGroomingMutations = () => {
       if (!validation.valid) {
         throw new Error(validation.errors.join(', '));
       }
-      return groomingRepository.create(data);
+      return getGroomingRepository().create(data);
     },
     onSuccess: (newRecord) => {
       // Invalidar cache del historial de grooming de la mascota
@@ -42,7 +42,7 @@ export const useGroomingMutations = () => {
     { id: string; data: Partial<CreateGroomingRecordDto> }
   >({
     mutationFn: ({ id, data }: { id: string; data: Partial<CreateGroomingRecordDto> }) => {
-      return groomingRepository.update(id, data);
+      return getGroomingRepository().update(id, data);
     },
     onSuccess: (updatedRecord) => {
       // Invalidar cache del registro actualizado y del historial
@@ -66,7 +66,7 @@ export const useGroomingMutations = () => {
     { id: string; petId?: string }
   >({
     mutationFn: ({ id, petId }: { id: string; petId?: string }) =>
-      groomingRepository.delete(id).then((result: { message: string; id: string }) => ({ ...result, petId })),
+      getGroomingRepository().delete(id).then((result: { message: string; id: string }) => ({ ...result, petId })),
     onSuccess: (result) => {
       // Remover del cache el registro eliminado
       queryClient.removeQueries({ queryKey: ['grooming-record', result.id] });

@@ -1,43 +1,43 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { medicalRepository } from '../repositories';
+import { getMedicalRepository } from '../repositories';
 import type { CreateMedicalRecordDto } from '../types/medical.types';
 import { MedicalValidationService } from '../services';
 
 /**
- * Hook para mutaciones (create/update/delete) de registros médicos
- * Incluye validaciones de negocio, manejo de errores e invalidación de cache
+ * Hook para mutaciones (create/update/delete) de registros mï¿½dicos
+ * Incluye validaciones de negocio, manejo de errores e invalidaciï¿½n de cache
  */
 export const useMedicalMutations = () => {
   const queryClient = useQueryClient();
 
-  // Crear registro médico
+  // Crear registro mï¿½dico
   const createMedicalRecord = useMutation({
     mutationFn: (data: CreateMedicalRecordDto) => {
-      // Validación previa
+      // Validaciï¿½n previa
       const validation = MedicalValidationService.validateCreateDto(data);
       if (!validation.valid) {
         throw new Error(validation.errors.join(', '));
       }
-      return medicalRepository.create(data);
+      return getMedicalRepository().create(data);
     },
     onSuccess: (newRecord) => {
-      // Invalidar cache del historial médico de la mascota
+      // Invalidar cache del historial mï¿½dico de la mascota
       if (newRecord.pet?.id) {
         queryClient.invalidateQueries({ queryKey: ['medical-records', newRecord.pet.id] });
         queryClient.invalidateQueries({ queryKey: ['pet-complete-profile', newRecord.pet.id] });
       }
-      toast.success('Registro médico creado exitosamente');
+      toast.success('Registro mï¿½dico creado exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al crear registro médico: ${error.message}`);
+      toast.error(`Error al crear registro mï¿½dico: ${error.message}`);
     },
   });
 
-  // Actualizar registro médico
+  // Actualizar registro mï¿½dico
   const updateMedicalRecord = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<CreateMedicalRecordDto> }) => {
-      return medicalRepository.update(id, data);
+      return getMedicalRepository().update(id, data);
     },
     onSuccess: (updatedRecord) => {
       // Invalidar cache
@@ -46,17 +46,17 @@ export const useMedicalMutations = () => {
         queryClient.invalidateQueries({ queryKey: ['medical-records', updatedRecord.pet.id] });
         queryClient.invalidateQueries({ queryKey: ['pet-complete-profile', updatedRecord.pet.id] });
       }
-      toast.success('Registro médico actualizado correctamente');
+      toast.success('Registro mï¿½dico actualizado correctamente');
     },
     onError: (error: Error) => {
       toast.error(`Error al actualizar: ${error.message}`);
     },
   });
 
-  // Eliminar registro médico
+  // Eliminar registro mï¿½dico
   const deleteMedicalRecord = useMutation({
     mutationFn: ({ id, petId }: { id: string; petId?: string }) =>
-      medicalRepository.delete(id).then((result) => ({ ...result, petId })),
+      getMedicalRepository().delete(id).then((result) => ({ ...result, petId })),
     onSuccess: (result) => {
       // Invalidar cache
       queryClient.removeQueries({ queryKey: ['medical-record', result.id] });
@@ -64,7 +64,7 @@ export const useMedicalMutations = () => {
         queryClient.invalidateQueries({ queryKey: ['medical-records', result.petId] });
         queryClient.invalidateQueries({ queryKey: ['pet-complete-profile', result.petId] });
       }
-      toast.success('Registro médico eliminado correctamente');
+      toast.success('Registro mï¿½dico eliminado correctamente');
     },
     onError: (error: Error) => {
       toast.error(`Error al eliminar: ${error.message}`);

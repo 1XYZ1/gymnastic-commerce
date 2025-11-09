@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { groomingRepository } from '../repositories';
+import { getGroomingRepository } from '../repositories';
 
 /**
  * Hook para obtener el historial de grooming de una mascota
@@ -8,7 +8,7 @@ import { groomingRepository } from '../repositories';
 export const useGroomingRecords = (petId?: string) => {
   return useQuery({
     queryKey: ['grooming-records', petId],
-    queryFn: () => groomingRepository.findByPetId(petId!),
+    queryFn: () => getGroomingRepository().findByPetId(petId!),
     enabled: !!petId, // Solo ejecutar cuando petId esté disponible
     staleTime: 5 * 60 * 1000, // Los datos se consideran frescos por 5 minutos
   });

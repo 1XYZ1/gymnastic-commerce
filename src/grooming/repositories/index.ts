@@ -7,12 +7,10 @@ export { GroomingApiRepository };
 // Esto evita problemas de dependencias circulares en producción
 let _groomingRepository: GroomingApiRepository | undefined;
 
-const getGroomingRepository = (): GroomingApiRepository => {
+// Exportar función getter para lazy initialization
+export const getGroomingRepository = (): GroomingApiRepository => {
   if (!_groomingRepository) {
     _groomingRepository = new GroomingApiRepository();
   }
   return _groomingRepository;
 };
-
-// Singleton del repositorio para uso en toda la aplicación
-export const groomingRepository = getGroomingRepository();

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { appointmentRepository } from '../repositories';
+import { getAppointmentRepository } from '../repositories';
 
 /**
  * Hook para obtener una cita específica por ID
@@ -8,7 +8,7 @@ import { appointmentRepository } from '../repositories';
 export const useAppointment = (id: string) => {
   return useQuery({
     queryKey: ['appointment', id],
-    queryFn: () => appointmentRepository.getAppointmentById(id),
+    queryFn: () => getAppointmentRepository().getAppointmentById(id),
     enabled: !!id,
   });
 };

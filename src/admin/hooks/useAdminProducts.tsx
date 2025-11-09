@@ -9,7 +9,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { productRepository } from '../repositories';
+import { getProductRepository } from '../repositories';
 import type { ProductAdminFilter } from '../types';
 import { REACT_QUERY_STALE_TIMES } from '@/config/react-query.config';
 
@@ -22,7 +22,7 @@ import { REACT_QUERY_STALE_TIMES } from '@/config/react-query.config';
 export const useAdminProducts = (filter: ProductAdminFilter = {}) => {
   return useQuery({
     queryKey: ['admin-products', filter],
-    queryFn: () => productRepository.getProducts(filter),
+    queryFn: () => getProductRepository().getProducts(filter),
     staleTime: REACT_QUERY_STALE_TIMES.admin, // 1 minuto (admin necesita datos frescos)
   });
 };

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { petRepository } from '../repositories';
+import { getPetRepository } from '../repositories';
 import type { CreatePetDto, UpdatePetDto } from '../types';
 import { PetValidationService } from '../services';
 
@@ -15,7 +15,7 @@ export const usePetMutations = () => {
       if (!validation.valid) {
         throw new Error(validation.errors.join(', '));
       }
-      return petRepository.create(data);
+      return getPetRepository().create(data);
     },
     onSuccess: (newPet) => {
       // Invalidar cache de lista de mascotas
@@ -30,7 +30,7 @@ export const usePetMutations = () => {
   // Actualizar mascota
   const updatePet = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdatePetDto }) => {
-      return petRepository.update(id, data);
+      return getPetRepository().update(id, data);
     },
     onSuccess: (updatedPet) => {
       // Invalidar cache de la mascota específica y la lista
@@ -46,7 +46,7 @@ export const usePetMutations = () => {
 
   // Eliminar mascota
   const deletePet = useMutation({
-    mutationFn: (id: string) => petRepository.delete(id),
+    mutationFn: (id: string) => getPetRepository().delete(id),
     onSuccess: (result) => {
       // Invalidar cache
       queryClient.invalidateQueries({ queryKey: ['pets'] });

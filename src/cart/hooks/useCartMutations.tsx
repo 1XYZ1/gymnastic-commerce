@@ -13,7 +13,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { cartRepository } from '../repositories';
+import { getCartRepository } from '../repositories';
 import { CART_SUCCESS_MESSAGES } from '../config/cart.config';
 import { CartErrorService } from '../services/CartErrorService';
 import type {
@@ -61,7 +61,7 @@ export const useCartMutations = () => {
    */
   const addItem = useMutation<Cart, Error, AddCartItemDto, { previousCart?: Cart }>({
     mutationFn: async (dto: AddCartItemDto) => {
-      return await cartRepository.addItem(dto);
+      return await getCartRepository().addItem(dto);
     },
 
     // Optimistic update: actualizar UI inmediatamente
@@ -118,7 +118,7 @@ export const useCartMutations = () => {
     { previousCart?: Cart }
   >({
     mutationFn: async ({ itemId, dto }) => {
-      return await cartRepository.updateItem(itemId, dto);
+      return await getCartRepository().updateItem(itemId, dto);
     },
 
     onMutate: async ({ itemId, dto }) => {
@@ -168,7 +168,7 @@ export const useCartMutations = () => {
    */
   const removeItem = useMutation<Cart, Error, string>({
     mutationFn: async (itemId: string) => {
-      return await cartRepository.removeItem(itemId);
+      return await getCartRepository().removeItem(itemId);
     },
 
     onSuccess: () => {
@@ -191,7 +191,7 @@ export const useCartMutations = () => {
    */
   const clearCart = useMutation<Cart, Error, void>({
     mutationFn: async () => {
-      return await cartRepository.clearCart();
+      return await getCartRepository().clearCart();
     },
 
     onSuccess: () => {
@@ -214,7 +214,7 @@ export const useCartMutations = () => {
    */
   const syncCart = useMutation<CartSyncResult, Error, SyncCartDto>({
     mutationFn: async (dto: SyncCartDto) => {
-      return await cartRepository.syncCart(dto);
+      return await getCartRepository().syncCart(dto);
     },
 
     onSuccess: (result) => {

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { serviceRepository } from '@/services/repositories';
+import { getServiceRepository } from '@/services/repositories';
 import type { CreateServiceDTO, UpdateServiceDTO } from '../types/service-admin.types';
 import type { AxiosErrorResponse } from '@/shared/types';
 
@@ -15,7 +15,7 @@ export const useServiceMutations = () => {
    * Mutation para crear un nuevo servicio
    */
   const createService = useMutation({
-    mutationFn: (data: CreateServiceDTO) => serviceRepository.createService(data),
+    mutationFn: (data: CreateServiceDTO) => getServiceRepository().createService(data),
     onSuccess: () => {
       // Invalidar queries de servicios para refrescar los listados
       queryClient.invalidateQueries({ queryKey: ['services'] });
@@ -34,7 +34,7 @@ export const useServiceMutations = () => {
    */
   const updateService = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateServiceDTO }) =>
-      serviceRepository.updateService(id, data),
+      getServiceRepository().updateService(id, data),
     onSuccess: (_, variables) => {
       // Invalidar queries relacionadas al servicio
       queryClient.invalidateQueries({ queryKey: ['services'] });
@@ -53,7 +53,7 @@ export const useServiceMutations = () => {
    * Mutation para eliminar un servicio
    */
   const deleteService = useMutation({
-    mutationFn: (id: string) => serviceRepository.deleteService(id),
+    mutationFn: (id: string) => getServiceRepository().deleteService(id),
     onSuccess: () => {
       // Invalidar queries de servicios
       queryClient.invalidateQueries({ queryKey: ['services'] });

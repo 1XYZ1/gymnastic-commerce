@@ -13,7 +13,8 @@ import type { IProductRepository } from './IProductRepository';
 // Lazy initialization para evitar dependencias circulares
 let _productRepository: IProductRepository | undefined;
 
-const getProductRepository = (): IProductRepository => {
+// Exportar función getter para lazy initialization
+export const getProductRepository = (): IProductRepository => {
   if (!_productRepository) {
     // Crear mapper con URL base de la API
     const productMapper = new ProductMapper(import.meta.env.VITE_API_URL || '');
@@ -21,6 +22,3 @@ const getProductRepository = (): IProductRepository => {
   }
   return _productRepository;
 };
-
-// Exportar instancia del repositorio (singleton)
-export const productRepository: IProductRepository = getProductRepository();

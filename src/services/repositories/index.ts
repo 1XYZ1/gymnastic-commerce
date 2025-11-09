@@ -9,11 +9,10 @@ import { ServiceMapper } from '../mappers/ServiceMapper';
  */
 let _serviceRepository: ServiceApiRepository | undefined;
 
-const getServiceRepository = (): ServiceApiRepository => {
+// Exportar función getter para lazy initialization
+export const getServiceRepository = (): ServiceApiRepository => {
   if (!_serviceRepository) {
     _serviceRepository = new ServiceApiRepository(gymApi, ServiceMapper);
   }
   return _serviceRepository;
 };
-
-export const serviceRepository = getServiceRepository();

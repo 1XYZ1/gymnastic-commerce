@@ -6,7 +6,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { productRepository } from '../repositories';
+import { getProductRepository } from '../repositories';
 import { PRODUCTS_CONFIG } from '@/config/products.config';
 
 export const useProductTypes = () => {
@@ -14,7 +14,7 @@ export const useProductTypes = () => {
     queryKey: ['product-types'],
     queryFn: async () => {
       // Obtener una muestra grande de productos para extraer todos los tipos
-      const response = await productRepository.getProducts({
+      const response = await getProductRepository().getProducts({
         limit: 100,
         offset: 0,
       });

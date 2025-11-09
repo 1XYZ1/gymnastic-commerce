@@ -181,4 +181,3 @@ npm run preview
 **Fecha:** 2025-11-09
 **Autor:** Claude AI
 **Status:** ✅ Resuelto
-

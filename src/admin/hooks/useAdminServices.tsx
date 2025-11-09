@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { serviceRepository } from '@/services/repositories';
+import { getServiceRepository } from '@/services/repositories';
 import type { ServiceFilter } from '@/services/types/service.types';
 import { SERVICES_CONFIG } from '@/services/config/service.config';
 
@@ -16,6 +16,6 @@ export const useAdminServices = (filter?: Partial<ServiceFilter>) => {
 
   return useQuery({
     queryKey: ['admin', 'services', fullFilter],
-    queryFn: () => serviceRepository.getServices(fullFilter),
+    queryFn: () => getServiceRepository().getServices(fullFilter),
   });
 };

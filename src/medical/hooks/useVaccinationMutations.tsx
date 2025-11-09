@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { medicalRepository } from '../repositories';
+import { getMedicalRepository } from '../repositories';
 import type { CreateVaccinationDto } from '../types/medical.types';
 import { MedicalValidationService } from '../services';
 
 /**
  * Hook para mutaciones (create/update/delete) de vacunas
- * Incluye validaciones de negocio, manejo de errores e invalidación de cache
+ * Incluye validaciones de negocio, manejo de errores e invalidaciï¿½n de cache
  */
 export const useVaccinationMutations = () => {
   const queryClient = useQueryClient();
@@ -14,12 +14,12 @@ export const useVaccinationMutations = () => {
   // Crear vacuna
   const createVaccination = useMutation({
     mutationFn: (data: CreateVaccinationDto) => {
-      // Validación previa
+      // Validaciï¿½n previa
       const validation = MedicalValidationService.validateVaccinationDto(data);
       if (!validation.valid) {
         throw new Error(validation.errors.join(', '));
       }
-      return medicalRepository.createVaccination(data);
+      return getMedicalRepository().createVaccination(data);
     },
     onSuccess: (newVaccine) => {
       // Invalidar cache de vacunas de la mascota
@@ -27,7 +27,7 @@ export const useVaccinationMutations = () => {
         queryClient.invalidateQueries({ queryKey: ['vaccinations', newVaccine.pet.id] });
         queryClient.invalidateQueries({ queryKey: ['pet-complete-profile', newVaccine.pet.id] });
       }
-      // Invalidar lista de vacunas próximas a vencer (admin)
+      // Invalidar lista de vacunas prï¿½ximas a vencer (admin)
       queryClient.invalidateQueries({ queryKey: ['vaccinations-due'] });
       toast.success(`Vacuna "${newVaccine.vaccineName}" registrada exitosamente`);
     },
@@ -39,7 +39,7 @@ export const useVaccinationMutations = () => {
   // Actualizar vacuna
   const updateVaccination = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<CreateVaccinationDto> }) => {
-      return medicalRepository.updateVaccination(id, data);
+      return getMedicalRepository().updateVaccination(id, data);
     },
     onSuccess: (updatedVaccine) => {
       // Invalidar cache
@@ -59,7 +59,7 @@ export const useVaccinationMutations = () => {
   // Eliminar vacuna
   const deleteVaccination = useMutation({
     mutationFn: ({ id, petId }: { id: string; petId?: string }) =>
-      medicalRepository.deleteVaccination(id).then((result) => ({ ...result, petId })),
+      getMedicalRepository().deleteVaccination(id).then((result) => ({ ...result, petId })),
     onSuccess: (result) => {
       // Invalidar cache
       queryClient.removeQueries({ queryKey: ['vaccination', result.id] });

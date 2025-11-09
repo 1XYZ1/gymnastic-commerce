@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { serviceRepository } from '../repositories';
+import { getServiceRepository } from '../repositories';
 
 /**
  * Hook para obtener un servicio específico por ID
@@ -8,7 +8,7 @@ import { serviceRepository } from '../repositories';
 export const useService = (id: string) => {
   return useQuery({
     queryKey: ['service', id],
-    queryFn: () => serviceRepository.getServiceById(id),
+    queryFn: () => getServiceRepository().getServiceById(id),
     enabled: !!id,
   });
 };

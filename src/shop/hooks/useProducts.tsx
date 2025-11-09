@@ -6,7 +6,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { productRepository } from '../repositories';
+import { getProductRepository } from '../repositories';
 import { useProductFilters } from './useProductFilters';
 import { PRODUCTS_CONFIG } from '@/config/products.config';
 
@@ -15,7 +15,7 @@ export const useProducts = () => {
 
   return useQuery({
     queryKey: ['products', filters],
-    queryFn: () => productRepository.getProducts(filters),
+    queryFn: () => getProductRepository().getProducts(filters),
     staleTime: PRODUCTS_CONFIG.cache.staleTime,
   });
 };

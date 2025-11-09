@@ -7,12 +7,10 @@ export { PetApiRepository };
 // Esto evita problemas de dependencias circulares en producción
 let _petRepository: PetApiRepository | undefined;
 
-const getPetRepository = (): PetApiRepository => {
+// Exportar función getter para lazy initialization
+export const getPetRepository = (): PetApiRepository => {
   if (!_petRepository) {
     _petRepository = new PetApiRepository();
   }
   return _petRepository;
 };
-
-// Instancia singleton para usar en hooks
-export const petRepository = getPetRepository();

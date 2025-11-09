@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { appointmentRepository } from '../repositories';
+import { getAppointmentRepository } from '../repositories';
 import type { CreateAppointmentDTO, UpdateAppointmentDTO } from '../types/appointment.types';
 
 /**
@@ -11,7 +11,7 @@ export const useAppointmentMutations = () => {
   const queryClient = useQueryClient();
 
   const createAppointment = useMutation({
-    mutationFn: (dto: CreateAppointmentDTO) => appointmentRepository.createAppointment(dto),
+    mutationFn: (dto: CreateAppointmentDTO) => getAppointmentRepository().createAppointment(dto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
       toast.success('Cita agendada exitosamente');
@@ -26,7 +26,7 @@ export const useAppointmentMutations = () => {
 
   const updateAppointment = useMutation({
     mutationFn: ({ id, dto }: { id: string; dto: UpdateAppointmentDTO }) =>
-      appointmentRepository.updateAppointment(id, dto),
+      getAppointmentRepository().updateAppointment(id, dto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
       queryClient.invalidateQueries({ queryKey: ['appointment'] });
@@ -41,7 +41,7 @@ export const useAppointmentMutations = () => {
   });
 
   const cancelAppointment = useMutation({
-    mutationFn: (id: string) => appointmentRepository.cancelAppointment(id),
+    mutationFn: (id: string) => getAppointmentRepository().cancelAppointment(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
       queryClient.invalidateQueries({ queryKey: ['appointment'] });

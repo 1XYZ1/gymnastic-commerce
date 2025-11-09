@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { serviceRepository } from '../repositories';
+import { getServiceRepository } from '../repositories';
 import type { ServiceFilter } from '../types/service.types';
 import { SERVICES_CONFIG } from '../config/service.config';
 
@@ -16,6 +16,6 @@ export const useServices = (filter?: Partial<ServiceFilter>) => {
 
   return useQuery({
     queryKey: ['services', fullFilter],
-    queryFn: () => serviceRepository.getServices(fullFilter),
+    queryFn: () => getServiceRepository().getServices(fullFilter),
   });
 };

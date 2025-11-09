@@ -9,15 +9,13 @@ import type { ICartRepository } from './ICartRepository';
 // Lazy initialization para evitar dependencias circulares
 let _cartRepository: ICartRepository | undefined;
 
-const getCartRepository = (): ICartRepository => {
+// Exportar función getter para lazy initialization
+export const getCartRepository = (): ICartRepository => {
   if (!_cartRepository) {
     _cartRepository = new CartApiRepository(gymApi);
   }
   return _cartRepository;
 };
-
-// Instanciar repository (singleton)
-export const cartRepository: ICartRepository = getCartRepository();
 
 // Exportar tipos
 export type { ICartRepository } from './ICartRepository';

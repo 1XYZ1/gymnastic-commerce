@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { appointmentRepository } from '../repositories';
+import { getAppointmentRepository } from '../repositories';
 import type { AppointmentFilter } from '../types/appointment.types';
 import { APPOINTMENTS_CONFIG } from '../config/appointment.config';
 
@@ -19,6 +19,6 @@ export const useAppointments = (filter?: Partial<AppointmentFilter>) => {
 
   return useQuery({
     queryKey: ['appointments', fullFilter],
-    queryFn: () => appointmentRepository.getAppointments(fullFilter),
+    queryFn: () => getAppointmentRepository().getAppointments(fullFilter),
   });
 };

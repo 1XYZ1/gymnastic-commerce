@@ -9,11 +9,10 @@ import { AppointmentMapper } from '../mappers/AppointmentMapper';
  */
 let _appointmentRepository: AppointmentApiRepository | undefined;
 
-const getAppointmentRepository = (): AppointmentApiRepository => {
+// Exportar función getter para lazy initialization
+export const getAppointmentRepository = (): AppointmentApiRepository => {
   if (!_appointmentRepository) {
     _appointmentRepository = new AppointmentApiRepository(gymApi, AppointmentMapper);
   }
   return _appointmentRepository;
 };
-
-export const appointmentRepository = getAppointmentRepository();

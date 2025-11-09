@@ -10,7 +10,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { cartRepository } from '../repositories';
+import { getCartRepository } from '../repositories';
 import { CART_CONFIG } from '../config/cart.config';
 import { useAuthStore } from '@/auth/store/auth.store';
 import { CartErrorService } from '../services/CartErrorService';
@@ -43,7 +43,7 @@ export const useCart = () => {
     // Función que obtiene los datos
     queryFn: async () => {
       try {
-        return await cartRepository.getCart();
+        return await getCartRepository().getCart();
       } catch (error) {
         // Transformar error a user-friendly message
         const message = CartErrorService.getErrorMessage(error);

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { petRepository } from '../repositories';
+import { getPetRepository } from '../repositories';
 import { PetPhotoValidationService } from '../services';
 
 /**
@@ -32,7 +32,7 @@ export const usePetPhotoUpload = () => {
       }
 
       // Subir foto
-      return petRepository.updatePhoto(id, file);
+      return getPetRepository().updatePhoto(id, file);
     },
     onSuccess: (updatedPet) => {
       // Invalidar cache de la mascota específica y la lista
@@ -52,7 +52,7 @@ export const usePetPhotoUpload = () => {
 
   // Eliminar foto de perfil
   const deletePhoto = useMutation({
-    mutationFn: (id: string) => petRepository.deletePhoto(id),
+    mutationFn: (id: string) => getPetRepository().deletePhoto(id),
     onSuccess: (updatedPet) => {
       // Invalidar cache
       queryClient.invalidateQueries({ queryKey: ['pet', updatedPet.id] });
