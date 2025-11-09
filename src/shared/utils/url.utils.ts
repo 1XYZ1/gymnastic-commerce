@@ -14,9 +14,18 @@ export function getApiBaseUrl(): string {
 
 /**
  * Construye URL completa para imagen de producto
+ * Acepta tanto strings como objetos ProductImage del backend
  */
-export function buildProductImageUrl(filename: string): string {
+export function buildProductImageUrl(filename: string | { url: string } | null | undefined): string {
   if (!filename) return '';
+
+  // Si es un objeto con propiedad url (ProductImage del backend)
+  if (typeof filename === 'object' && 'url' in filename) {
+    filename = filename.url;
+  }
+
+  // Asegurar que sea string
+  if (typeof filename !== 'string') return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
