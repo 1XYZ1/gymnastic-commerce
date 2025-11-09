@@ -1,0 +1,6 @@
+Version: 2.0.0-fix
+Build Date: 2025-11-09
+Changes: 
+- Debug logs added
+- Simplified vercel.json
+- Force rebuild

@@ -15,6 +15,12 @@ export const GymShopApp = () => {
 
   // Initialize guest cart from localStorage on app mount
   useEffect(() => {
+    console.log('✅ GymShopApp montado correctamente');
+    console.log('🌍 Environment:', {
+      apiUrl: import.meta.env.VITE_API_URL || 'NO CONFIGURADO',
+      mode: import.meta.env.MODE,
+      timestamp: new Date().toISOString()
+    });
     initializeGuestCart();
   }, [initializeGuestCart]);
 
