@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { Syringe, Calendar, User, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +5,7 @@ import type { Vaccination } from '../types';
 import { VaccinationService } from '../services';
 import { VACCINATION_STATUS_LABELS, VACCINATION_STATUS_COLORS } from '../config';
 import { cn } from '@/lib/utils';
+import { formatDatePPP } from '@/shared/utils';
 
 interface VaccinationCardProps {
   vaccination: Vaccination;
@@ -67,7 +66,7 @@ export function VaccinationCard({ vaccination, onClick }: VaccinationCardProps) 
                 {vaccination.vaccineName}
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Administrada: {format(administeredDate, "PPP", { locale: es })}
+                Administrada: {formatDatePPP(administeredDate)}
               </p>
             </div>
           </div>
@@ -92,7 +91,7 @@ export function VaccinationCard({ vaccination, onClick }: VaccinationCardProps) 
             <div className="flex-1 min-w-0">
               <p className="text-xs text-muted-foreground">Próxima aplicación</p>
               <p className="text-xs sm:text-sm font-medium">
-                {format(new Date(vaccination.nextDueDate), "PPP", { locale: es })}
+                {formatDatePPP(vaccination.nextDueDate)}
               </p>
               {daysUntilDue !== null && (
                 <p

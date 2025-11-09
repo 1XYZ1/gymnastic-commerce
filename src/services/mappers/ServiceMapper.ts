@@ -1,6 +1,7 @@
 import type { Service, ServicesResponse, ServiceType } from '../types/service.types';
 import type { ServicesApiResponse } from '@/shared/types';
 import type { User } from '@/shared/types';
+import { buildServiceImageUrl } from '@/shared/utils';
 
 /**
  * Estructura de un servicio en formato API
@@ -24,11 +25,9 @@ interface ServiceApiData {
  * Mapper para transformar datos de la API a entidades de dominio
  */
 export class ServiceMapper {
-  private static readonly baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-
   /**
    * Transforma un servicio de la API al modelo de dominio
-   * Agrega la URL base a la imagen del servicio
+   * Agrega la URL base a la imagen del servicio usando utilidades compartidas
    * Normaliza 'medical' y 'veterinary' a 'veterinary'
    */
   static toDomain(apiService: ServiceApiData): Service {
@@ -42,7 +41,7 @@ export class ServiceMapper {
       price: apiService.price,
       durationMinutes: apiService.durationMinutes,
       type: normalizedType,
-      image: apiService.image ? `${this.baseUrl}/files/service/${apiService.image}` : undefined,
+      image: apiService.image ? buildServiceImageUrl(apiService.image) : undefined,
       isActive: apiService.isActive,
       user: apiService.user,
       createdAt: apiService.createdAt,
