@@ -36,5 +36,5 @@ export {
   PetForm,
   PetSelector,
   TemperamentBadge,
-  VaccinationAlert,
+  PetVaccinationAlert,
 } from './components';

@@ -4,11 +4,11 @@ import type { Vaccination } from '@/medical/types';
 import { differenceInDays, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-interface VaccinationAlertProps {
+interface PetVaccinationAlertProps {
   vaccination: Vaccination;
 }
 
-export function VaccinationAlert({ vaccination }: VaccinationAlertProps) {
+export function PetVaccinationAlert({ vaccination }: PetVaccinationAlertProps) {
   if (!vaccination.nextDueDate) return null;
 
   const daysUntilDue = differenceInDays(new Date(vaccination.nextDueDate), new Date());

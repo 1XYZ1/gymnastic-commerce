@@ -10,8 +10,16 @@ import type { User } from '@/shared/types';
 import type { AuthStatus } from '../types/auth.types';
 import { getAuthService } from '../repositories';
 
-// Obtener instancia del servicio usando lazy initialization
-const authService = getAuthService();
+// ✅ CORRECTO: No inicializar aquí, hacerlo lazy
+let authService: ReturnType<typeof getAuthService> | null = null;
+
+// Helper para obtener el servicio de forma lazy
+const getAuthServiceInstance = () => {
+  if (!authService) {
+    authService = getAuthService();
+  }
+  return authService;
+};
 
 type AuthState = {
   // Estado
@@ -38,12 +46,12 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   // Getters
   isAdmin: () => {
     const user = get().user;
-    return authService.isAdmin(user);
+    return getAuthServiceInstance().isAdmin(user);
   },
 
   // Acciones - Simple coordinación entre service y estado
   login: async (email: string, password: string) => {
-    const result = await authService.login(email, password);
+    const result = await getAuthServiceInstance().login(email, password);
 
     if (result.success) {
       set({
@@ -63,7 +71,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   },
 
   register: async (fullName: string, email: string, password: string) => {
-    const result = await authService.register(fullName, email, password);
+    const result = await getAuthServiceInstance().register(fullName, email, password);
 
     if (result.success) {
       set({
@@ -83,12 +91,12 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   },
 
   logout: () => {
-    authService.logout();
+    getAuthServiceInstance().logout();
     set({ user: null, token: null, authStatus: 'not-authenticated' });
   },
 
   checkAuthStatus: async () => {
-    const result = await authService.checkAuthStatus();
+    const result = await getAuthServiceInstance().checkAuthStatus();
 
     if (result.success) {
       set({
