@@ -10,15 +10,21 @@ Tu aplicación no se mostraba porque estaba intentando conectarse a `localhost:3
 - Maneja errores de conexión correctamente
 - No bloquea la aplicación si el backend no está disponible
 
-### 2. Configuración de Vite Actualizada
+### 2. Configuración de Vite Actualizada ✅ **MEJORADO**
+- Eliminado el bloque `define` innecesario - Vite maneja automáticamente las variables `VITE_*`
 - Separación de date-fns en su propio chunk
 - Pre-bundling de dependencias problemáticas
 - Source maps habilitados para debugging
 
-### 3. Downgrade de date-fns
+### 3. Variables de Entorno ✅ **NUEVO**
+- Archivos `.env`, `.env.example` y `.env.production` creados
+- Sistema de variables de entorno configurado correctamente
+- `.env` en `.gitignore` para proteger configuración local
+
+### 4. Downgrade de date-fns
 - Cambiado de v4.1.0 a v3.6.0 para evitar problemas de inicialización
 
-### 4. Archivo vercel.json Mejorado
+### 5. Archivo vercel.json Mejorado
 - Configuración completa de build y rewrites
 - Soporte para variables de entorno
 
@@ -26,14 +32,19 @@ Tu aplicación no se mostraba porque estaba intentando conectarse a `localhost:3
 
 ### PASO 1: Configurar Variables de Entorno en Vercel
 
+**IMPORTANTE:** La aplicación ahora lee correctamente las variables de entorno usando el sistema nativo de Vite.
+
 1. Ve a tu proyecto en Vercel Dashboard
 2. Click en "Settings" → "Environment Variables"
-3. Agrega la siguiente variable:
+3. Agrega la siguiente variable para **todos los entornos** (Production, Preview, Development):
 
 ```
 Name: VITE_API_URL
 Value: [LA URL DE TU BACKEND]
+Environment: Production, Preview, Development
 ```
+
+> **Nota:** Las variables que empiezan con `VITE_` son públicas y se incluyen en el bundle del cliente. Vite las expone automáticamente como `import.meta.env.VITE_API_URL`.
 
 **OPCIONES PARA EL BACKEND:**
 

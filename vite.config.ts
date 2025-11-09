@@ -11,13 +11,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // Configuración para manejar variables de entorno y fallbacks
-  define: {
-    // Fallback para API URL si no está definida
-    'import.meta.env.VITE_API_URL': JSON.stringify(
-      process.env.VITE_API_URL || 'https://api.example.com/api'
-    ),
-  },
   optimizeDeps: {
     // Pre-bundle estas dependencias para evitar problemas de ESM
     include: [
