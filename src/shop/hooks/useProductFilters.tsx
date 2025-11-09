@@ -36,7 +36,7 @@ export const useProductFilters = (): ProductFilter => {
     return {
       offset,
       limit,
-      category,
+      species: category,
       type: searchParams.get("type") || undefined,
       query: searchParams.get("q") || undefined,
       minPrice,

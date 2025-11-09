@@ -25,7 +25,7 @@ export class ProductApiRepository implements IProductRepository {
       params: {
         limit: filter.limit,
         offset: filter.offset,
-        category: filter.category,
+        species: filter.species,
         type: filter.type,
         minPrice: filter.minPrice,
         maxPrice: filter.maxPrice,

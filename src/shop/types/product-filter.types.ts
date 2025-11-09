@@ -22,7 +22,7 @@ export interface ProductFilter {
   readonly offset: number;
   readonly query?: string;
   readonly type?: string;
-  readonly category?: string;
+  readonly species?: string;
   readonly minPrice?: number;
   readonly maxPrice?: number;
 }
