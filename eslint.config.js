@@ -19,5 +19,9 @@ export default tseslint.config([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Prohibir uso de 'any' (cambiado de warn a error)
+      '@typescript-eslint/no-explicit-any': 'error',
+    },
   },
 ])

@@ -29,13 +29,13 @@ export function EditPetPage() {
       // Transformar PetFormData a UpdatePetDto
       const updateData: UpdatePetDto = {
         name: formData.name,
-        breed: formData.breed,
-        color: formData.color,
+        breed: formData.breed ?? undefined,
+        color: formData.color ?? undefined,
         weight: formData.weight ?? undefined,
-        microchipNumber: formData.microchipNumber,
-        temperament: formData.temperament as UpdatePetDto['temperament'],
+        microchipNumber: formData.microchipNumber ?? undefined,
+        temperament: formData.temperament ?? undefined,
         behaviorNotes: formData.behaviorNotes?.filter((note): note is string => note !== undefined),
-        generalNotes: formData.generalNotes,
+        generalNotes: formData.generalNotes ?? undefined,
       };
 
       await updatePet.mutateAsync({ id, data: updateData });

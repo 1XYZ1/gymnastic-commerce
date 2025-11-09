@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { serviceRepository } from '@/services/repositories';
 import type { CreateServiceDTO, UpdateServiceDTO } from '../types/service-admin.types';
+import type { AxiosErrorResponse } from '@/shared/types';
 
 /**
  * Hook con mutations para operaciones CRUD de servicios en el admin
@@ -21,7 +22,7 @@ export const useServiceMutations = () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'services'] });
       toast.success('Servicio creado exitosamente');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosErrorResponse) => {
       toast.error(
         error?.response?.data?.message || 'Error al crear el servicio. Intenta nuevamente.'
       );
@@ -41,7 +42,7 @@ export const useServiceMutations = () => {
       queryClient.invalidateQueries({ queryKey: ['service', variables.id] });
       toast.success('Servicio actualizado exitosamente');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosErrorResponse) => {
       toast.error(
         error?.response?.data?.message || 'Error al actualizar el servicio. Intenta nuevamente.'
       );
@@ -59,7 +60,7 @@ export const useServiceMutations = () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'services'] });
       toast.success('Servicio eliminado exitosamente');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosErrorResponse) => {
       toast.error(
         error?.response?.data?.message || 'Error al eliminar el servicio. Intenta nuevamente.'
       );

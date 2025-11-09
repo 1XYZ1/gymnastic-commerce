@@ -33,17 +33,8 @@ export class PetApiRepository implements IPetRepository {
   async getCompleteProfile(id: string): Promise<CompleteProfile> {
     const { data } = await gymApi.get(`${this.basePath}/${id}/complete-profile`);
 
-    // 🔍 LOGGING TEMPORAL - Verificar qué devuelve el backend
-    console.group('🔍 [DEBUG] Complete Profile API Response');
-    console.log('📦 Raw Data:', data);
-    console.log('📋 Medical Visits:', data?.medicalHistory?.recentVisits);
-    console.log('💉 Vaccinations:', data?.vaccinations?.activeVaccines);
-    console.log('✨ Grooming Sessions:', data?.groomingHistory?.recentSessions);
-    console.log('📅 Appointments (past):', data?.appointments?.past);
-    console.log('📅 Appointments (upcoming):', data?.appointments?.upcoming);
-    console.groupEnd();
-
-    // Validar respuesta del API con Zod (modo seguro)
+    // Validar respuesta del API con Zod
+    // Si falla la validación, safeValidate ahora lanzará un error en lugar de retornar datos corruptos
     const validated = safeValidate(CompletePetProfileSchema, data, 'PetApiRepository.getCompleteProfile');
 
     return PetMapper.completeProfileToDomain(validated);

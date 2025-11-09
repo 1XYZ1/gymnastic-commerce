@@ -20,13 +20,15 @@ export function safeValidate<T>(
     return result.data;
   }
 
-  // Loguear error de validación pero no romper la app
-  console.warn(`⚠️ [Zod Validation] Error in ${context}:`);
-  console.warn('Validation errors:', result.error.format());
-  console.warn('Raw data:', data);
+  // Loguear error de validación con información útil
+  console.error(`❌ [Zod Validation] Error in ${context}:`);
+  console.error('Validation errors:', result.error.format());
+  console.error('Failed data structure:', JSON.stringify(data, null, 2));
 
-  // Retornar datos sin validar (fallback)
-  return data as T;
+  // Lanzar error en lugar de retornar datos no validados
+  // Esto previene que datos corruptos se propaguen en la aplicación
+  const errorMessages = result.error.issues.map(issue => issue.message).join(', ');
+  throw new Error(`Validation failed in ${context}: ${errorMessages}`);
 }
 
 /**

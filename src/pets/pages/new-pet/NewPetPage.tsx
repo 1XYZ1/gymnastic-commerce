@@ -33,15 +33,15 @@ export function NewPetPage() {
       const createData: CreatePetDto = {
         name: formData.name,
         species: formData.species as CreatePetDto['species'],
-        breed: formData.breed,
+        breed: formData.breed ?? undefined,
         birthDate: formData.birthDate,
         gender: formData.gender as CreatePetDto['gender'],
-        color: formData.color,
+        color: formData.color ?? undefined,
         weight: formData.weight ?? undefined,
-        microchipNumber: formData.microchipNumber,
-        temperament: formData.temperament as CreatePetDto['temperament'],
+        microchipNumber: formData.microchipNumber ?? undefined,
+        temperament: formData.temperament ?? undefined,
         behaviorNotes: formData.behaviorNotes?.filter((note): note is string => note !== undefined),
-        generalNotes: formData.generalNotes,
+        generalNotes: formData.generalNotes ?? undefined,
       };
 
       const newPet = await createPet.mutateAsync(createData);

@@ -23,7 +23,7 @@ type ActivityEvent = {
 /**
  * Valida si un valor puede convertirse a una fecha válida
  */
-function isValidDateValue(value: any): boolean {
+function isValidDateValue(value: string | Date | null | undefined): boolean {
   if (!value) return false;
   const date = new Date(value);
   return !isNaN(date.getTime());
@@ -42,9 +42,9 @@ export function PetActivityTimeline({ profile }: PetActivityTimelineProps) {
     profile.medicalHistory?.recentVisits?.forEach((record) => {
       if (!record?.id || !record?.visitDate) return;
 
-      // 🛡️ Validar que la fecha sea realmente válida
+      // Validar que la fecha sea realmente válida
       if (!isValidDateValue(record.visitDate)) {
-        console.warn(`⚠️ [PetActivityTimeline] Invalid visitDate for medical record ${record.id}:`, record.visitDate);
+        console.warn(`Invalid visitDate for medical record ${record.id}:`, record.visitDate);
         return;
       }
 
@@ -64,9 +64,9 @@ export function PetActivityTimeline({ profile }: PetActivityTimelineProps) {
     profile.vaccinations?.activeVaccines?.forEach((vac) => {
       if (!vac?.id || !vac?.administeredDate) return;
 
-      // 🛡️ Validar que la fecha sea realmente válida
+      // Validar que la fecha sea realmente válida
       if (!isValidDateValue(vac.administeredDate)) {
-        console.warn(`⚠️ [PetActivityTimeline] Invalid administeredDate for vaccination ${vac.id}:`, vac.administeredDate);
+        console.warn(`Invalid administeredDate for vaccination ${vac.id}:`, vac.administeredDate);
         return;
       }
 
@@ -86,9 +86,9 @@ export function PetActivityTimeline({ profile }: PetActivityTimelineProps) {
     profile.groomingHistory?.recentSessions?.forEach((session) => {
       if (!session?.id || !session?.sessionDate) return;
 
-      // 🛡️ Validar que la fecha sea realmente válida
+      // Validar que la fecha sea realmente válida
       if (!isValidDateValue(session.sessionDate)) {
-        console.warn(`⚠️ [PetActivityTimeline] Invalid sessionDate for grooming ${session.id}:`, session.sessionDate);
+        console.warn(`Invalid sessionDate for grooming ${session.id}:`, session.sessionDate);
         return;
       }
 
@@ -113,9 +113,9 @@ export function PetActivityTimeline({ profile }: PetActivityTimelineProps) {
     profile.appointments?.past?.forEach((appointment) => {
       if (!appointment?.id || !appointment?.date || !appointment?.service) return;
 
-      // 🛡️ Validar que la fecha sea realmente válida
+      // Validar que la fecha sea realmente válida
       if (!isValidDateValue(appointment.date)) {
-        console.warn(`⚠️ [PetActivityTimeline] Invalid date for appointment ${appointment.id}:`, appointment.date);
+        console.warn(`Invalid date for appointment ${appointment.id}:`, appointment.date);
         return;
       }
 
@@ -123,11 +123,13 @@ export function PetActivityTimeline({ profile }: PetActivityTimelineProps) {
         ? 'Grooming'
         : 'Médico';
 
+      const serviceName = appointment.service.name || 'Servicio';
+
       events.push({
         id: `appointment-${appointment.id}`,
         type: 'appointment',
         title: 'Cita completada',
-        description: `${appointment.service.name || 'Servicio'} - ${serviceType}`,
+        description: `${serviceName} - ${serviceType}`,
         date: new Date(appointment.date),
         icon: Calendar,
         color: 'text-orange-600',

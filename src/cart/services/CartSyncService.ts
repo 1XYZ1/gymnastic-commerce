@@ -7,6 +7,7 @@
 
 import { toast } from 'sonner';
 import type { CartSyncResult, FailedCartItem } from '../types/cart.types';
+import type { AxiosErrorResponse } from '@/shared/types';
 import { GUEST_CART_MESSAGES } from '../config/cart.config';
 
 export class CartSyncService {
@@ -138,7 +139,7 @@ export class CartSyncService {
    */
   private static isAuthError(error: unknown): boolean {
     if (error && typeof error === 'object' && 'response' in error) {
-      const response = (error as any).response;
+      const response = (error as AxiosErrorResponse).response;
       return response?.status === 401;
     }
     return false;

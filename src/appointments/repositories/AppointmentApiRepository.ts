@@ -7,6 +7,7 @@ import type {
   CreateAppointmentDTO,
   UpdateAppointmentDTO,
 } from '../types/appointment.types';
+import type { AppointmentsApiResponse, DeleteApiResponse } from '@/shared/types';
 import { AppointmentMapper } from '../mappers/AppointmentMapper';
 
 /**
@@ -23,7 +24,7 @@ export class AppointmentApiRepository implements IAppointmentRepository {
   }
 
   async getAppointments(filter: AppointmentFilter): Promise<AppointmentsResponse> {
-    const { data } = await this.api.get<any>('/appointments', {
+    const { data } = await this.api.get<AppointmentsApiResponse>('/appointments', {
       params: {
         limit: filter.limit,
         offset: filter.offset,
@@ -37,22 +38,24 @@ export class AppointmentApiRepository implements IAppointmentRepository {
   }
 
   async getAppointmentById(id: string): Promise<Appointment> {
-    const { data } = await this.api.get<any>(`/appointments/${id}`);
-    return this.mapper.toDomain(data);
+    const { data } = await this.api.get<AppointmentsApiResponse>(`/appointments/${id}`);
+    // getById retorna un objeto directamente, no un array
+    return this.mapper.toDomain(data as unknown as Parameters<typeof AppointmentMapper.toDomain>[0]);
   }
 
   async createAppointment(dto: CreateAppointmentDTO): Promise<Appointment> {
-    const { data } = await this.api.post<any>('/appointments', dto);
-    return this.mapper.toDomain(data);
+    const { data } = await this.api.post<AppointmentsApiResponse>('/appointments', dto);
+    return this.mapper.toDomain(data as unknown as Parameters<typeof AppointmentMapper.toDomain>[0]);
   }
 
   async updateAppointment(id: string, dto: UpdateAppointmentDTO): Promise<Appointment> {
-    const { data } = await this.api.patch<any>(`/appointments/${id}`, dto);
-    return this.mapper.toDomain(data);
+    const { data } = await this.api.patch<AppointmentsApiResponse>(`/appointments/${id}`, dto);
+    return this.mapper.toDomain(data as unknown as Parameters<typeof AppointmentMapper.toDomain>[0]);
   }
 
   async cancelAppointment(id: string): Promise<Appointment> {
-    const { data } = await this.api.delete<any>(`/appointments/${id}`);
-    return this.mapper.toDomain(data.appointment);
+    const { data } = await this.api.delete<DeleteApiResponse>(`/appointments/${id}`);
+    // Delete endpoint retorna { appointment: {...} }
+    return this.mapper.toDomain(data.appointment as unknown as Parameters<typeof AppointmentMapper.toDomain>[0]);
   }
 }

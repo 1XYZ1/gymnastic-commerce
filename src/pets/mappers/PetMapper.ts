@@ -1,4 +1,4 @@
-import type { Pet, CreatePetDto, UpdatePetDto, CompleteProfile } from '../types';
+import type { Pet, CreatePetDto, UpdatePetDto, CompleteProfile, MedicalRecord, Vaccination, GroomingRecord, WeightHistory } from '../types';
 import type { PetApi, CompletePetProfileApi } from '../schemas/pet.schemas';
 
 export class PetMapper {
@@ -6,7 +6,7 @@ export class PetMapper {
    * Convierte un valor a Date solo si es válido
    * Retorna undefined si la fecha es inválida
    */
-  private static toSafeDate(value: any): Date | undefined {
+  private static toSafeDate(value: string | Date | null | undefined): Date | undefined {
     if (!value) return undefined;
 
     const date = new Date(value);
@@ -39,8 +39,7 @@ export class PetMapper {
    * Transforma DTO a formato API
    * Asegura que las fechas estén en formato ISO string
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static toApi(dto: CreatePetDto | UpdatePetDto): Record<string, any> {
+  static toApi(dto: CreatePetDto | UpdatePetDto): Record<string, unknown> {
     return {
       ...dto,
       // birthDate ya viene en formato "YYYY-MM-DD" desde el formulario
@@ -58,78 +57,95 @@ export class PetMapper {
       medicalHistory: {
         ...apiProfile.medicalHistory,
         // Mapear campos del backend: date → visitDate
-        recentVisits: apiProfile.medicalHistory?.recentVisits
-          ?.map((visit: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+        recentVisits: (apiProfile.medicalHistory?.recentVisits
+          ?.map((visit: Record<string, unknown>): MedicalRecord | null => {
             // Backend devuelve "date", frontend espera "visitDate"
-            const visitDate = this.toSafeDate(visit.date || visit.visitDate);
+            const visitDate = this.toSafeDate((visit.date as string | Date | undefined) || (visit.visitDate as string | Date | undefined));
             if (!visitDate) return null; // Filtrar registros sin fecha válida
 
             return {
               ...visit,
+              id: typeof visit.id === 'string' ? visit.id : String(visit.id || ''),
               visitDate,
-              createdAt: this.toSafeDate(visit.createdAt) || new Date(),
-              updatedAt: this.toSafeDate(visit.updatedAt) || new Date(),
+              visitType: visit.visitType as any, // VisitType viene del backend, confiamos en validación
+              reason: typeof visit.reason === 'string' ? visit.reason : '',
+              createdAt: this.toSafeDate(visit.createdAt as string | Date | undefined) || new Date(),
+              updatedAt: this.toSafeDate(visit.updatedAt as string | Date | undefined) || new Date(),
             };
           })
-          .filter((visit): visit is NonNullable<typeof visit> => visit !== null) || [],
+          .filter((visit): visit is MedicalRecord => visit !== null) || []),
       },
       vaccinations: {
         ...apiProfile.vaccinations,
         // Mapear campos del backend: dateApplied → administeredDate, name → vaccineName
-        activeVaccines: apiProfile.vaccinations?.activeVaccines
-          ?.map((vaccine: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+        activeVaccines: (apiProfile.vaccinations?.activeVaccines
+          ?.map((vaccine: Record<string, unknown>): Vaccination | null => {
             // Backend devuelve "dateApplied", frontend espera "administeredDate"
-            const administeredDate = this.toSafeDate(vaccine.dateApplied || vaccine.administeredDate);
+            const administeredDate = this.toSafeDate((vaccine.dateApplied as string | Date | undefined) || (vaccine.administeredDate as string | Date | undefined));
             if (!administeredDate) return null; // Filtrar vacunas sin fecha válida
 
             return {
               ...vaccine,
+              id: typeof vaccine.id === 'string' ? vaccine.id : String(vaccine.id || ''),
               // Backend: "name" → Frontend: "vaccineName"
-              vaccineName: vaccine.vaccineName || vaccine.name || 'Vacuna',
+              // Validación de tipos antes de usar las propiedades
+              vaccineName:
+                (typeof vaccine.vaccineName === 'string' && vaccine.vaccineName) ? vaccine.vaccineName :
+                (typeof vaccine.name === 'string' && vaccine.name) ? vaccine.name :
+                'Vacuna',
               administeredDate,
-              nextDueDate: this.toSafeDate(vaccine.nextDueDate),
-              createdAt: this.toSafeDate(vaccine.createdAt) || new Date(),
+              nextDueDate: this.toSafeDate(vaccine.nextDueDate as string | Date | null | undefined),
+              createdAt: this.toSafeDate(vaccine.createdAt as string | Date | undefined) || new Date(),
             };
           })
-          .filter((vaccine): vaccine is NonNullable<typeof vaccine> => vaccine !== null) || [],
-        upcomingVaccines: apiProfile.vaccinations?.upcomingVaccines
-          ?.map((vaccine: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+          .filter((vaccine): vaccine is Vaccination => vaccine !== null) || []),
+        upcomingVaccines: (apiProfile.vaccinations?.upcomingVaccines
+          ?.map((vaccine: Record<string, unknown>): Vaccination | null => {
+            const administeredDate = this.toSafeDate((vaccine.dateApplied as string | Date | undefined) || (vaccine.administeredDate as string | Date | undefined));
+
             return {
               ...vaccine,
-              vaccineName: vaccine.vaccineName || vaccine.name || 'Vacuna',
-              administeredDate: this.toSafeDate(vaccine.dateApplied || vaccine.administeredDate),
-              nextDueDate: this.toSafeDate(vaccine.nextDueDate),
-              createdAt: this.toSafeDate(vaccine.createdAt) || new Date(),
+              id: typeof vaccine.id === 'string' ? vaccine.id : String(vaccine.id || ''),
+              // Validación de tipos antes de usar las propiedades
+              vaccineName:
+                (typeof vaccine.vaccineName === 'string' && vaccine.vaccineName) ? vaccine.vaccineName :
+                (typeof vaccine.name === 'string' && vaccine.name) ? vaccine.name :
+                'Vacuna',
+              administeredDate: administeredDate || new Date(), // Fecha por defecto para upcoming
+              nextDueDate: this.toSafeDate(vaccine.nextDueDate as string | Date | null | undefined),
+              createdAt: this.toSafeDate(vaccine.createdAt as string | Date | undefined) || new Date(),
             };
           })
-          .filter((vaccine): vaccine is NonNullable<typeof vaccine> => vaccine !== null) || [],
+          .filter((vaccine): vaccine is Vaccination => vaccine !== null) || []),
       },
       // weightHistory con validación de fechas
-      weightHistory: apiProfile.weightHistory
-        ?.map((entry: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-          const date = this.toSafeDate(entry.date);
+      weightHistory: (apiProfile.weightHistory
+        ?.map((entry: Record<string, unknown>): WeightHistory | null => {
+          const date = this.toSafeDate(entry.date as string | Date | undefined);
           if (!date) return null;
 
           return {
             ...entry,
             date,
+            weight: typeof entry.weight === 'number' ? entry.weight : 0,
+            source: entry.source as any, // WeightSource viene del backend
           };
         })
-        .filter((entry): entry is NonNullable<typeof entry> => entry !== null) || [],
+        .filter((entry): entry is WeightHistory => entry !== null) || []),
       groomingHistory: {
         ...apiProfile.groomingHistory,
-        lastSessionDate: this.toSafeDate(apiProfile.groomingHistory?.lastSessionDate),
+        lastSessionDate: this.toSafeDate(apiProfile.groomingHistory?.lastSessionDate as string | Date | null | undefined),
         // Mapear campos del backend: date → sessionDate, serviceType → servicesPerformed
-        recentSessions: apiProfile.groomingHistory?.recentSessions
-          ?.map((session: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+        recentSessions: (apiProfile.groomingHistory?.recentSessions
+          ?.map((session: Record<string, unknown>): GroomingRecord | null => {
             // Backend devuelve "date", frontend espera "sessionDate"
-            const sessionDate = this.toSafeDate(session.date || session.sessionDate);
+            const sessionDate = this.toSafeDate((session.date as string | Date | undefined) || (session.sessionDate as string | Date | undefined));
             if (!sessionDate) return null; // Filtrar sesiones sin fecha válida
 
             // Backend: "serviceType" (string) → Frontend: "servicesPerformed" (array)
             let servicesPerformed: string[] = [];
             if (Array.isArray(session.servicesPerformed)) {
-              servicesPerformed = session.servicesPerformed;
+              servicesPerformed = session.servicesPerformed as string[];
             } else if (typeof session.serviceType === 'string') {
               // Convertir string a array (separar por coma)
               servicesPerformed = session.serviceType.split(',').map((s: string) => s.trim());
@@ -139,18 +155,40 @@ export class PetMapper {
 
             return {
               ...session,
+              id: typeof session.id === 'string' ? session.id : String(session.id || ''),
               sessionDate,
               servicesPerformed,
-              createdAt: this.toSafeDate(session.createdAt) || new Date(),
-              updatedAt: this.toSafeDate(session.updatedAt) || new Date(),
+              durationMinutes: typeof session.durationMinutes === 'number' ? session.durationMinutes : 0,
+              createdAt: this.toSafeDate(session.createdAt as string | Date | undefined) || new Date(),
+              updatedAt: this.toSafeDate(session.updatedAt as string | Date | undefined) || new Date(),
             };
           })
-          .filter((session): session is NonNullable<typeof session> => session !== null) || [],
+          .filter((session): session is GroomingRecord => session !== null) || []),
       },
       // Mapear appointments (backend las devuelve, pero no se estaban mapeando)
       appointments: {
-        upcoming: apiProfile.appointments?.upcoming || [],
-        past: apiProfile.appointments?.past || [],
+        upcoming: (apiProfile.appointments?.upcoming || []).map((apt: any) => ({
+          ...apt,
+          id: typeof apt.id === 'string' ? apt.id : String(apt.id || ''),
+          date: this.toSafeDate(apt.date) || new Date(),
+          status: typeof apt.status === 'string' ? apt.status : 'pending',
+          pet: apt.pet || {},
+          service: apt.service || { id: '', name: '', type: '' },
+          customer: apt.customer || { id: '', fullName: '', email: '' },
+          createdAt: this.toSafeDate(apt.createdAt) || new Date(),
+          updatedAt: this.toSafeDate(apt.updatedAt) || new Date(),
+        })),
+        past: (apiProfile.appointments?.past || []).map((apt: any) => ({
+          ...apt,
+          id: typeof apt.id === 'string' ? apt.id : String(apt.id || ''),
+          date: this.toSafeDate(apt.date) || new Date(),
+          status: typeof apt.status === 'string' ? apt.status : 'completed',
+          pet: apt.pet || {},
+          service: apt.service || { id: '', name: '', type: '' },
+          customer: apt.customer || { id: '', fullName: '', email: '' },
+          createdAt: this.toSafeDate(apt.createdAt) || new Date(),
+          updatedAt: this.toSafeDate(apt.updatedAt) || new Date(),
+        })),
         totalAppointments: apiProfile.appointments?.totalAppointments || 0,
       },
       summary: {

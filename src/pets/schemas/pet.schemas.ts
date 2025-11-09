@@ -84,18 +84,87 @@ export const PetsResponseSchema = z.object({
 export const WeightSourceSchema = z.enum(['medical', 'grooming', 'manual']);
 
 /**
+ * Schema para una visita médica individual
+ */
+const MedicalVisitSchema = z.object({
+  id: z.string().optional(),
+  date: z.string().optional(),
+  visitDate: z.string().optional(),
+  visitType: z.string().optional(),
+  reason: z.string().optional(),
+  diagnosis: z.string().optional(),
+  treatment: z.string().optional(),
+  notes: z.string().optional(),
+  serviceCost: z.number().optional(),
+  weightAtVisit: z.union([z.number(), z.string()]).optional(),
+  temperature: z.union([z.number(), z.string()]).optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+}).passthrough(); // Permitir campos adicionales del backend
+
+/**
+ * Schema para una vacuna
+ */
+const VaccinationSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().optional(),
+  vaccineName: z.string().optional(),
+  dateApplied: z.string().optional(),
+  administeredDate: z.string().optional(),
+  nextDueDate: z.string().optional().nullable(),
+  batchNumber: z.string().optional(),
+  notes: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+}).passthrough(); // Permitir campos adicionales del backend
+
+/**
+ * Schema para una sesión de grooming
+ */
+const GroomingSessionSchema = z.object({
+  id: z.string().optional(),
+  date: z.string().optional(),
+  sessionDate: z.string().optional(),
+  serviceType: z.string().optional(),
+  servicesPerformed: z.union([z.array(z.string()), z.string()]).optional(),
+  hairStyle: z.string().optional(),
+  productsUsed: z.string().optional(),
+  skinCondition: z.string().optional(),
+  coatCondition: z.string().optional(),
+  behaviorDuringSession: z.string().optional(),
+  recommendations: z.string().optional(),
+  durationMinutes: z.number().optional(),
+  serviceCost: z.number().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+}).passthrough(); // Permitir campos adicionales del backend
+
+/**
+ * Schema para una cita
+ */
+const AppointmentSchema = z.object({
+  id: z.string().optional(),
+  date: z.string().optional(),
+  status: z.string().optional(),
+  notes: z.string().optional(),
+  service: z.unknown().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+}).passthrough(); // Permitir campos adicionales del backend
+
+/**
  * Schema para CompleteProfile (perfil completo con relaciones)
- * Flexible para manejar datos que vienen del backend
+ * Ahora con schemas específicos en lugar de z.any()
  */
 export const CompletePetProfileSchema = z.object({
   pet: PetApiSchema,
   medicalHistory: z.object({
-    recentVisits: z.array(z.any()).default([]),
+    recentVisits: z.array(MedicalVisitSchema).default([]),
     totalVisits: z.number().default(0),
   }).default({ recentVisits: [], totalVisits: 0 }),
   vaccinations: z.object({
-    activeVaccines: z.array(z.any()).default([]),
-    upcomingVaccines: z.array(z.any()).default([]),
+    activeVaccines: z.array(VaccinationSchema).default([]),
+    upcomingVaccines: z.array(VaccinationSchema).default([]),
     totalVaccines: z.number().default(0),
   }).default({ activeVaccines: [], upcomingVaccines: [], totalVaccines: 0 }),
   weightHistory: z.array(z.object({
@@ -104,13 +173,13 @@ export const CompletePetProfileSchema = z.object({
     source: WeightSourceSchema,
   })).default([]),
   groomingHistory: z.object({
-    recentSessions: z.array(z.any()).default([]),
+    recentSessions: z.array(GroomingSessionSchema).default([]),
     totalSessions: z.number().default(0),
     lastSessionDate: z.string().nullable().optional(),
   }).default({ recentSessions: [], totalSessions: 0, lastSessionDate: null }),
   appointments: z.object({
-    upcoming: z.array(z.any()).default([]),
-    past: z.array(z.any()).default([]),
+    upcoming: z.array(AppointmentSchema).default([]),
+    past: z.array(AppointmentSchema).default([]),
     totalAppointments: z.number().default(0),
   }).default({ upcoming: [], past: [], totalAppointments: 0 }),
   summary: z.object({

@@ -36,9 +36,9 @@ export class ProductMapper {
    * @param domainProduct - Producto en formato de dominio
    * @returns Producto con solo los campos necesarios para el API
    */
-  static toApi(domainProduct: Partial<Product>): Record<string, any> {
+  static toApi(domainProduct: Partial<Product>): Record<string, unknown> {
     // Solo incluir los campos que el backend espera en UpdateProductDto
-    const payload: Record<string, any> = {};
+    const payload: Record<string, unknown> = {};
 
     // Campos opcionales - solo incluir si existen
     if (domainProduct.title !== undefined) payload.title = domainProduct.title;
@@ -48,7 +48,7 @@ export class ProductMapper {
     if (domainProduct.slug !== undefined) payload.slug = domainProduct.slug;
     // Convertir 'none' a null para el backend (el formulario puede enviar 'none' como string)
     if (domainProduct.species !== undefined) {
-      payload.species = (domainProduct.species as any) === 'none' || domainProduct.species === null ? null : domainProduct.species;
+      payload.species = (domainProduct.species as string) === 'none' || domainProduct.species === null ? null : domainProduct.species;
     }
     if (domainProduct.sizes !== undefined) payload.sizes = domainProduct.sizes;
     if (domainProduct.tags !== undefined) payload.tags = domainProduct.tags;

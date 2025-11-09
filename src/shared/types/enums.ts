@@ -10,8 +10,8 @@ export type PetSpecies = 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster' | 'other'
 // PetGender (3 valores) - Backend: PetGender enum
 export type PetGender = 'male' | 'female' | 'unknown';
 
-// PetTemperament (5 valores) - Backend: PetTemperament enum
-export type PetTemperament = 'calm' | 'nervous' | 'aggressive' | 'friendly' | 'unknown';
+// PetTemperament (8 valores) - Backend: PetTemperament enum
+export type PetTemperament = 'calm' | 'nervous' | 'aggressive' | 'friendly' | 'shy' | 'playful' | 'energetic' | 'unknown';
 
 // VisitType (5 valores) - Backend: VisitType enum
 export type VisitType = 'consultation' | 'vaccination' | 'surgery' | 'emergency' | 'checkup';
@@ -49,6 +49,9 @@ export const PetTemperament = {
   NERVOUS: 'nervous' as const,
   AGGRESSIVE: 'aggressive' as const,
   FRIENDLY: 'friendly' as const,
+  SHY: 'shy' as const,
+  PLAYFUL: 'playful' as const,
+  ENERGETIC: 'energetic' as const,
   UNKNOWN: 'unknown' as const,
 } as const;
 

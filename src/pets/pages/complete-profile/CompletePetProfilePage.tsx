@@ -290,7 +290,18 @@ export function CompletePetProfilePage() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 {upcomingAppointments.map((appointment) => (
-                  <AppointmentCard key={appointment.id} appointment={appointment} />
+                  <AppointmentCard
+                    key={appointment.id}
+                    appointment={{
+                      ...appointment,
+                      date: appointment.date instanceof Date ? appointment.date.toISOString() : appointment.date,
+                      status: appointment.status as any,
+                      service: appointment.service as any, // Service viene del backend con estructura completa
+                      customer: appointment.customer as any, // Customer viene del backend con estructura completa
+                      createdAt: appointment.createdAt instanceof Date ? appointment.createdAt.toISOString() : appointment.createdAt,
+                      updatedAt: appointment.updatedAt instanceof Date ? appointment.updatedAt.toISOString() : appointment.updatedAt,
+                    } as any}
+                  />
                 ))}
               </div>
             </div>
@@ -304,7 +315,18 @@ export function CompletePetProfilePage() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 {pastAppointments.map((appointment) => (
-                  <AppointmentCard key={appointment.id} appointment={appointment} />
+                  <AppointmentCard
+                    key={appointment.id}
+                    appointment={{
+                      ...appointment,
+                      date: appointment.date instanceof Date ? appointment.date.toISOString() : appointment.date,
+                      status: appointment.status as any,
+                      service: appointment.service as any, // Service viene del backend con estructura completa
+                      customer: appointment.customer as any, // Customer viene del backend con estructura completa
+                      createdAt: appointment.createdAt instanceof Date ? appointment.createdAt.toISOString() : appointment.createdAt,
+                      updatedAt: appointment.updatedAt instanceof Date ? appointment.updatedAt.toISOString() : appointment.updatedAt,
+                    } as any}
+                  />
                 ))}
               </div>
             </div>

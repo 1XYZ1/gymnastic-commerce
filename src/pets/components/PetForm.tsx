@@ -47,23 +47,23 @@ export function PetForm({ initialData, onSubmit, onCancel, isLoading, submitLabe
     control,
     setValue,
   } = useForm<PetFormData>({
-    resolver: yupResolver(petFormSchema) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(petFormSchema) as any, // Type assertion para resolver incompatibilidad de Yup InferType
     defaultValues: initialData
       ? {
           name: initialData.name,
           species: initialData.species,
-          breed: initialData.breed || '',
+          breed: initialData.breed || undefined,
           birthDate:
             initialData.birthDate instanceof Date
               ? initialData.birthDate.toISOString().split('T')[0]
               : initialData.birthDate.split('T')[0],
           gender: initialData.gender,
-          color: initialData.color || '',
-          weight: initialData.weight,
-          microchipNumber: initialData.microchipNumber || '',
-          temperament: initialData.temperament,
-          behaviorNotes: initialData.behaviorNotes || [],
-          generalNotes: initialData.generalNotes || '',
+          color: initialData.color || undefined,
+          weight: initialData.weight ?? null,
+          microchipNumber: initialData.microchipNumber || undefined,
+          temperament: initialData.temperament || undefined,
+          behaviorNotes: initialData.behaviorNotes || undefined,
+          generalNotes: initialData.generalNotes || undefined,
         }
       : undefined,
   });
@@ -95,7 +95,7 @@ export function PetForm({ initialData, onSubmit, onCancel, isLoading, submitLabe
   maxDate.setHours(23, 59, 59, 999);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-4 sm:space-y-6"> {/* eslint-disable-line @typescript-eslint/no-explicit-any */}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
       {/* Nombre */}
       <div className="space-y-2">
         <Label htmlFor="name" className="text-sm sm:text-base">Nombre *</Label>
