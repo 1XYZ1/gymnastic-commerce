@@ -1,40 +1,41 @@
 /**
  * Servicio para mapear errores de API a mensajes user-friendly
+ *
+ * NOTA: Este servicio se mantiene para compatibilidad con código existente,
+ * pero ahora delega a las utilidades compartidas de error.utils
  */
+
+import { getErrorMessage } from '@/shared/utils';
+import { AxiosError } from 'axios';
 
 export class AuthErrorService {
   /**
    * Convierte errores técnicos en mensajes amigables para el usuario
+   * Delega a utilidades compartidas con lógica específica de autenticación
    */
   static getUserFriendlyMessage(error: unknown): string {
-    if (error instanceof Error) {
-      // Errores comunes de autenticación
-      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+    // Errores específicos de autenticación
+    if (error instanceof AxiosError) {
+      const status = error.response?.status;
+
+      // 401: credenciales incorrectas
+      if (status === 401) {
         return 'Correo o contraseña incorrectos';
       }
 
-      if (error.message.includes('403') || error.message.includes('Forbidden')) {
-        return 'No tienes permisos para acceder';
-      }
-
-      // Error de email duplicado (registro)
-      if (error.message.includes('duplicate') || error.message.includes('already exists')) {
-        return 'Este correo electrónico ya está registrado. Intenta iniciar sesión.';
-      }
-
-      if (error.message.includes('network') || error.message.includes('Network')) {
-        return 'Error de conexión. Verifica tu internet.';
-      }
-
-      if (error.message.includes('timeout')) {
-        return 'La solicitud tardó demasiado. Intenta de nuevo.';
-      }
-
-      if (error.message.includes('Token expired')) {
-        return 'Tu sesión ha expirado. Por favor inicia sesión nuevamente.';
+      // 409/400 con mensaje de email duplicado (registro)
+      const errorData = error.response?.data as { message?: string };
+      if (errorData?.message) {
+        if (errorData.message.includes('duplicate') || errorData.message.includes('already exists')) {
+          return 'Este correo electrónico ya está registrado. Intenta iniciar sesión.';
+        }
+        if (errorData.message.includes('Token expired')) {
+          return 'Tu sesión ha expirado. Por favor inicia sesión nuevamente.';
+        }
       }
     }
 
-    return 'Ocurrió un error inesperado. Intenta de nuevo.';
+    // Para otros errores, usar utilidad compartida
+    return getErrorMessage(error);
   }
 }

@@ -2,53 +2,55 @@
  * CartErrorService - Error handling and transformation
  *
  * Responsabilidad: Transformar errores de API a mensajes user-friendly
+ * Delega a utilidades compartidas con lógica específica del carrito
  */
 
 import { AxiosError } from 'axios';
 import { CART_ERROR_MESSAGES } from '../config/cart.config';
 import type { CartError } from '../types/cart.types';
+import { getErrorMessage as getSharedErrorMessage, isRetryableError, requiresAuth } from '@/shared/utils';
 
 export class CartErrorService {
   /**
    * Transforma un error de Axios a un mensaje user-friendly
+   * Usa utilidades compartidas con lógica específica del carrito
    */
   static getErrorMessage(error: unknown): string {
-    // Si es un AxiosError
+    // Si es un AxiosError, manejar errores específicos del carrito
     if (error instanceof AxiosError) {
-      // Error de red
+      // Error de red - usar mensaje del config
       if (!error.response) {
         return CART_ERROR_MESSAGES.NETWORK_ERROR;
       }
 
-      // Error de la API con mensaje custom
       const apiError = error.response.data as CartError;
+      const status = error.response.status;
+
+      // Errores específicos del carrito
+      if (status === 400) {
+        return this.handle400Error(apiError);
+      }
+
+      if (status === 401) {
+        return 'Debes iniciar sesión para usar el carrito';
+      }
+
+      if (status === 404) {
+        return 'Producto no encontrado';
+      }
+
+      if (status === 409) {
+        return 'Conflicto con el estado del carrito';
+      }
+
+      // Si hay mensaje custom del backend, usarlo
       if (apiError?.message) {
         return apiError.message;
       }
-
-      // Errores HTTP específicos
-      switch (error.response.status) {
-        case 400:
-          return this.handle400Error(apiError);
-        case 401:
-          return 'Debes iniciar sesión para usar el carrito';
-        case 404:
-          return 'Producto no encontrado';
-        case 409:
-          return 'Conflicto con el estado del carrito';
-        case 500:
-          return 'Error del servidor. Intenta nuevamente';
-        default:
-          return CART_ERROR_MESSAGES.FETCH_ERROR;
-      }
     }
 
-    // Error genérico
-    if (error instanceof Error) {
-      return error.message;
-    }
-
-    return 'Error desconocido';
+    // Para otros errores, usar utilidad compartida
+    return getSharedErrorMessage(error);
   }
 
   /**
@@ -78,36 +80,18 @@ export class CartErrorService {
 
   /**
    * Determina si un error es recuperable (puede reintentar)
+   * Delega a utilidad compartida
    */
   static isRetryable(error: unknown): boolean {
-    if (error instanceof AxiosError) {
-      // Errores de red son recuperables
-      if (!error.response) {
-        return true;
-      }
-
-      // 5xx son recuperables
-      if (error.response.status >= 500) {
-        return true;
-      }
-
-      // 408 (Request Timeout) es recuperable
-      if (error.response.status === 408) {
-        return true;
-      }
-    }
-
-    return false;
+    return isRetryableError(error);
   }
 
   /**
    * Determina si un error requiere re-autenticación
+   * Delega a utilidad compartida
    */
   static requiresAuth(error: unknown): boolean {
-    if (error instanceof AxiosError) {
-      return error.response?.status === 401;
-    }
-    return false;
+    return requiresAuth(error);
   }
 
   /**
