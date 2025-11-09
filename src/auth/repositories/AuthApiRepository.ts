@@ -23,6 +23,15 @@ export class AuthApiRepository implements IAuthRepository {
     return data;
   }
 
+  async register(fullName: string, email: string, password: string): Promise<AuthResponse> {
+    const { data } = await this.api.post<AuthResponse>('/auth/register', {
+      fullName,
+      email,
+      password,
+    });
+    return data;
+  }
+
   async checkStatus(): Promise<AuthResponse> {
     const { data } = await this.api.get<AuthResponse>('/auth/check-status');
     return data;

@@ -21,6 +21,7 @@ type AuthState = {
 
   // Acciones (solo coordinación + actualización de estado)
   login: (email: string, password: string) => Promise<boolean>;
+  register: (fullName: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   checkAuthStatus: () => Promise<boolean>;
 };
@@ -55,6 +56,26 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         authStatus: 'not-authenticated',
       });
       return false;
+    }
+  },
+
+  register: async (fullName: string, email: string, password: string) => {
+    const result = await authService.register(fullName, email, password);
+
+    if (result.success) {
+      set({
+        user: result.user!,
+        token: result.token!,
+        authStatus: 'authenticated',
+      });
+      return { success: true };
+    } else {
+      set({
+        user: null,
+        token: null,
+        authStatus: 'not-authenticated',
+      });
+      return { success: false, error: result.error };
     }
   },
 

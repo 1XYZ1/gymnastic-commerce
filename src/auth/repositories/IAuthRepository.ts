@@ -15,9 +15,14 @@ export interface IAuthRepository {
   login(email: string, password: string): Promise<AuthResponse>;
 
   /**
+   * Registra un nuevo usuario en el sistema
+   */
+  register(fullName: string, email: string, password: string): Promise<AuthResponse>;
+
+  /**
    * Verifica el estado de autenticación actual
    */
   checkStatus(): Promise<AuthResponse>;
 
-  // Futuro: register, resetPassword, refreshToken, etc.
+  // Futuro: resetPassword, refreshToken, etc.
 }

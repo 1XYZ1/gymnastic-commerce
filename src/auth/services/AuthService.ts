@@ -56,6 +56,29 @@ export class AuthService {
   }
 
   /**
+   * Registra un nuevo usuario en el sistema
+   * @returns AuthResult con success, user y token si exitoso
+   */
+  async register(fullName: string, email: string, password: string): Promise<AuthResult> {
+    try {
+      const response = await this.repository.register(fullName, email, password);
+      this.tokenStorage.save(response.token);
+
+      return {
+        success: true,
+        user: response.user,
+        token: response.token,
+      };
+    } catch (error) {
+      this.tokenStorage.remove();
+      return {
+        success: false,
+        error: AuthErrorService.getUserFriendlyMessage(error),
+      };
+    }
+  }
+
+  /**
    * Cierra sesión del usuario
    */
   logout(): void {

@@ -17,6 +17,11 @@ export class AuthErrorService {
         return 'No tienes permisos para acceder';
       }
 
+      // Error de email duplicado (registro)
+      if (error.message.includes('duplicate') || error.message.includes('already exists')) {
+        return 'Este correo electrónico ya está registrado. Intenta iniciar sesión.';
+      }
+
       if (error.message.includes('network') || error.message.includes('Network')) {
         return 'Error de conexión. Verifica tu internet.';
       }
