@@ -2,14 +2,13 @@ import { useEffect } from 'react';
 import { RouterProvider } from "react-router";
 import { appRouter } from "./app.router";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "sonner";
 
 import { CheckAuthProvider } from "@/auth/providers";
 import { useGuestCartStore } from "@/cart/store/guestCart.store";
-
-const queryClient = new QueryClient();
+import { queryClient } from "@/config/react-query.config";
 
 export const GymShopApp = () => {
   const initializeGuestCart = useGuestCartStore((state) => state.initialize);

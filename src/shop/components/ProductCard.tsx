@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,7 +18,11 @@ interface ProductCardProps {
   product: Product;
 }
 
-export const ProductCard = ({
+/**
+ * ProductCard optimizado con React.memo
+ * Evita re-renders innecesarios cuando las props no cambian
+ */
+export const ProductCard = memo(({
   id,
   name,
   price,
@@ -30,21 +34,22 @@ export const ProductCard = ({
   const navigate = useNavigate();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
 
-  const handleCardClick = () => {
+  // Memoizar handlers para evitar recrearlos en cada render
+  const handleCardClick = useCallback(() => {
     navigate(`/product/${id}`);
-  };
+  }, [id, navigate]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleCardClick();
     }
-  };
+  }, [handleCardClick]);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     setShowSizeDialog(true);
-  };
+  }, []);
 
   return (
     <>
@@ -100,4 +105,7 @@ export const ProductCard = ({
       />
     </>
   );
-};
+});
+
+// Nombre del componente para DevTools
+ProductCard.displayName = 'ProductCard';
