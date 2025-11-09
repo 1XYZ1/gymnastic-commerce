@@ -13,10 +13,12 @@
  */
 
 import { z } from 'zod';
-
-// Regex de contraseña EXACTA del backend
-// Coincide con: pet-shop-back/src/auth/dto/create-user.dto.ts
-const PASSWORD_REGEX = /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+import {
+  PASSWORD_REGEX,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_VALIDATION_MESSAGE,
+} from '../constants';
 
 export const registerSchema = z
   .object({
@@ -35,12 +37,15 @@ export const registerSchema = z
 
     password: z
       .string()
-      .min(6, 'La contraseña debe tener al menos 6 caracteres')
-      .max(50, 'La contraseña no puede exceder 50 caracteres')
-      .regex(
-        PASSWORD_REGEX,
-        'La contraseña debe contener: al menos una mayúscula, una minúscula, y un número o carácter especial'
-      ),
+      .min(
+        PASSWORD_MIN_LENGTH,
+        `La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres`
+      )
+      .max(
+        PASSWORD_MAX_LENGTH,
+        `La contraseña no puede exceder ${PASSWORD_MAX_LENGTH} caracteres`
+      )
+      .regex(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
 
     confirmPassword: z
       .string()

@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { registerSchema, type RegisterFormData } from '../schemas/register.schema';
+import { PASSWORD_MIN_LENGTH } from '../constants';
 
 interface RegisterFormProps {
   onSubmit: (data: RegisterFormData) => void;
@@ -93,7 +94,7 @@ export const RegisterForm = ({ onSubmit, isLoading = false }: RegisterFormProps)
           </p>
         )}
         <p className="text-xs text-muted-foreground">
-          Mínimo 6 caracteres: una mayúscula, una minúscula, y un número o carácter especial
+          Mínimo {PASSWORD_MIN_LENGTH} caracteres: una mayúscula, una minúscula, y un número o carácter especial
         </p>
       </div>
 
