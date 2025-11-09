@@ -6,7 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "sonner";
 
-import { CheckAuthProvider } from "@/auth/providers";
+import { CheckAuthProvider } from "@/auth/providers/CheckAuthProvider";
 import { useGuestCartStore } from "@/cart/store/guestCart.store";
 import { queryClient } from "@/config/react-query.config";
 
