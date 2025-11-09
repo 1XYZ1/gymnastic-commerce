@@ -111,9 +111,9 @@ const VaccinationSchema = z.object({
   vaccineName: z.string().optional(),
   dateApplied: z.string().optional(),
   administeredDate: z.string().optional(),
-  nextDueDate: z.string().optional().nullable(),
-  batchNumber: z.string().optional(),
-  notes: z.string().optional(),
+  nextDueDate: z.string().nullable().optional(),
+  batchNumber: z.string().nullable().optional(),
+  notes: z.string().nullable().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 }).passthrough(); // Permitir campos adicionales del backend
