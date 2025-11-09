@@ -1,29 +1,35 @@
+import { useCallback, memo } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { PRODUCTS_CONFIG } from '@/config/products.config';
 import { useSearchParamsUpdate } from '@/shop/hooks/useSearchParamsUpdate';
 import { useProductTypes } from '@/shop/hooks/useProductTypes';
 
-export const FilterSidebar = () => {
+/**
+ * FilterSidebar optimizado con React.memo
+ * Solo se re-renderiza cuando cambian los filtros activos
+ */
+export const FilterSidebar = memo(() => {
   const { updateMultipleParams, searchParams } = useSearchParamsUpdate();
   const { data: types, isLoading } = useProductTypes();
 
   const currentType = searchParams.get('type') || '';
   const currentPrice = searchParams.get('price') || 'any';
 
-  const handleTypeChange = (type: string) => {
+  // Memoizar handlers para evitar recrearlos
+  const handleTypeChange = useCallback((type: string) => {
     updateMultipleParams({
       page: '1',
       type: type === currentType ? null : type,
     });
-  };
+  }, [updateMultipleParams, currentType]);
 
-  const handlePriceChange = (price: string) => {
+  const handlePriceChange = useCallback((price: string) => {
     updateMultipleParams({
       page: '1',
       price,
     });
-  };
+  }, [updateMultipleParams]);
 
   return (
     <div className="w-64 space-y-8">
@@ -83,4 +89,7 @@ export const FilterSidebar = () => {
       </div>
     </div>
   );
-};
+});
+
+// Nombre del componente para DevTools
+FilterSidebar.displayName = 'FilterSidebar';

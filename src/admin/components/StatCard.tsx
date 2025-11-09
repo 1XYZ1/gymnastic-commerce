@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo, useMemo } from 'react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
@@ -10,7 +10,11 @@ interface StatCardProps {
   color: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({
+/**
+ * StatCard optimizado con React.memo
+ * Solo se re-renderiza cuando cambian las estadísticas
+ */
+const StatCard = memo<StatCardProps>(({
   title,
   value,
   change,
@@ -18,11 +22,12 @@ const StatCard: React.FC<StatCardProps> = ({
   icon: Icon,
   color,
 }) => {
-  const changeColor = {
+  // Memoizar el color del cambio para evitar recalcularlo
+  const changeColor = useMemo(() => ({
     positive: 'text-green-600 bg-green-50',
     negative: 'text-red-600 bg-red-50',
     neutral: 'text-gray-600 bg-gray-50',
-  }[changeType];
+  }[changeType]), [changeType]);
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -42,6 +47,9 @@ const StatCard: React.FC<StatCardProps> = ({
       </div>
     </div>
   );
-};
+});
+
+// Nombre del componente para DevTools
+StatCard.displayName = 'StatCard';
 
 export default StatCard;
