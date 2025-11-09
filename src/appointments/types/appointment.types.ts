@@ -1,6 +1,7 @@
 import type { User } from '@/shared/types';
 import type { Service } from '@/services/types/service.types';
 import type { Pet } from '@/pets/types/pet.types';
+import type { AppointmentStatus } from '@/shared/types/enums';
 
 export interface Appointment {
   id: string;
@@ -13,12 +14,6 @@ export interface Appointment {
   createdAt: string;
   updatedAt: string;
 }
-
-export type AppointmentStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'completed'
-  | 'cancelled';
 
 export interface AppointmentFilter {
   limit: number;
@@ -49,3 +44,6 @@ export interface UpdateAppointmentDTO {
   notes?: string;
   status?: AppointmentStatus;
 }
+
+// Re-export AppointmentStatus for convenience
+export type { AppointmentStatus };

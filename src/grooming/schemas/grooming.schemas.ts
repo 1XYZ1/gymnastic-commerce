@@ -1,7 +1,21 @@
 /**
  * Zod Schemas para validación runtime de respuestas del API de Grooming
+ * SINCRONIZADO CON BACKEND: pet-shop-back/src/common/enums/
  */
 import { z } from 'zod';
+
+/**
+ * Schema para especies de mascota (6 valores)
+ * Backend: PetSpecies enum
+ */
+export const PetSpeciesSchema = z.enum([
+  'dog',
+  'cat',
+  'bird',
+  'rabbit',
+  'hamster',
+  'other',
+]);
 
 /**
  * Schema para Pet anidado (nested)
@@ -10,7 +24,7 @@ export const PetNestedSchema = z.object({
   id: z.string(),
   name: z.string(),
   breed: z.string().optional(),
-  species: z.enum(['dog', 'cat', 'bird', 'rabbit', 'hamster', 'fish', 'reptile', 'other']).optional(),
+  species: PetSpeciesSchema.optional(),
 }).optional();
 
 /**

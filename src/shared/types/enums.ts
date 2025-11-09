@@ -1,22 +1,40 @@
-export type PetSpecies = 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster' | 'fish' | 'reptile' | 'other';
+// ========================================
+// ENUMS SINCRONIZADOS CON BACKEND
+// ========================================
+// Estos enums deben coincidir EXACTAMENTE con los del backend
+// Backend location: pet-shop-back/src/common/enums/
 
+// PetSpecies (6 valores) - Backend: PetSpecies enum
+export type PetSpecies = 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster' | 'other';
+
+// PetGender (3 valores) - Backend: PetGender enum
 export type PetGender = 'male' | 'female' | 'unknown';
 
-export type PetTemperament = 'friendly' | 'aggressive' | 'shy' | 'playful' | 'calm' | 'energetic' | 'nervous' | 'unknown';
+// PetTemperament (5 valores) - Backend: PetTemperament enum
+export type PetTemperament = 'calm' | 'nervous' | 'aggressive' | 'friendly' | 'unknown';
 
-export type VisitType = 'consultation' | 'vaccination' | 'surgery' | 'emergency' | 'checkup' | 'other';
+// VisitType (5 valores) - Backend: VisitType enum
+export type VisitType = 'consultation' | 'vaccination' | 'surgery' | 'emergency' | 'checkup';
 
-export type AppointmentPetStatus = 'pending' | 'completed' | 'cancelled';
+// AppointmentStatus (4 valores) - Backend: AppointmentStatus enum
+export type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
-// Constants for easy access
+// WeightSource (3 valores) - Backend: WeightSource enum (para DTOs de respuesta)
+export type WeightSource = 'medical' | 'grooming' | 'manual';
+
+// VaccinationStatus (3 valores) - Backend: VaccinationStatus enum (para DTOs de respuesta)
+export type VaccinationStatus = 'up_to_date' | 'due_soon' | 'overdue';
+
+// ========================================
+// CONSTANTES PARA ACCESO FÁCIL
+// ========================================
+
 export const PetSpecies = {
   DOG: 'dog' as const,
   CAT: 'cat' as const,
   BIRD: 'bird' as const,
   RABBIT: 'rabbit' as const,
   HAMSTER: 'hamster' as const,
-  FISH: 'fish' as const,
-  REPTILE: 'reptile' as const,
   OTHER: 'other' as const,
 } as const;
 
@@ -27,13 +45,10 @@ export const PetGender = {
 } as const;
 
 export const PetTemperament = {
-  FRIENDLY: 'friendly' as const,
-  AGGRESSIVE: 'aggressive' as const,
-  SHY: 'shy' as const,
-  PLAYFUL: 'playful' as const,
   CALM: 'calm' as const,
-  ENERGETIC: 'energetic' as const,
   NERVOUS: 'nervous' as const,
+  AGGRESSIVE: 'aggressive' as const,
+  FRIENDLY: 'friendly' as const,
   UNKNOWN: 'unknown' as const,
 } as const;
 
@@ -43,11 +58,23 @@ export const VisitType = {
   SURGERY: 'surgery' as const,
   EMERGENCY: 'emergency' as const,
   CHECKUP: 'checkup' as const,
-  OTHER: 'other' as const,
 } as const;
 
-export const AppointmentPetStatus = {
+export const AppointmentStatus = {
   PENDING: 'pending' as const,
+  CONFIRMED: 'confirmed' as const,
   COMPLETED: 'completed' as const,
   CANCELLED: 'cancelled' as const,
+} as const;
+
+export const WeightSource = {
+  MEDICAL: 'medical' as const,
+  GROOMING: 'grooming' as const,
+  MANUAL: 'manual' as const,
+} as const;
+
+export const VaccinationStatus = {
+  UP_TO_DATE: 'up_to_date' as const,
+  DUE_SOON: 'due_soon' as const,
+  OVERDUE: 'overdue' as const,
 } as const;

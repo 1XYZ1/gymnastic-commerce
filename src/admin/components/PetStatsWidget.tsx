@@ -1,4 +1,4 @@
-import { Dog, Cat, Bird, Rabbit, Rat, Fish, Turtle, PawPrint, TrendingUp } from 'lucide-react';
+import { Dog, Cat, Bird, Rabbit, Rat, PawPrint, TrendingUp } from 'lucide-react';
 import type { Pet } from '@/pets/types';
 import { PetStatsService } from '@/pets/services/PetStatsService';
 import type { PetSpecies } from '@/shared/types/enums';
@@ -9,6 +9,7 @@ interface PetStatsWidgetProps {
 
 /**
  * Mapeo de especies a iconos de lucide-react
+ * SINCRONIZADO CON BACKEND: solo 6 especies válidas
  */
 const speciesIcons: Record<PetSpecies, typeof Dog> = {
   dog: Dog,
@@ -16,13 +17,12 @@ const speciesIcons: Record<PetSpecies, typeof Dog> = {
   bird: Bird,
   rabbit: Rabbit,
   hamster: Rat, // Usamos Rat como aproximación para hamster
-  fish: Fish,
-  reptile: Turtle,
   other: PawPrint,
 };
 
 /**
  * Mapeo de especies a colores (Tailwind classes)
+ * SINCRONIZADO CON BACKEND: solo 6 especies válidas
  */
 const speciesColors: Record<PetSpecies, string> = {
   dog: 'bg-amber-500',
@@ -30,13 +30,12 @@ const speciesColors: Record<PetSpecies, string> = {
   bird: 'bg-sky-500',
   rabbit: 'bg-pink-500',
   hamster: 'bg-orange-500',
-  fish: 'bg-blue-500',
-  reptile: 'bg-green-500',
   other: 'bg-gray-500',
 };
 
 /**
  * Mapeo de especies a nombres en español
+ * SINCRONIZADO CON BACKEND: solo 6 especies válidas
  */
 const speciesLabels: Record<PetSpecies, string> = {
   dog: 'Perros',
@@ -44,8 +43,6 @@ const speciesLabels: Record<PetSpecies, string> = {
   bird: 'Aves',
   rabbit: 'Conejos',
   hamster: 'Hamsters',
-  fish: 'Peces',
-  reptile: 'Reptiles',
   other: 'Otros',
 };
 

@@ -12,7 +12,6 @@ export const VISIT_TYPE_LABELS: Record<VisitType, string> = {
   surgery: 'Cirugía',
   emergency: 'Emergencia',
   checkup: 'Chequeo',
-  other: 'Otro',
 };
 
 // Colores para badges de cada tipo de visita
@@ -22,7 +21,6 @@ export const VISIT_TYPE_COLORS: Record<VisitType, string> = {
   surgery: 'bg-red-100 text-red-800 border-red-200',
   emergency: 'bg-orange-100 text-orange-800 border-orange-200',
   checkup: 'bg-purple-100 text-purple-800 border-purple-200',
-  other: 'bg-gray-100 text-gray-800 border-gray-200',
 };
 
 // Vacunas comunes sugeridas

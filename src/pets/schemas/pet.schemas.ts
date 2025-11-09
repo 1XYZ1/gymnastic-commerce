@@ -1,10 +1,12 @@
 /**
  * Zod Schemas para validación runtime de respuestas del API de Pets
+ * SINCRONIZADO CON BACKEND: pet-shop-back/src/common/enums/
  */
 import { z } from 'zod';
 
 /**
- * Schema para especies de mascotas
+ * Schema para especies de mascotas (6 valores)
+ * Backend: PetSpecies enum
  */
 export const PetSpeciesSchema = z.enum([
   'dog',
@@ -12,27 +14,24 @@ export const PetSpeciesSchema = z.enum([
   'bird',
   'rabbit',
   'hamster',
-  'fish',
-  'reptile',
   'other',
 ]);
 
 /**
- * Schema para género
+ * Schema para género (3 valores)
+ * Backend: PetGender enum
  */
 export const PetGenderSchema = z.enum(['male', 'female', 'unknown']);
 
 /**
- * Schema para temperamento
+ * Schema para temperamento (5 valores)
+ * Backend: PetTemperament enum
  */
 export const PetTemperamentSchema = z.enum([
-  'friendly',
-  'aggressive',
-  'shy',
-  'playful',
   'calm',
-  'energetic',
   'nervous',
+  'aggressive',
+  'friendly',
   'unknown',
 ]);
 
@@ -79,6 +78,12 @@ export const PetsResponseSchema = z.object({
 });
 
 /**
+ * Schema para WeightSource (3 valores)
+ * Backend: WeightSource enum
+ */
+export const WeightSourceSchema = z.enum(['medical', 'grooming', 'manual']);
+
+/**
  * Schema para CompleteProfile (perfil completo con relaciones)
  * Flexible para manejar datos que vienen del backend
  */
@@ -96,7 +101,7 @@ export const CompletePetProfileSchema = z.object({
   weightHistory: z.array(z.object({
     date: z.string(),
     weight: z.union([z.number(), z.string().transform(Number)]),
-    source: z.enum(['medical', 'grooming', 'manual']),
+    source: WeightSourceSchema,
   })).default([]),
   groomingHistory: z.object({
     recentSessions: z.array(z.any()).default([]),

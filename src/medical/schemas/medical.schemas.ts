@@ -1,10 +1,12 @@
 /**
  * Zod Schemas para validación runtime de respuestas del API de Medical
+ * SINCRONIZADO CON BACKEND: pet-shop-back/src/common/enums/
  */
 import { z } from 'zod';
 
 /**
- * Schema para tipos de visita médica
+ * Schema para tipos de visita médica (5 valores)
+ * Backend: VisitType enum
  */
 export const VisitTypeSchema = z.enum([
   'consultation',
@@ -12,6 +14,18 @@ export const VisitTypeSchema = z.enum([
   'surgery',
   'emergency',
   'checkup',
+]);
+
+/**
+ * Schema para especies de mascota (6 valores)
+ * Backend: PetSpecies enum
+ */
+export const PetSpeciesSchema = z.enum([
+  'dog',
+  'cat',
+  'bird',
+  'rabbit',
+  'hamster',
   'other',
 ]);
 
@@ -22,7 +36,7 @@ export const PetNestedSchema = z.object({
   id: z.string(),
   name: z.string(),
   breed: z.string().optional(),
-  species: z.enum(['dog', 'cat', 'bird', 'rabbit', 'hamster', 'fish', 'reptile', 'other']).optional(),
+  species: PetSpeciesSchema.optional(),
 }).optional();
 
 /**
