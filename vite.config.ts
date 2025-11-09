@@ -11,7 +11,29 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // Configuración para manejar variables de entorno y fallbacks
+  define: {
+    // Fallback para API URL si no está definida
+    'import.meta.env.VITE_API_URL': JSON.stringify(
+      process.env.VITE_API_URL || 'https://api.example.com/api'
+    ),
+  },
+  optimizeDeps: {
+    // Pre-bundle estas dependencias para evitar problemas de ESM
+    include: [
+      'react',
+      'react-dom',
+      'react-router',
+      '@tanstack/react-query',
+      'date-fns',
+      'date-fns/locale/es',
+      'axios',
+      'zustand'
+    ],
+  },
   build: {
+    // Generar source maps para debugging en producción
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -26,7 +48,11 @@ export default defineConfig({
             if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('yup') || id.includes('zod')) {
               return 'form-vendor';
             }
-            if (id.includes('lucide-react') || id.includes('sonner') || id.includes('date-fns')) {
+            // Separar date-fns en su propio chunk
+            if (id.includes('date-fns')) {
+              return 'date-fns-vendor';
+            }
+            if (id.includes('lucide-react') || id.includes('sonner')) {
               return 'ui-vendor';
             }
             if (id.includes('@radix-ui')) {
