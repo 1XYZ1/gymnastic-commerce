@@ -29,10 +29,10 @@ const getService = (): AuthService => {
   return _authService;
 };
 
-// Exportar las instancias usando las funciones helper
+// Exportar las funciones getter para lazy initialization
 // Esto asegura que la inicialización ocurra cuando se usen, no cuando se importen
-export const authRepository = getRepository();
-export const authService = getService();
+export const getAuthRepository = getRepository;
+export const getAuthService = getService;
 
 // Exportar tipos
 export type { IAuthRepository } from './IAuthRepository';

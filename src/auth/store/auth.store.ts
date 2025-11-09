@@ -8,7 +8,10 @@
 import { create } from 'zustand';
 import type { User } from '@/shared/types';
 import type { AuthStatus } from '../types/auth.types';
-import { authService } from '../repositories';
+import { getAuthService } from '../repositories';
+
+// Obtener instancia del servicio usando lazy initialization
+const authService = getAuthService();
 
 type AuthState = {
   // Estado
