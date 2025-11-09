@@ -12,7 +12,7 @@ export {
 } from './services';
 
 // Repository
-export { groomingRepository } from './repositories';
+export { getGroomingRepository } from './repositories';
 
 // Components
 export {

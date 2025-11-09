@@ -14,7 +14,7 @@ export type {
 } from './types';
 
 // Repositories
-export { petRepository } from './repositories';
+export { getPetRepository } from './repositories';
 
 // Services
 export { PetValidationService, PetAgeCalculatorService } from './services';
