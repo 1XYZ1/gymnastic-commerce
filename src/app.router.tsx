@@ -44,6 +44,7 @@ import {
   NotAuthenticatedRoute,
   AuthenticatedRoute,
 } from '@/auth/components';
+import { ErrorBoundary } from '@/shared/components/ErrorBoundary';
 
 const AuthLayout = lazy(() => import('./auth/layouts/AuthLayout'));
 const AdminLayout = lazy(() => import('./admin/layouts/AdminLayout'));
@@ -52,7 +53,11 @@ export const appRouter = createBrowserRouter([
   // Main routes
   {
     path: '/',
-    element: <ShopLayout />,
+    element: (
+      <ErrorBoundary>
+        <ShopLayout />
+      </ErrorBoundary>
+    ),
     children: [
       {
         index: true,
@@ -81,9 +86,11 @@ export const appRouter = createBrowserRouter([
   {
     path: '/auth',
     element: (
-      <NotAuthenticatedRoute>
-        <AuthLayout />
-      </NotAuthenticatedRoute>
+      <ErrorBoundary>
+        <NotAuthenticatedRoute>
+          <AuthLayout />
+        </NotAuthenticatedRoute>
+      </ErrorBoundary>
     ),
     children: [
       {
@@ -105,9 +112,11 @@ export const appRouter = createBrowserRouter([
   {
     path: '/appointments',
     element: (
-      <AuthenticatedRoute>
-        <ShopLayout />
-      </AuthenticatedRoute>
+      <ErrorBoundary>
+        <AuthenticatedRoute>
+          <ShopLayout />
+        </AuthenticatedRoute>
+      </ErrorBoundary>
     ),
     children: [
       {
@@ -129,9 +138,11 @@ export const appRouter = createBrowserRouter([
   {
     path: '/pets',
     element: (
-      <AuthenticatedRoute>
-        <ShopLayout />
-      </AuthenticatedRoute>
+      <ErrorBoundary>
+        <AuthenticatedRoute>
+          <ShopLayout />
+        </AuthenticatedRoute>
+      </ErrorBoundary>
     ),
     children: [
       {
@@ -177,9 +188,11 @@ export const appRouter = createBrowserRouter([
   {
     path: '/medical-records',
     element: (
-      <AuthenticatedRoute>
-        <ShopLayout />
-      </AuthenticatedRoute>
+      <ErrorBoundary>
+        <AuthenticatedRoute>
+          <ShopLayout />
+        </AuthenticatedRoute>
+      </ErrorBoundary>
     ),
     children: [
       {
@@ -193,9 +206,11 @@ export const appRouter = createBrowserRouter([
   {
     path: '/grooming-records',
     element: (
-      <AuthenticatedRoute>
-        <ShopLayout />
-      </AuthenticatedRoute>
+      <ErrorBoundary>
+        <AuthenticatedRoute>
+          <ShopLayout />
+        </AuthenticatedRoute>
+      </ErrorBoundary>
     ),
     children: [
       {
@@ -209,9 +224,11 @@ export const appRouter = createBrowserRouter([
   {
     path: '/admin',
     element: (
-      <AdminRoute>
-        <AdminLayout />
-      </AdminRoute>
+      <ErrorBoundary>
+        <AdminRoute>
+          <AdminLayout />
+        </AdminRoute>
+      </ErrorBoundary>
     ),
     children: [
       {
