@@ -24,8 +24,8 @@ export function buildProductImageUrl(filename: string | { url: string } | null |
     filename = filename.url;
   }
 
-  // Asegurar que sea string
-  if (typeof filename !== 'string') return '';
+  // Asegurar que sea string y no vacío
+  if (typeof filename !== 'string' || !filename) return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
@@ -39,7 +39,7 @@ export function buildProductImageUrl(filename: string | { url: string } | null |
  * Construye URL completa para imagen de servicio
  */
 export function buildServiceImageUrl(filename: string): string {
-  if (!filename) return '';
+  if (!filename || typeof filename !== 'string') return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
@@ -53,7 +53,7 @@ export function buildServiceImageUrl(filename: string): string {
  * Construye URL completa para imagen de mascota
  */
 export function buildPetImageUrl(filename: string): string {
-  if (!filename) return '';
+  if (!filename || typeof filename !== 'string') return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
@@ -67,7 +67,7 @@ export function buildPetImageUrl(filename: string): string {
  * Construye URL completa genérica para cualquier tipo de archivo
  */
 export function buildFileUrl(type: 'product' | 'service' | 'pet', filename: string): string {
-  if (!filename) return '';
+  if (!filename || typeof filename !== 'string') return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
