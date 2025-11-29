@@ -14,9 +14,18 @@ export function getApiBaseUrl(): string {
 
 /**
  * Construye URL completa para imagen de producto
+ * Acepta tanto strings como objetos ProductImage del backend
  */
-export function buildProductImageUrl(filename: string): string {
+export function buildProductImageUrl(filename: string | { url: string } | null | undefined): string {
   if (!filename) return '';
+
+  // Si es un objeto con propiedad url (ProductImage del backend)
+  if (typeof filename === 'object' && 'url' in filename) {
+    filename = filename.url;
+  }
+
+  // Asegurar que sea string y no vacío
+  if (typeof filename !== 'string' || !filename) return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
@@ -30,7 +39,7 @@ export function buildProductImageUrl(filename: string): string {
  * Construye URL completa para imagen de servicio
  */
 export function buildServiceImageUrl(filename: string): string {
-  if (!filename) return '';
+  if (!filename || typeof filename !== 'string') return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
@@ -44,7 +53,7 @@ export function buildServiceImageUrl(filename: string): string {
  * Construye URL completa para imagen de mascota
  */
 export function buildPetImageUrl(filename: string): string {
-  if (!filename) return '';
+  if (!filename || typeof filename !== 'string') return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
@@ -58,7 +67,7 @@ export function buildPetImageUrl(filename: string): string {
  * Construye URL completa genérica para cualquier tipo de archivo
  */
 export function buildFileUrl(type: 'product' | 'service' | 'pet', filename: string): string {
-  if (!filename) return '';
+  if (!filename || typeof filename !== 'string') return '';
 
   // Si ya es una URL completa, retornarla
   if (filename.startsWith('http://') || filename.startsWith('https://')) {
